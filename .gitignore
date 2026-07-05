@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.env
+.env.*
+*.log
+vite.out.log
+vite.err.log
+qa-*.png
+qa-*.md
+design-concept.png
+src/assets/liquid-dune-concept.png
+.DS_Store
+Thumbs.db
