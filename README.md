@@ -50,7 +50,9 @@ backend/data/news.sqlite
 public/data/news.json
 ```
 
-当前数据源包括 OpenAI Blog、Google DeepMind Blog、Anthropic News、Hugging Face Papers、arXiv cs.AI/cs.LG/cs.RO、TechCrunch AI、The Decoder 和量子位。前端线上唯一数据源是 `public/data/news.json`；本地或部署环境读取失败时，会自动回退到内置 mock 数据，避免页面空白。
+当前数据源包括 AI HOT 精选、OpenAI Blog、Google DeepMind Blog、Anthropic News、Hugging Face Papers、arXiv cs.AI/cs.LG/cs.RO、TechCrunch AI、The Decoder 和量子位。前端线上唯一数据源是 `public/data/news.json`；本地或部署环境读取失败时，会自动回退到内置 mock 数据，避免页面空白。
+
+AI HOT 使用公开 REST API，按其 skill 要求携带 `aihot-skill` User-Agent，不需要 API Key 或 MCP server。
 
 常用采集参数：
 

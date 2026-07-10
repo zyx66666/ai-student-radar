@@ -11,7 +11,7 @@ It writes:
 - `backend/data/news.sqlite`
 - `public/data/news.json`
 
-The collector prefers RSS/Atom and arXiv API sources. Anthropic News and Hugging Face Papers currently use shallow public page extraction because stable RSS feeds were not available during setup.
+The collector prefers RSS/Atom, public REST APIs, and arXiv API sources. AI HOT uses its public API with the required `aihot-skill` User-Agent and does not need an API key. Anthropic News and Hugging Face Papers currently use shallow public page extraction because stable RSS feeds were not available during setup.
 
 ## Optional LLM analysis
 

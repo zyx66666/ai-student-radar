@@ -31,6 +31,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DB_PATH = ROOT / "backend" / "data" / "news.sqlite"
 JSON_PATH = ROOT / "public" / "data" / "news.json"
 USER_AGENT = "AIStudentRadar/0.1 (+https://github.com/ai-student-radar)"
+AIHOT_USER_AGENT = "aihot-skill/0.3.4 (+https://aihot.virxact.com/aihot-skill/)"
 TITLE_SIMILARITY_THRESHOLD = 0.9
 OPENAI_CHAT_COMPLETIONS_URL = "https://api.openai.com/v1/chat/completions"
 DEFAULT_OPENAI_MODEL = "gpt-4o-mini"
@@ -60,6 +61,7 @@ class Source:
 
 
 SOURCES = [
+    Source("AI HOT 精选", "https://aihot.virxact.com/api/public/items?mode=selected&take=50", "aihot", "大模型", ("AI HOT", "中文", "AI新闻")),
     Source("OpenAI Blog", "https://openai.com/news/rss.xml", "rss", "AI Agent", ("OpenAI", "LLM", "AI产品")),
     Source("Google DeepMind Blog", "https://deepmind.google/blog/rss.xml", "rss", "机器人", ("DeepMind", "多模态", "具身智能")),
     Source("Anthropic News", "https://www.anthropic.com/news", "page", "AI安全", ("Anthropic", "Claude", "AI安全")),
@@ -112,6 +114,15 @@ KEYWORD_TAGS = {
 }
 
 
+AIHOT_CATEGORY_MAP = {
+    "ai-models": "大模型",
+    "ai-products": "AI产品",
+    "industry": "融资动态",
+    "paper": "论文",
+    "tip": "AI产品",
+}
+
+
 SOURCE_CREDIBILITY = {
     "OpenAI Blog": 96,
     "Google DeepMind Blog": 96,
@@ -160,8 +171,11 @@ class LinkCollector(HTMLParser):
         self._text = []
 
 
-def fetch_text(url: str, timeout: int = 20) -> str:
-    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+def fetch_text(url: str, timeout: int = 20, headers: dict[str, str] | None = None) -> str:
+    request_headers = {"User-Agent": USER_AGENT}
+    if headers:
+        request_headers.update(headers)
+    request = urllib.request.Request(url, headers=request_headers)
     with urllib.request.urlopen(request, timeout=timeout) as response:
         charset = response.headers.get_content_charset() or "utf-8"
         return response.read().decode(charset, errors="replace")
@@ -525,6 +539,40 @@ def parse_page(source: Source) -> list[dict]:
     return articles
 
 
+def parse_aihot(source: Source) -> list[dict]:
+    raw = fetch_text(source.url, headers={"User-Agent": AIHOT_USER_AGENT})
+    payload = json.loads(raw)
+    articles = []
+    for item in payload.get("items", [])[:25]:
+        title = clean_text(item.get("title"))
+        url = clean_text(item.get("permalink") or item.get("url"))
+        if not title or not url:
+            continue
+        summary = clean_text(item.get("summary"))
+        category = AIHOT_CATEGORY_MAP.get(item.get("category"), source.category)
+        tags = list(source.tags)
+        if category not in tags:
+            tags.append(category)
+        source_name = clean_text(item.get("source")) or source.name
+        article = {
+            "title": title,
+            "url": url,
+            "source": f"AI HOT · {source_name}",
+            "published_at": parse_date(item.get("publishedAt")),
+            "summary": summary[:700],
+            "category": normalize_category(category),
+            "tags": list(dict.fromkeys(tags))[:8],
+        }
+        enriched = enrich_article(article)
+        if isinstance(item.get("score"), int):
+            aihot_score = clamp_score(item["score"])
+            enriched["trend_score"] = clamp_score(max(enriched["trend_score"], aihot_score))
+            enriched["final_score"] = max(calculate_final_score(enriched), aihot_score)
+            enriched["score"] = enriched["final_score"]
+        articles.append(enriched)
+    return articles
+
+
 def make_article(title: str, url: str, summary: str, published: str | None, source: Source) -> dict:
     category, tags = infer_tags_and_category(title, summary, source)
     article = {
@@ -811,6 +859,8 @@ def collect(limit_per_source: int) -> list[dict]:
                 items = parse_arxiv(source)
             elif source.kind == "page":
                 items = parse_page(source)
+            elif source.kind == "aihot":
+                items = parse_aihot(source)
             else:
                 items = []
             collected.extend(items[:limit_per_source])
