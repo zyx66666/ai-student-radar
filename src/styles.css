@@ -439,6 +439,24 @@ button {
   letter-spacing: 0;
 }
 
+.article-title-link {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.18s ease, text-decoration-color 0.18s ease;
+}
+
+.article-title-link:hover {
+  color: var(--cyan);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.article-title-link:focus-visible {
+  outline: 2px solid rgba(17, 174, 184, 0.45);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
 .summary,
 .why,
 .project-line {

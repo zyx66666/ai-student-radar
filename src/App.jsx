@@ -124,6 +124,18 @@ function sortByScoreAndTime(left, right) {
   return (parseArticleTime(right.publishedAt) ?? 0) - (parseArticleTime(left.publishedAt) ?? 0);
 }
 
+function getSafeArticleUrl(url) {
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+      return parsed.href;
+    }
+  } catch {
+    return "";
+  }
+  return "";
+}
+
 function formatFeedTime(value) {
   if (!value) {
     return "刚刚";
@@ -162,6 +174,7 @@ function hydrateFeedArticle(article, index) {
   return {
     id: article.id ?? index + 1,
     title: article.title,
+    url: article.url,
     source: article.source ?? "AI Radar",
     publishedAt: article.published_at,
     time: formatFeedTime(article.published_at),
@@ -296,6 +309,7 @@ function CategoryTabs({ selected, setSelected }) {
 function ArticleCard({ article, favorite, onToggleFavorite }) {
   const relevanceTone = article.relevance > 90 ? "green" : "cyan";
   const finalScore = article.finalScore ?? article.relevance;
+  const articleUrl = getSafeArticleUrl(article.url);
 
   return (
     <article className="article-card glass-panel">
@@ -306,7 +320,21 @@ function ArticleCard({ article, favorite, onToggleFavorite }) {
           <span>{article.time}</span>
           <span>{article.category}</span>
         </div>
-        <h2>{article.title}</h2>
+        <h2>
+          {articleUrl ? (
+            <a
+              className="article-title-link"
+              href={articleUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="打开原文"
+            >
+              {article.title}
+            </a>
+          ) : (
+            article.title
+          )}
+        </h2>
         <p className="summary">{article.summary}</p>
         <p className="why">
           <ShieldCheck size={16} />
