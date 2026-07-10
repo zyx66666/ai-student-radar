@@ -3,7 +3,6 @@ import {
   Archive,
   Bell,
   BookOpen,
-  Bot,
   BrainCircuit,
   CalendarDays,
   CheckCircle2,
@@ -41,10 +40,9 @@ import {
 const navIcons = [
   Sparkles,
   FileText,
-  Bot,
-  Layers3,
   Code2,
-  Heart,
+  Layers3,
+  Archive,
   GraduationCap,
 ];
 
@@ -59,7 +57,11 @@ const actionIcons = {
 const defaultActions = ["写笔记", "收藏"];
 const beijingTimeZone = "Asia/Shanghai";
 const favoritesStorageKey = "ai-student-radar-favorites";
+const selectedLearningTasksStorageKey = "ai-student-radar-learning-tasks";
+const completedTaskIdsStorageKey = "ai-student-radar-completed-tasks";
+const materialPurposesStorageKey = "ai-student-radar-material-purposes";
 const scheduleLabel = "每日北京时间 08:00 / 12:00 / 18:00 自动采集";
+const materialPurposes = ["研究计划素材", "论文选题", "项目灵感", "产品案例", "课程汇报", "英文阅读", "暂存"];
 
 function normalizeNewsPayload(payload) {
   if (Array.isArray(payload)) {
@@ -114,6 +116,41 @@ function loadFavoriteIds() {
     return new Set(validIds);
   } catch {
     return new Set();
+  }
+}
+
+function loadStoredStringSet(storageKey) {
+  try {
+    if (typeof window === "undefined" || !window.localStorage) {
+      return new Set();
+    }
+    const raw = window.localStorage.getItem(storageKey);
+    if (!raw) {
+      return new Set();
+    }
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) {
+      return new Set();
+    }
+    return new Set(parsed.map((item) => String(item)).filter(Boolean));
+  } catch {
+    return new Set();
+  }
+}
+
+function loadStoredObject(storageKey) {
+  try {
+    if (typeof window === "undefined" || !window.localStorage) {
+      return {};
+    }
+    const raw = window.localStorage.getItem(storageKey);
+    if (!raw) {
+      return {};
+    }
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+  } catch {
+    return {};
   }
 }
 
@@ -273,19 +310,413 @@ function applyTopQuotas(items) {
   return selected;
 }
 
+function getArticleTags(article) {
+  const values = [
+    ...(Array.isArray(article.tags) ? article.tags : []),
+    ...(Array.isArray(article.knowledge) ? article.knowledge : []),
+    article.category,
+  ];
+  return values.filter(Boolean).map((item) => String(item));
+}
+
+function includesAnyText(values, keywords) {
+  const haystack = values.join(" ").toLowerCase();
+  return keywords.some((keyword) => haystack.includes(keyword.toLowerCase()));
+}
+
+function articleText(article) {
+  return [
+    article.title,
+    article.summary,
+    article.why,
+    article.source,
+    article.category,
+    ...(Array.isArray(article.tags) ? article.tags : []),
+    ...(Array.isArray(article.knowledge) ? article.knowledge : []),
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+function inferTopic(article) {
+  const text = articleText(article);
+  if (includesAnyText([text], ["机器人", "具身", "VLA", "SLAM", "导航", "机械臂", "robot"])) {
+    return "机器人/具身智能";
+  }
+  if (includesAnyText([text], ["Agent", "工具调用", "workflow", "工作流"])) {
+    return "AI Agent";
+  }
+  if (includesAnyText([text], ["多模态", "vision", "video", "audio", "视觉", "语音"])) {
+    return "多模态";
+  }
+  if (includesAnyText([text], ["安全", "对齐", "隐私", "prompt injection", "权限"])) {
+    return "AI安全";
+  }
+  if (includesAnyText([text], ["产品", "用户", "商业", "Product", "PM"])) {
+    return "AI产品";
+  }
+  if (includesAnyText([text], ["开源", "GitHub", "代码", "Hugging Face", "repo"])) {
+    return "开源项目";
+  }
+  if (includesAnyText([text], ["arXiv", "论文", "paper", "benchmark"])) {
+    return "论文";
+  }
+  return article.category || "大模型";
+}
+
+function inferContentType(article) {
+  const text = articleText(article);
+  if (isPaperArticle(article) || includesAnyText([text], ["arXiv", "论文", "paper"])) {
+    return "paper";
+  }
+  if (includesAnyText([text], ["GitHub", "开源", "代码", "repo", "SDK"])) {
+    return "open_source";
+  }
+  if (includesAnyText([text], ["工具", "tool", "workflow", "插件"])) {
+    return "tool";
+  }
+  if (article.category === "AI产品" || includesAnyText([text], ["产品", "用户", "竞品", "Product Hunt", "PM"])) {
+    return "product";
+  }
+  if (includesAnyText([text], ["融资", "投资", "funding", "raises"])) {
+    return "news";
+  }
+  return "trend";
+}
+
+function matchesCategory(article, selectedCategory) {
+  if (selectedCategory === "全部") {
+    return true;
+  }
+  return [article.category, article.topic, ...(article.tags ?? []), ...(article.knowledge ?? [])].includes(selectedCategory);
+}
+
+function matchesSearch(article, normalizedQuery) {
+  if (!normalizedQuery) {
+    return true;
+  }
+  return [article.title, article.source, article.category, article.topic, article.summary, article.studentReason]
+    .join(" ")
+    .toLowerCase()
+    .includes(normalizedQuery);
+}
+
+function getSaveAs(article) {
+  if (Array.isArray(article.save_as) && article.save_as.length) {
+    return article.save_as;
+  }
+  if (Array.isArray(article.saveAs) && article.saveAs.length) {
+    return article.saveAs;
+  }
+  if (article.contentType === "paper") {
+    return ["论文选题", "研究计划素材", "英文阅读"];
+  }
+  if (article.contentType === "product") {
+    return ["产品案例", "学习笔记"];
+  }
+  if (article.contentType === "open_source" || article.contentType === "tool") {
+    return ["项目灵感", "课程汇报"];
+  }
+  if (article.topic === "机器人/具身智能" || article.topic === "AI Agent") {
+    return ["项目灵感", "申请素材"];
+  }
+  return ["学习笔记", "暂存"];
+}
+
+function isPaperSource(article) {
+  return includesAnyText([article.source ?? ""], ["arxiv", "hugging face papers", "hf papers"]);
+}
+
+function isPaperArticle(article) {
+  const tags = getArticleTags(article);
+  const paperSource = isPaperSource(article);
+  if (paperSource) {
+    return true;
+  }
+  if (tags.includes("论文")) {
+    return true;
+  }
+  return (
+    ["论文", "多模态", "AI Agent", "机器人/具身智能", "机器人", "具身智能"].includes(article.category) &&
+    paperSource
+  );
+}
+
+function normalizeBoolean(value) {
+  if (typeof value === "boolean") {
+    return value;
+  }
+  if (typeof value === "string") {
+    return ["true", "yes", "有", "开源", "代码"].some((item) => value.toLowerCase().includes(item));
+  }
+  return false;
+}
+
+function scoreFromValue(value, fallback) {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return clampScore(value);
+  }
+  if (typeof value === "string") {
+    if (["高", "强", "很高"].some((item) => value.includes(item))) {
+      return 88;
+    }
+    if (["低", "弱"].some((item) => value.includes(item))) {
+      return 58;
+    }
+  }
+  return fallback;
+}
+
+function getPaperInsight(article) {
+  const raw = article.paperInsight ?? {};
+  const tags = getArticleTags(article);
+  const text = [article.title, article.summary, article.why, article.project, tags.join(" ")].join(" ");
+  const isRobotics = includesAnyText([text], ["机器人", "具身", "VLA", "SLAM", "导航", "机械臂", "robot"]);
+  const isAgent = includesAnyText([text], ["Agent", "工具调用", "Tool", "多步骤"]);
+  const hasCode = normalizeBoolean(raw.has_code ?? raw.hasCode) || article.actions?.includes("看代码") || includesAnyText([article.source ?? "", text], ["github", "hugging face", "code"]);
+  const finalScore = article.finalScore ?? article.relevance ?? 72;
+  const reproducibilityScore = hasCode ? 88 : article.actions?.includes("做项目") ? 76 : 62;
+  const applicationScore = scoreFromValue(raw.application_value ?? raw.applicationValue, isRobotics || isAgent ? 88 : 72);
+  const surveyScore = scoreFromValue(raw.survey_value ?? raw.surveyValue, tags.length >= 3 ? 82 : 68);
+  const readabilityScore = article.difficulty === "入门" || article.difficulty === "中等" ? 80 : 66;
+  const noveltyScore = Math.min(92, finalScore + (includesAnyText([text], ["new", "提出", "首次", "benchmark"]) ? 5 : 0));
+  const directionScore = Math.min(96, finalScore + (isRobotics ? 8 : isAgent ? 5 : 0));
+  const priority =
+    raw.paper_priority_score ??
+    raw.paperPriorityScore ??
+    Math.round(
+      directionScore * 0.28 +
+        reproducibilityScore * 0.2 +
+        applicationScore * 0.2 +
+        noveltyScore * 0.17 +
+        readabilityScore * 0.15,
+    );
+
+  return {
+    direction: raw.direction || raw.research_direction || (isRobotics ? "机器人/具身智能" : isAgent ? "AI Agent" : article.category || "AI研究"),
+    researchQuestion:
+      raw.research_question ||
+      raw.researchQuestion ||
+      `这项工作试图解决 ${tags.slice(0, 2).join("、") || article.category} 场景中的关键能力瓶颈。`,
+    coreMethod:
+      raw.core_method ||
+      raw.coreMethod ||
+      article.summary ||
+      "需要阅读原文的 Method / Approach 部分提炼核心方法。",
+    dataset:
+      raw.dataset ||
+      raw.benchmark ||
+      raw.dataset_benchmark ||
+      "原文未标注，精读时重点查找数据集、Benchmark 与评价指标。",
+    hasCode,
+    reproductionDifficulty:
+      raw.reproduction_difficulty ||
+      raw.reproductionDifficulty ||
+      (hasCode ? "中等，可从代码或开源实现切入" : "偏高，先复现指标表或核心流程"),
+    undergraduateDifficulty:
+      raw.undergraduate_difficulty || raw.undergraduateDifficulty || article.difficulty || "中等",
+    readTime: raw.read_time || raw.readTime || article.readTime || "20-35 min",
+    applicationValue:
+      raw.application_value ||
+      raw.applicationValue ||
+      (applicationScore >= 82 ? "高：适合写进研究计划/个人陈述素材库" : "中：适合补充方向认知"),
+    surveyValue:
+      raw.survey_value ||
+      raw.surveyValue ||
+      (surveyScore >= 80 ? "高：可整理到综述脉络" : "中：可作为背景案例"),
+    recommendedAction:
+      raw.recommended_action || raw.recommendedAction || article.project || "先读摘要和实验，再决定是否精读全文。",
+    paperPriorityScore: clampScore(priority),
+    applicationScore,
+    surveyScore,
+  };
+}
+
+function paperPriorityScore(article) {
+  return getPaperInsight(article).paperPriorityScore;
+}
+
+function taskIdForArticle(article, suffix) {
+  return `article-${article.id}-${suffix}`;
+}
+
+function normalizeLearningTask(article, task, index) {
+  const group = task.group || task.bucket || task.period || "本周任务";
+  return {
+    id: String(task.id || task.task_id || taskIdForArticle(article, `custom-${index}`)),
+    group,
+    title: task.title || task.name || `沉淀《${article.title}》`,
+    sourceArticle: task.source_article || task.sourceArticle || article.title,
+    sourceArticleId: article.id,
+    type: task.type || task.task_type || (article.actions?.includes("读论文") ? "读论文" : "写分析"),
+    estimate: task.estimate || task.time || task.duration || "30 min",
+    difficulty: task.difficulty || article.difficulty || "中等",
+    skills: Array.isArray(task.skills) ? task.skills : getArticleTags(article).slice(0, 3),
+    why: task.why || task.reason || article.why,
+    doneCriteria: task.done_criteria || task.doneCriteria || task.acceptance || "形成可复用的笔记或清单。",
+    output: task.output || task.deliverable || task.final_output || "一页学习笔记",
+    selected: false,
+  };
+}
+
+function fallbackTaskType(article) {
+  if (article.actions?.includes("读论文")) {
+    return "读论文";
+  }
+  if (article.actions?.includes("看代码")) {
+    return "看代码";
+  }
+  if (article.category === "AI产品") {
+    return "写分析";
+  }
+  if (article.actions?.includes("做项目")) {
+    return "做项目";
+  }
+  return "申请沉淀";
+}
+
+function buildFallbackLearningTasks(article) {
+  const skills = getArticleTags(article).slice(0, 3);
+  const taskType = fallbackTaskType(article);
+  return [
+    {
+      id: taskIdForArticle(article, "30m"),
+      group: "今日 30 分钟",
+      title: `快速判断：${article.title}`,
+      sourceArticle: article.title,
+      sourceArticleId: article.id,
+      type: taskType,
+      estimate: "30 min",
+      difficulty: article.difficulty || "中等",
+      skills,
+      why: article.why,
+      doneCriteria: "写下 3 个关键词、1 句价值判断和是否继续精读。",
+      output: "3 行速读卡片",
+    },
+    {
+      id: taskIdForArticle(article, "90m"),
+      group: "今日 90 分钟",
+      title: `${taskType === "读论文" ? "精读论文" : taskType === "看代码" ? "看代码结构" : "拆解案例"}：${article.category}`,
+      sourceArticle: article.title,
+      sourceArticleId: article.id,
+      type: taskType,
+      estimate: "90 min",
+      difficulty: article.difficulty || "中等",
+      skills,
+      why: article.studentValue || article.why,
+      doneCriteria: "完成问题、方法、证据、局限和下一步行动五栏记录。",
+      output: taskType === "写分析" ? "产品分析卡" : "结构化阅读笔记",
+    },
+    {
+      id: taskIdForArticle(article, "week"),
+      group: "本周任务",
+      title: `把 ${article.category} 动态转成作品集素材`,
+      sourceArticle: article.title,
+      sourceArticleId: article.id,
+      type: article.actions?.includes("做项目") ? "做项目" : "申请沉淀",
+      estimate: "2-3 h",
+      difficulty: "中等",
+      skills,
+      why: article.researchValue || "把零散资讯沉淀成申请和项目素材。",
+      doneCriteria: "产出 1 页图文说明，包含背景、方法、个人理解和可延展项目。",
+      output: "申请素材卡 / 项目想法页",
+    },
+    {
+      id: taskIdForArticle(article, "route"),
+      group: "四周路线",
+      title: `围绕 ${skills[0] || article.category} 做一个小闭环`,
+      sourceArticle: article.title,
+      sourceArticleId: article.id,
+      type: "做项目",
+      estimate: "4 weeks",
+      difficulty: "进阶",
+      skills,
+      why: article.project,
+      doneCriteria: "完成资料调研、最小实验、结果记录和复盘展示。",
+      output: "可展示的小项目 README",
+    },
+  ];
+}
+
+function getArticleLearningTasks(article) {
+  if (Array.isArray(article.learningTasks) && article.learningTasks.length) {
+    return article.learningTasks.map((task, index) => normalizeLearningTask(article, task, index));
+  }
+  return buildFallbackLearningTasks(article);
+}
+
+function getPrimaryLearningTask(article) {
+  return getArticleLearningTasks(article)[0];
+}
+
+function buildLearningTaskPlan(sourceArticles, selectedLearningTaskIds) {
+  const tasks = sourceArticles.flatMap((article) => getArticleLearningTasks(article));
+  const uniqueTasks = Array.from(new Map(tasks.map((task) => [task.id, task])).values());
+  const sortedTasks = uniqueTasks.sort((left, right) => {
+    const leftSelected = selectedLearningTaskIds.has(left.id) ? 1 : 0;
+    const rightSelected = selectedLearningTaskIds.has(right.id) ? 1 : 0;
+    if (leftSelected !== rightSelected) {
+      return rightSelected - leftSelected;
+    }
+    const leftArticle = sourceArticles.find((article) => article.id === left.sourceArticleId);
+    const rightArticle = sourceArticles.find((article) => article.id === right.sourceArticleId);
+    return (rightArticle?.finalScore ?? 0) - (leftArticle?.finalScore ?? 0);
+  });
+
+  const groupLimits = {
+    "今日 30 分钟": 4,
+    "今日 90 分钟": 3,
+    本周任务: 5,
+    四周路线: 3,
+  };
+  const groupCounts = {};
+  return sortedTasks.filter((task) => {
+    groupCounts[task.group] = groupCounts[task.group] ?? 0;
+    if (groupCounts[task.group] >= (groupLimits[task.group] ?? 4)) {
+      return false;
+    }
+    groupCounts[task.group] += 1;
+    return true;
+  });
+}
+
 function hydrateFeedArticle(article, index) {
   const score = article.final_score ?? article.score ?? 72;
   const tags = Array.isArray(article.tags) && article.tags.length ? article.tags : [article.category ?? "AI新闻"];
   const relevance = article.relevance_score ?? Math.min(99, Math.max(58, score + (tags.some((tag) => ["机器人", "具身智能", "机器人/具身智能", "AI Agent", "多模态"].includes(tag)) ? 8 : 0)));
+  const publishedAt = article.published_at ?? article.publishedAt ?? new Date().toISOString();
+  const topic = article.topic || inferTopic({ ...article, tags, knowledge: tags });
+  const contentType = article.content_type || article.contentType || inferContentType({ ...article, tags, knowledge: tags, topic });
+  const normalizedArticle = { ...article, tags, topic, contentType };
+  const studentReason =
+    article.student_reason ||
+    article.studentReason ||
+    article.why_it_matters ||
+    article.importance ||
+    `它能帮你判断 ${topic} 方向的新问题、新方法或产品机会，适合转成可复用素材。`;
+  const nextAction =
+    article.next_action ||
+    article.nextAction ||
+    article.action_suggestion ||
+    (contentType === "paper"
+      ? "用 30 分钟读 Abstract、Introduction 和实验表，记录研究问题与可复现线索。"
+      : contentType === "product"
+        ? "画一张用户痛点、功能链路、AI 能力和竞品对照的产品分析卡。"
+        : contentType === "open_source" || contentType === "tool"
+          ? "打开项目页，跑通 README 中最小示例并记录依赖和输入输出。"
+          : "收藏后写 3 条学习笔记：发生了什么、为什么重要、下一步能做什么。");
 
   return {
     id: article.id ?? index + 1,
     title: article.title,
     url: article.url,
     source: article.source ?? "AI Radar",
-    publishedAt: article.published_at,
-    time: formatFeedTime(article.published_at),
+    publishedAt,
+    time: article.time ?? formatFeedTime(publishedAt),
     category: article.category ?? "AI新闻",
+    tags,
+    contentType,
+    topic,
     finalScore: score,
     credibility: article.credibility_score ?? Math.min(99, Math.max(60, score + 6)),
     heat: article.trend_score ?? Math.min(99, Math.max(55, score)),
@@ -293,15 +724,34 @@ function hydrateFeedArticle(article, index) {
     summary: article.tldr || article.one_sentence_summary || article.summary || "这条内容来自自动采集源，建议打开原文进一步判断价值。",
     why: article.why_it_matters || article.importance || `来自 ${article.source ?? "可信来源"}，与 ${tags.slice(0, 3).join("、")} 相关，适合纳入每日 AI 情报追踪。`,
     studentValue: article.student_value || article.audience || "适合作为学习、科研申请或产品分析素材。",
+    studentFit: article.student_fit || article.studentFit || (score >= 86 ? "适合重点跟进的本科高年级/申请准备学生" : "适合建立方向认知的本科生"),
+    studentReason,
     researchValue: article.research_value || "可提炼为研究计划或论文阅读素材。",
     pmValue: article.pm_value || "可转化为产品分析卡片。",
     difficulty: article.difficulty || "中等",
     readTime: article.read_time || "3 min",
+    nextAction,
+    saveAs: getSaveAs(normalizedArticle),
+    readingMode:
+      article.reading_mode ||
+      article.readingMode ||
+      (contentType === "paper" ? (score >= 84 ? "精读" : "略读") : score >= 82 ? "重点读" : "快速扫读"),
+    projectTask:
+      article.project_task ||
+      article.projectTask ||
+      (contentType === "open_source" || contentType === "tool"
+        ? "跑通最小示例，记录安装步骤、输入输出和一个可改进点。"
+        : "把关键结论转成一个 1 页实验或项目想法。"),
+    productInsight:
+      article.product_insight ||
+      article.productInsight ||
+      "从目标用户、痛点、核心链路、AI 能力和可模仿功能五个角度拆解。",
     actions: buildActions({ ...article, tags }),
     knowledge: tags.slice(0, 4),
+    paperInsight: article.paper_insight ?? article.paperInsight ?? null,
+    learningTasks: article.learning_tasks ?? article.learningTasks ?? null,
     project:
-      article.next_action ||
-      article.action_suggestion ||
+      nextAction ||
       (article.category === "AI产品"
         ? "整理一张产品分析卡：用户痛点、核心能力、竞品和 PM 启发"
         : article.category === "论文"
@@ -349,7 +799,7 @@ function Sidebar({ active, onSelect, favoritesCount }) {
             >
               <Icon size={18} strokeWidth={1.8} />
               <span>{item}</span>
-              {item === "我的收藏" && favoritesCount > 0 ? (
+              {item === "我的素材库" && favoritesCount > 0 ? (
                 <em>{favoritesCount}</em>
               ) : null}
             </button>
@@ -381,7 +831,7 @@ function TopBar({ query, setQuery, refreshCount, onRefresh, meta, loadedCount })
         <CalendarDays size={19} />
         <div>
           <span>{getBeijingDisplayDate()}</span>
-          <strong>今日 AI 情报</strong>
+          <strong>学生 AI 情报转化</strong>
         </div>
       </div>
 
@@ -428,10 +878,11 @@ function CategoryTabs({ selected, setSelected }) {
   );
 }
 
-function ArticleCard({ article, favorite, onToggleFavorite }) {
+function ArticleCard({ article, favorite, learningTaskSelected, onToggleFavorite, onToggleLearningTask }) {
   const relevanceTone = article.relevance > 90 ? "green" : "cyan";
   const finalScore = article.finalScore ?? article.relevance;
   const articleUrl = getSafeArticleUrl(article.url);
+  const primaryLearningTask = getPrimaryLearningTask(article);
 
   return (
     <article className="article-card glass-panel">
@@ -467,9 +918,29 @@ function ArticleCard({ article, favorite, onToggleFavorite }) {
             <span key={item}>{item}</span>
           ))}
         </div>
+        <div className="student-fields">
+          <div>
+            <span>为什么值得学生看</span>
+            <strong>{article.studentReason}</strong>
+          </div>
+          <div>
+            <span>适合谁看</span>
+            <strong>{article.studentFit}</strong>
+          </div>
+          <div>
+            <span>阅读难度</span>
+            <strong>{article.difficulty} · {article.readTime}</strong>
+          </div>
+        </div>
         <div className="project-line">
           <Target size={16} />
-          <span>{article.project}</span>
+          <span>{article.nextAction}</span>
+        </div>
+        <div className="save-as-row">
+          <span>可沉淀为</span>
+          {article.saveAs.map((item) => (
+            <em key={item}>{item}</em>
+          ))}
         </div>
       </div>
 
@@ -499,9 +970,473 @@ function ArticleCard({ article, favorite, onToggleFavorite }) {
               </button>
             );
           })}
+          <button
+            className={learningTaskSelected ? "action learning active" : "action learning"}
+            onClick={() => onToggleLearningTask?.(primaryLearningTask.id)}
+            type="button"
+          >
+            <GraduationCap size={15} />
+            <span>{learningTaskSelected ? "已加入计划" : "加入学习计划"}</span>
+          </button>
         </div>
       </div>
     </article>
+  );
+}
+
+function PaperCard({ article, favorite, learningTaskSelected, onToggleFavorite, onToggleLearningTask }) {
+  const insight = getPaperInsight(article);
+  const articleUrl = getSafeArticleUrl(article.url);
+  const primaryLearningTask = getPrimaryLearningTask(article);
+
+  return (
+    <article className="paper-card glass-panel">
+      <div className="paper-card-heading">
+        <div>
+          <div className="article-meta">
+            <span>{article.source}</span>
+            <span>{article.time}</span>
+            <span>{insight.direction}</span>
+          </div>
+          <h2>
+            {articleUrl ? (
+              <a className="article-title-link" href={articleUrl} target="_blank" rel="noopener noreferrer">
+                {article.title}
+              </a>
+            ) : (
+              article.title
+            )}
+          </h2>
+        </div>
+        <div className="final-score compact-score">
+          <span>论文优先级</span>
+          <strong>{insight.paperPriorityScore}</strong>
+        </div>
+      </div>
+
+      <div className="paper-grid">
+        <InfoBlock label="研究方向" value={insight.direction} />
+        <InfoBlock label="一句话研究问题" value={insight.researchQuestion} />
+        <InfoBlock label="方法关键词" value={insight.coreMethod} />
+        <InfoBlock label="代码/数据/Benchmark" value={`${insight.hasCode ? "有代码线索" : "代码待确认"} · ${insight.dataset}`} />
+        <InfoBlock label="阅读难度" value={`${insight.undergraduateDifficulty} · ${insight.readTime}`} />
+        <InfoBlock label="推荐阅读方式" value={article.readingMode} />
+        <InfoBlock label="读前需要补充" value={article.knowledge.join("、") || "线性代数、深度学习基础、论文实验读法"} />
+        <InfoBlock label="30分钟阅读任务" value={insight.recommendedAction} />
+      </div>
+
+      <div className="save-as-row">
+        <span>可转化为</span>
+        {["研究计划素材", "课程项目", "毕设选题", "竞赛方向"].map((item) => (
+          <em key={item}>{item}</em>
+        ))}
+      </div>
+
+      <div className="action-row paper-actions">
+        <button className={favorite ? "action active" : "action"} onClick={onToggleFavorite} type="button">
+          <Heart size={15} />
+          <span>{favorite ? "已收藏" : "收藏"}</span>
+        </button>
+        <button
+          className={learningTaskSelected ? "action learning active" : "action learning"}
+          onClick={() => onToggleLearningTask?.(primaryLearningTask.id)}
+          type="button"
+        >
+          <GraduationCap size={15} />
+          <span>{learningTaskSelected ? "已加入计划" : "加入学习计划"}</span>
+        </button>
+      </div>
+    </article>
+  );
+}
+
+function InfoBlock({ label, value }) {
+  return (
+    <div className="info-block">
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </div>
+  );
+}
+
+function PaperRadar({ articles: sourceArticles, favorites, selectedLearningTasks, onToggleFavorite, onToggleLearningTask }) {
+  const [activeTab, setActiveTab] = useState("今日必读");
+  const papers = sourceArticles.filter(isPaperArticle).sort((left, right) => paperPriorityScore(right) - paperPriorityScore(left));
+  const stats = {
+    today: papers.filter((article) => isWithinHours(article.publishedAt, 24)).length,
+    deepRead: papers.filter((article) => getPaperInsight(article).paperPriorityScore >= 82).length,
+    reproducible: papers.filter((article) => getPaperInsight(article).hasCode).length,
+    application: papers.filter((article) => getPaperInsight(article).applicationScore >= 80).length,
+    robotics: papers.filter((article) => getPaperInsight(article).direction === "机器人/具身智能").length,
+  };
+  const tabs = ["今日必读", "可复现", "申请素材", "综述素材", "暂存池"];
+  const visiblePapers = papers.filter((article) => {
+    const insight = getPaperInsight(article);
+    if (activeTab === "可复现") return insight.hasCode;
+    if (activeTab === "申请素材") return insight.applicationScore >= 80;
+    if (activeTab === "综述素材") return insight.surveyScore >= 78;
+    if (activeTab === "暂存池") return insight.paperPriorityScore < 76;
+    return true;
+  });
+
+  return (
+    <div className="tool-page">
+      <section className="metric-strip">
+        <MetricCard label="今日论文" value={stats.today} />
+        <MetricCard label="建议精读" value={stats.deepRead} />
+        <MetricCard label="可复现" value={stats.reproducible} />
+        <MetricCard label="申请素材" value={stats.application} />
+        <MetricCard label="具身论文" value={stats.robotics} />
+      </section>
+      <div className="inner-tabs">
+        {tabs.map((tab) => (
+          <button className={activeTab === tab ? "selected" : ""} key={tab} onClick={() => setActiveTab(tab)} type="button">
+            {tab}
+          </button>
+        ))}
+      </div>
+      <div className="article-list">
+        {visiblePapers.map((article) => (
+          <PaperCard
+            article={article}
+            favorite={favorites.has(article.id)}
+            key={article.id}
+            learningTaskSelected={selectedLearningTasks.has(getPrimaryLearningTask(article).id)}
+            onToggleFavorite={() => onToggleFavorite(article.id)}
+            onToggleLearningTask={onToggleLearningTask}
+          />
+        ))}
+        {!visiblePapers.length ? <EmptyState text="当前筛选下没有论文，可以切换 tab 或等待下一次采集。" /> : null}
+      </div>
+    </div>
+  );
+}
+
+function MetricCard({ label, value }) {
+  return (
+    <div className="metric-card glass-panel">
+      <strong>{value}</strong>
+      <span>{label}</span>
+    </div>
+  );
+}
+
+function ProjectLab({ articles: sourceArticles, favorites, selectedLearningTasks, onToggleFavorite, onToggleLearningTask }) {
+  const projectItems = sourceArticles
+    .filter((article) =>
+      ["open_source", "tool"].includes(article.contentType) ||
+      article.actions.includes("看代码") ||
+      getPaperInsight(article).hasCode ||
+      includesAnyText([article.source, article.title], ["GitHub", "Hugging Face"]),
+    )
+    .sort(sortByScoreAndTime);
+
+  return (
+    <div className="card-lab-grid">
+      {projectItems.map((article) => (
+        <ProjectCard
+          article={article}
+          favorite={favorites.has(article.id)}
+          key={article.id}
+          learningTaskSelected={selectedLearningTasks.has(getPrimaryLearningTask(article).id)}
+          onToggleFavorite={() => onToggleFavorite(article.id)}
+          onToggleLearningTask={onToggleLearningTask}
+        />
+      ))}
+      {!projectItems.length ? <EmptyState text="当前筛选下暂无可实验项目，试试切到开源项目或论文分类。" /> : null}
+    </div>
+  );
+}
+
+function ProjectCard({ article, favorite, learningTaskSelected, onToggleFavorite, onToggleLearningTask }) {
+  const articleUrl = getSafeArticleUrl(article.url);
+  const primaryLearningTask = getPrimaryLearningTask(article);
+  const duration = article.difficulty === "入门" ? "30分钟" : article.finalScore >= 86 ? "1天" : "2小时";
+
+  return (
+    <article className="transform-card glass-panel">
+      <div className="article-meta">
+        <span>{article.source}</span>
+        <span>{article.topic}</span>
+      </div>
+      <h2>
+        {articleUrl ? (
+          <a className="article-title-link" href={articleUrl} target="_blank" rel="noopener noreferrer">
+            {article.title}
+          </a>
+        ) : (
+          article.title
+        )}
+      </h2>
+      <div className="paper-grid">
+        <InfoBlock label="适合方向" value={article.topic} />
+        <InfoBlock label="上手难度" value={article.difficulty} />
+        <InfoBlock label="预计耗时" value={duration} />
+        <InfoBlock label="可以完成的小任务" value={article.projectTask} />
+        <InfoBlock label="最终产出物" value="最小 demo、复现实验记录或 README 展示页" />
+        <InfoBlock label="适合沉淀为" value="课程作业 / 竞赛demo / 简历项目 / 申请项目经历" />
+      </div>
+      <CardActions
+        favorite={favorite}
+        learningTaskSelected={learningTaskSelected}
+        onToggleFavorite={onToggleFavorite}
+        onToggleLearningTask={() => onToggleLearningTask(primaryLearningTask.id)}
+      />
+    </article>
+  );
+}
+
+function ProductObservation({ articles: sourceArticles, favorites, selectedLearningTasks, onToggleFavorite, onToggleLearningTask }) {
+  const productItems = sourceArticles
+    .filter((article) => article.contentType === "product" || article.category === "AI产品" || article.topic === "AI产品")
+    .sort(sortByScoreAndTime);
+
+  return (
+    <div className="card-lab-grid">
+      {productItems.map((article) => (
+        <ProductCard
+          article={article}
+          favorite={favorites.has(article.id)}
+          key={article.id}
+          learningTaskSelected={selectedLearningTasks.has(getPrimaryLearningTask(article).id)}
+          onToggleFavorite={() => onToggleFavorite(article.id)}
+          onToggleLearningTask={onToggleLearningTask}
+        />
+      ))}
+      {!productItems.length ? <EmptyState text="当前筛选下暂无产品案例，试试切到 AI产品 或 Agent 分类。" /> : null}
+    </div>
+  );
+}
+
+function ProductCard({ article, favorite, learningTaskSelected, onToggleFavorite, onToggleLearningTask }) {
+  const articleUrl = getSafeArticleUrl(article.url);
+  const primaryLearningTask = getPrimaryLearningTask(article);
+
+  return (
+    <article className="transform-card glass-panel product-card">
+      <div className="article-meta">
+        <span>{article.source}</span>
+        <span>{article.time}</span>
+      </div>
+      <h2>
+        {articleUrl ? (
+          <a className="article-title-link" href={articleUrl} target="_blank" rel="noopener noreferrer">
+            {article.title}
+          </a>
+        ) : (
+          article.title
+        )}
+      </h2>
+      <div className="paper-grid">
+        <InfoBlock label="目标用户" value={article.studentFit} />
+        <InfoBlock label="解决的痛点" value={article.studentReason} />
+        <InfoBlock label="核心功能链路" value={article.productInsight} />
+        <InfoBlock label="使用的AI能力" value={article.knowledge.join("、") || article.topic} />
+        <InfoBlock label="竞品或相似产品" value="同类 AI Agent、Copilot、自动化工作流或垂直工具" />
+        <InfoBlock label="产品思维启发" value={article.pmValue} />
+        <InfoBlock label="可模仿的小功能" value="做一个输入内容、生成结构化卡片、支持导出的最小功能闭环" />
+      </div>
+      <CardActions
+        favorite={favorite}
+        learningTaskSelected={learningTaskSelected}
+        onToggleFavorite={onToggleFavorite}
+        onToggleLearningTask={() => onToggleLearningTask(primaryLearningTask.id)}
+      />
+    </article>
+  );
+}
+
+function CardActions({ favorite, learningTaskSelected, onToggleFavorite, onToggleLearningTask }) {
+  return (
+    <div className="action-row paper-actions">
+      <button className={favorite ? "action active" : "action"} onClick={onToggleFavorite} type="button">
+        <Heart size={15} />
+        <span>{favorite ? "已收藏" : "收藏"}</span>
+      </button>
+      <button className={learningTaskSelected ? "action learning active" : "action learning"} onClick={onToggleLearningTask} type="button">
+        <GraduationCap size={15} />
+        <span>{learningTaskSelected ? "已加入计划" : "加入学习计划"}</span>
+      </button>
+    </div>
+  );
+}
+
+function MaterialLibrary({ articles: sourceArticles, favorites, materialPurposesById, onSetMaterialPurpose }) {
+  const savedArticles = sourceArticles.filter((article) => favorites.has(article.id));
+  const grouped = materialPurposes.reduce((acc, purpose) => {
+    acc[purpose] = [];
+    return acc;
+  }, {});
+  savedArticles.forEach((article) => {
+    const purpose = materialPurposesById[article.id] || "暂存";
+    (grouped[purpose] ?? grouped["暂存"]).push(article);
+  });
+
+  return (
+    <div className="material-library">
+      {materialPurposes.map((purpose) => (
+        <section className="material-bucket glass-panel" key={purpose}>
+          <div className="bucket-heading">
+            <h3>{purpose}</h3>
+            <span>{grouped[purpose].length}</span>
+          </div>
+          <div className="bucket-list">
+            {grouped[purpose].map((article) => (
+              <article className="bucket-item" key={article.id}>
+                <strong>{article.title}</strong>
+                <p>{article.summary}</p>
+                <select value={materialPurposesById[article.id] || "暂存"} onChange={(event) => onSetMaterialPurpose(article.id, event.target.value)}>
+                  {materialPurposes.map((item) => (
+                    <option key={item} value={item}>
+                      {item}
+                    </option>
+                  ))}
+                </select>
+              </article>
+            ))}
+            {!grouped[purpose].length ? <span className="bucket-empty">暂无内容</span> : null}
+          </div>
+        </section>
+      ))}
+      {!savedArticles.length ? <EmptyState text="还没有收藏内容。收藏后会先进入暂存，再按用途整理成素材库。" /> : null}
+    </div>
+  );
+}
+
+function LearningPlan({ sourceArticles, favorites, selectedLearningTasks, completedTaskIds, onToggleTaskDone }) {
+  const priorityArticles = sourceArticles.filter((article) => isWithinDays(article.publishedAt, 3)).sort(sortByScoreAndTime);
+  const selectedArticles = priorityArticles.filter((article) => selectedLearningTasks.has(getPrimaryLearningTask(article).id));
+  const favoriteArticles = priorityArticles.filter((article) => favorites.has(article.id));
+  const taskSource = [...selectedArticles, ...favoriteArticles, ...priorityArticles].filter(
+    (article, index, array) => array.findIndex((item) => item.id === article.id) === index,
+  );
+  const tasks = buildStudentPlanTasks(taskSource);
+  const completedCount = tasks.filter((task) => completedTaskIds.has(task.id)).length;
+  const groups = ["今日30分钟计划", "今日60分钟计划", "本周能力补强", "本周产出目标"];
+
+  return (
+    <div className="learning-page">
+      <section className="learning-progress glass-panel">
+        <div>
+          <div className="section-label">
+            <GraduationCap size={17} />
+            学习计划
+          </div>
+          <h2>把今天看到的情报变成可交付任务</h2>
+        </div>
+        <strong>{completedCount}/{tasks.length}</strong>
+        <span>本周完成</span>
+      </section>
+      {groups.map((group) => (
+        <section className="task-section" key={group}>
+          <h3>{group}</h3>
+          <div className="task-grid">
+            {tasks.filter((task) => task.group === group).map((task) => (
+              <TaskCard
+                completed={completedTaskIds.has(task.id)}
+                key={task.id}
+                task={task}
+                onToggleDone={() => onToggleTaskDone(task.id)}
+              />
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  );
+}
+
+function buildStudentPlanTasks(sourceArticles) {
+  const topArticles = sourceArticles.slice(0, 8);
+  const fallback = topArticles.length ? topArticles : articles.map(hydrateFeedArticle).slice(0, 4);
+  const baseTasks = fallback.flatMap((article) => getArticleLearningTasks(article));
+  const compact = [];
+
+  if (fallback[0]) {
+    compact.push({
+      id: `daily-30-${fallback[0].id}`,
+      group: "今日30分钟计划",
+      title: "10分钟读学生解析，15分钟拆一篇论文/案例，5分钟写3条笔记",
+      sourceArticle: fallback[0].title,
+      type: fallback[0].contentType === "paper" ? "读论文" : "写分析",
+      estimate: "30 min",
+      difficulty: fallback[0].difficulty,
+      skills: fallback[0].knowledge,
+      why: fallback[0].studentReason,
+      doneCriteria: "完成 3 条可沉淀笔记，并决定是否收藏。",
+      output: "3 条学习笔记",
+    });
+  }
+  if (fallback[1]) {
+    compact.push({
+      id: `daily-60-${fallback[1].id}`,
+      group: "今日60分钟计划",
+      title: `精读/拆解：${fallback[1].title}`,
+      sourceArticle: fallback[1].title,
+      type: fallback[1].contentType === "open_source" ? "看代码" : fallback[1].contentType === "paper" ? "读论文" : "写分析",
+      estimate: "60 min",
+      difficulty: fallback[1].difficulty,
+      skills: fallback[1].knowledge,
+      why: fallback[1].why,
+      doneCriteria: "整理问题、方法、证据、局限和下一步行动。",
+      output: fallback[1].contentType === "product" ? "产品分析卡" : "结构化阅读卡",
+    });
+  }
+
+  baseTasks.slice(0, 4).forEach((task, index) => {
+    compact.push({
+      ...task,
+      id: `skill-${task.id}`,
+      group: "本周能力补强",
+      estimate: task.estimate === "4 weeks" ? "2 h" : task.estimate,
+      title: task.title,
+    });
+    if (index < 3) {
+      compact.push({
+        ...task,
+        id: `output-${task.id}`,
+        group: "本周产出目标",
+        title: `产出物：${task.output}`,
+        estimate: "1-2 h",
+        doneCriteria: "能放进素材库、README、课程汇报或申请素材。",
+      });
+    }
+  });
+
+  return Array.from(new Map(compact.map((task) => [task.id, task])).values()).slice(0, 12);
+}
+
+function TaskCard({ task, completed, onToggleDone }) {
+  return (
+    <article className={completed ? "task-card glass-panel completed" : "task-card glass-panel"}>
+      <div className="task-card-top">
+        <span>{task.type}</span>
+        <button className={completed ? "action active" : "action"} onClick={onToggleDone} type="button">
+          <CheckCircle2 size={15} />
+          {completed ? "已完成" : "标记完成"}
+        </button>
+      </div>
+      <h4>{task.title}</h4>
+      <p>{task.sourceArticle}</p>
+      <div className="paper-grid">
+        <InfoBlock label="预计时间" value={task.estimate} />
+        <InfoBlock label="难度" value={task.difficulty} />
+        <InfoBlock label="关联技能" value={(task.skills ?? []).join("、") || "AI 阅读与表达"} />
+        <InfoBlock label="为什么做" value={task.why} />
+        <InfoBlock label="完成标准" value={task.doneCriteria} />
+        <InfoBlock label="最终产出物" value={task.output} />
+      </div>
+    </article>
+  );
+}
+
+function EmptyState({ text }) {
+  return (
+    <div className="empty-state glass-panel">
+      <Star size={22} />
+      <strong>没有匹配内容</strong>
+      <span>{text}</span>
+    </div>
   );
 }
 
@@ -583,6 +1518,100 @@ function SkillPanel() {
       </div>
     </section>
   );
+}
+
+function ContextRail({ activeNav, articles: railArticles, favorites, selectedLearningTasks, completedTaskIds }) {
+  if (activeNav === "论文雷达") {
+    const papers = railArticles.filter(isPaperArticle).sort((left, right) => paperPriorityScore(right) - paperPriorityScore(left));
+    const reproducible = papers.filter((article) => getPaperInsight(article).hasCode);
+    const applicationReady = papers.filter((article) => getPaperInsight(article).applicationScore >= 80);
+    return (
+      <>
+        <SimplePanel icon={BookOpen} title="本周论文阅读漏斗" items={[`待扫读 ${papers.length} 篇`, `建议精读 ${papers.filter((item) => paperPriorityScore(item) >= 82).length} 篇`, `可复现 ${reproducible.length} 篇`]} />
+        <SimplePanel icon={Target} title="推荐精读方向" items={topTopics(papers).map((item) => `${item.topic} · ${item.count} 篇`)} />
+        <SimplePanel icon={Archive} title="申请素材论文" items={applicationReady.slice(0, 4).map((item) => item.title)} />
+        <SimplePanel icon={Code2} title="可复现论文" items={reproducible.slice(0, 4).map((item) => item.title)} />
+      </>
+    );
+  }
+
+  if (activeNav === "学习计划") {
+    const totalTasks = buildStudentPlanTasks(railArticles).length;
+    const completed = Array.from(completedTaskIds).length;
+    return (
+      <>
+        <SimplePanel icon={Target} title="本周目标" items={["完成 1 篇论文阅读卡", "做 1 个项目 idea", "整理 1 张产品分析卡", "沉淀 1 条申请素材"]} />
+        <SimplePanel icon={Gauge} title="能力短板" items={topTopics(railArticles).map((item) => `${item.topic} 需要补强`)} />
+        <SimplePanel icon={FolderOpen} title="产出物清单" items={["论文阅读卡", "项目 README", "产品分析卡", "申请素材段落"]} />
+        <SimplePanel icon={CheckCircle2} title="完成进度" items={[`已完成 ${completed}/${totalTasks}`, `已加入计划 ${selectedLearningTasks.size} 项`, `收藏可转任务 ${favorites.size} 条`]} />
+      </>
+    );
+  }
+
+  if (activeNav === "项目实验室") {
+    return (
+      <>
+        <SimplePanel icon={Code2} title="适合今天动手" items={railArticles.slice(0, 4).map((item) => item.projectTask)} />
+        <SimplePanel icon={Target} title="项目产出方向" items={["课程作业", "竞赛 demo", "简历项目", "申请项目经历"]} />
+        <SkillPanel />
+      </>
+    );
+  }
+
+  if (activeNav === "产品观察") {
+    return (
+      <>
+        <SimplePanel icon={Layers3} title="产品拆解角度" items={["目标用户", "核心痛点", "AI 能力链路", "竞品与可模仿功能"]} />
+        <SimplePanel icon={Sparkles} title="今日可模仿功能" items={railArticles.slice(0, 4).map((item) => item.productInsight)} />
+        <MaterialPanel />
+      </>
+    );
+  }
+
+  if (activeNav === "我的素材库") {
+    return (
+      <>
+        <SimplePanel icon={Archive} title="素材整理建议" items={["研究计划素材优先写背景和个人兴趣", "项目灵感优先补输入输出", "产品案例优先补用户痛点"]} />
+        <SimplePanel icon={FolderOpen} title="用途分类" items={materialPurposes} />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <TrendPanel />
+      <ReadingPanel />
+      <MaterialPanel />
+      <SkillPanel />
+    </>
+  );
+}
+
+function SimplePanel({ icon: Icon, title, items }) {
+  const normalizedItems = items?.filter(Boolean).slice(0, 5) ?? [];
+  return (
+    <section className="side-panel glass-panel">
+      <div className="panel-heading">
+        <Icon size={18} />
+        <h3>{title}</h3>
+      </div>
+      <ol className="reading-list">
+        {normalizedItems.length ? normalizedItems.map((item) => <li key={item}>{item}</li>) : <li>等待更多数据后生成建议</li>}
+      </ol>
+    </section>
+  );
+}
+
+function topTopics(items) {
+  const counts = items.reduce((acc, item) => {
+    const topic = item.topic || item.category || "AI";
+    acc[topic] = (acc[topic] ?? 0) + 1;
+    return acc;
+  }, {});
+  return Object.entries(counts)
+    .map(([topic, count]) => ({ topic, count }))
+    .sort((left, right) => right.count - left.count)
+    .slice(0, 4);
 }
 
 function buildFallbackBrief(visibleArticles) {
@@ -733,7 +1762,7 @@ function DailySummary({ visibleArticles, favorites, onExport, dailyBrief }) {
 
 function buildMarkdown(items, favorites, activeNav, dailyBrief) {
   const date = getBeijingDisplayDate();
-  const reportTitle = activeNav === "今日精选" ? "今日精选 · 最近24小时 AI 情报 Top10" : `AI Student Radar ${activeNav}`;
+  const reportTitle = activeNav === "今日必读" ? "今日必读 · 最近24小时 AI 情报 Top10" : `AI Student Radar ${activeNav}`;
   const brief = dailyBrief?.headline ? dailyBrief : buildFallbackBrief(items);
   const lines = [
     `# ${reportTitle} · ${date}`,
@@ -759,7 +1788,7 @@ function buildMarkdown(items, favorites, activeNav, dailyBrief) {
       `- 评分：可信度 ${item.credibility}，热度 ${item.heat}，相关度 ${item.relevance}`,
       `- 摘要：${item.summary}`,
       `- 推荐理由：${item.why}`,
-      `- 行动建议：${item.project}`,
+      `- 行动建议：${item.nextAction || item.project}`,
       `- 知识点：${item.knowledge.join("、")}`,
     );
   });
@@ -768,12 +1797,15 @@ function buildMarkdown(items, favorites, activeNav, dailyBrief) {
 }
 
 export default function App() {
-  const [activeNav, setActiveNav] = useState("今日精选");
+  const [activeNav, setActiveNav] = useState("今日必读");
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("全部");
   const [favorites, setFavorites] = useState(() => loadFavoriteIds());
+  const [selectedLearningTasks, setSelectedLearningTasks] = useState(() => loadStoredStringSet(selectedLearningTasksStorageKey));
+  const [completedTaskIds, setCompletedTaskIds] = useState(() => loadStoredStringSet(completedTaskIdsStorageKey));
+  const [materialPurposesById, setMaterialPurposesById] = useState(() => loadStoredObject(materialPurposesStorageKey));
   const [refreshCount, setRefreshCount] = useState(0);
-  const [feedArticles, setFeedArticles] = useState(articles);
+  const [feedArticles, setFeedArticles] = useState(() => articles.map(hydrateFeedArticle));
   const [newsMeta, setNewsMeta] = useState(null);
   const [dailyBrief, setDailyBrief] = useState(null);
   const [clusters, setClusters] = useState([]);
@@ -793,7 +1825,7 @@ export default function App() {
         }
       } catch (error) {
         if (!cancelled) {
-          setFeedArticles(articles);
+          setFeedArticles(articles.map(hydrateFeedArticle));
           setNewsMeta(null);
           setDailyBrief(null);
           setClusters([]);
@@ -820,37 +1852,66 @@ export default function App() {
     }
   }, [favorites]);
 
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(selectedLearningTasksStorageKey, JSON.stringify(Array.from(selectedLearningTasks)));
+    } catch {
+      // ignore localStorage errors
+    }
+  }, [selectedLearningTasks]);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(completedTaskIdsStorageKey, JSON.stringify(Array.from(completedTaskIds)));
+    } catch {
+      // ignore localStorage errors
+    }
+  }, [completedTaskIds]);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(materialPurposesStorageKey, JSON.stringify(materialPurposesById));
+    } catch {
+      // ignore localStorage errors
+    }
+  }, [materialPurposesById]);
+
+  const filteredRecentArticles = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    return feedArticles
+      .filter((article) => isWithinDays(article.publishedAt, 3))
+      .filter((article) => matchesCategory(article, category) && matchesSearch(article, normalizedQuery));
+  }, [category, feedArticles, query]);
+
+  const todayArticles = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    const candidates = feedArticles
+      .filter((article) => isWithinHours(article.publishedAt, 24))
+      .filter((article) => article.category !== "融资动态" && article.topic !== "融资动态")
+      .filter((article) => matchesCategory(article, category) && matchesSearch(article, normalizedQuery))
+      .sort(sortByScoreAndTime);
+    return applyTopQuotas(candidates).slice(0, 10);
+  }, [category, feedArticles, query]);
+
   const visibleArticles = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
-    const isTodaySelection = activeNav === "今日精选";
-    const windowedArticles = feedArticles.filter((article) =>
-      isTodaySelection ? isWithinHours(article.publishedAt, 24) : isWithinDays(article.publishedAt, 3),
-    );
-
-    const filteredArticles = windowedArticles.filter((article) => {
-      const categoryMatch = category === "全部" || article.category === category;
-      const navMatch =
-        isTodaySelection ||
-        activeNav === "学习计划" ||
-        (activeNav === "我的收藏" && favorites.has(article.id)) ||
-        (activeNav === "论文雷达" && article.actions.includes("读论文")) ||
-        (activeNav === "机器人/具身智能" &&
-          ["机器人", "具身智能", "机器人/具身智能"].includes(article.category)) ||
-        (activeNav === "AI产品" && article.category === "AI产品") ||
-        (activeNav === "开源项目" && article.actions.includes("看代码"));
-
-      const queryMatch =
-        !normalizedQuery ||
-        [article.title, article.source, article.category, article.summary]
-          .join(" ")
-          .toLowerCase()
-          .includes(normalizedQuery);
-
-      return categoryMatch && navMatch && queryMatch;
-    });
-
-    return isTodaySelection ? applyTopQuotas(filteredArticles.sort(sortByScoreAndTime)) : filteredArticles;
-  }, [activeNav, category, favorites, feedArticles, query]);
+    if (activeNav === "今日必读") {
+      return todayArticles;
+    }
+    if (activeNav === "论文雷达") {
+      return filteredRecentArticles.filter(isPaperArticle);
+    }
+    if (activeNav === "项目实验室") {
+      return filteredRecentArticles.filter((article) => ["open_source", "tool"].includes(article.contentType) || article.actions.includes("看代码"));
+    }
+    if (activeNav === "产品观察") {
+      return filteredRecentArticles.filter((article) => article.contentType === "product" || article.topic === "AI产品");
+    }
+    if (activeNav === "我的素材库") {
+      return feedArticles.filter((article) => favorites.has(article.id) && matchesCategory(article, category) && matchesSearch(article, normalizedQuery));
+    }
+    return filteredRecentArticles;
+  }, [activeNav, category, favorites, feedArticles, filteredRecentArticles, query, todayArticles]);
 
   function toggleFavorite(id) {
     const favoriteId = normalizeFavoriteId(id);
@@ -866,6 +1927,39 @@ export default function App() {
       }
       return next;
     });
+  }
+
+  function toggleLearningTask(taskId) {
+    setSelectedLearningTasks((current) => {
+      const next = new Set(current);
+      const normalizedId = String(taskId);
+      if (next.has(normalizedId)) {
+        next.delete(normalizedId);
+      } else {
+        next.add(normalizedId);
+      }
+      return next;
+    });
+  }
+
+  function toggleTaskDone(taskId) {
+    setCompletedTaskIds((current) => {
+      const next = new Set(current);
+      const normalizedId = String(taskId);
+      if (next.has(normalizedId)) {
+        next.delete(normalizedId);
+      } else {
+        next.add(normalizedId);
+      }
+      return next;
+    });
+  }
+
+  function setMaterialPurpose(articleId, purpose) {
+    setMaterialPurposesById((current) => ({
+      ...current,
+      [articleId]: materialPurposes.includes(purpose) ? purpose : "暂存",
+    }));
   }
 
   function exportMarkdown() {
@@ -891,6 +1985,43 @@ export default function App() {
       console.info("Refresh kept current dashboard data:", error);
     }
   }
+
+  const pageCopy = {
+    今日必读: {
+      label: "最近24小时 Top 10",
+      title: "今天最值得学生看的 AI 内容",
+      cluster: true,
+    },
+    论文雷达: {
+      label: "论文决策工具",
+      title: "判断哪些论文值得精读、复现和写进申请",
+      cluster: false,
+    },
+    项目实验室: {
+      label: "项目实验室",
+      title: "把开源、工具和可复现论文转成小实验",
+      cluster: false,
+    },
+    产品观察: {
+      label: "产品分析卡",
+      title: "从 AI 产品动态里训练 PM 视角",
+      cluster: false,
+    },
+    我的素材库: {
+      label: "收藏素材库",
+      title: "按用途整理研究、项目、产品和英文阅读素材",
+      cluster: false,
+    },
+    学习计划: {
+      label: "任务规划",
+      title: "把情报转成今天和本周的行动清单",
+      cluster: false,
+    },
+  }[activeNav] ?? {
+    label: activeNav,
+    title: "从信息流转成学习和申请素材",
+    cluster: false,
+  };
 
   return (
     <main className="app-shell">
@@ -925,55 +2056,105 @@ export default function App() {
               <div>
                 <div className="section-label">
                   <Flame size={17} />
-                  最近24小时 Top 10
+                  {pageCopy.label}
                 </div>
-                <h2>从信息流转成学习和申请素材</h2>
+                <h2>{pageCopy.title}</h2>
               </div>
-              <button className="ghost-button" onClick={() => setClusterOpen(true)} type="button">
-                查看聚类
-                <ChevronRight size={16} />
-              </button>
+              {pageCopy.cluster ? (
+                <button className="ghost-button" onClick={() => setClusterOpen(true)} type="button">
+                  查看聚类
+                  <ChevronRight size={16} />
+                </button>
+              ) : null}
             </div>
 
             <CategoryTabs selected={category} setSelected={setCategory} />
 
-            <div className="article-list">
-              {visibleArticles.map((article) => (
-                <ArticleCard
-                  article={article}
-                  favorite={favorites.has(article.id)}
-                  key={article.id}
-                  onToggleFavorite={() => toggleFavorite(article.id)}
-                />
-              ))}
-              {visibleArticles.length === 0 ? (
-                <div className="empty-state glass-panel">
-                  <Star size={22} />
-                  <strong>没有匹配情报</strong>
-                  <span>
-                    {activeNav === "今日精选"
-                      ? "最近24小时暂无新情报，可等待下一次自动采集或手动刷新。"
-                      : activeNav === "我的收藏"
-                        ? "还没有收藏内容，点击资讯卡片里的收藏按钮即可加入。"
-                      : "换一个关键词或分类试试。"}
-                  </span>
-                </div>
-              ) : null}
-            </div>
+            {activeNav === "今日必读" ? (
+              <div className="article-list">
+                {visibleArticles.map((article) => (
+                  <ArticleCard
+                    article={article}
+                    favorite={favorites.has(article.id)}
+                    key={article.id}
+                    learningTaskSelected={selectedLearningTasks.has(getPrimaryLearningTask(article).id)}
+                    onToggleFavorite={() => toggleFavorite(article.id)}
+                    onToggleLearningTask={toggleLearningTask}
+                  />
+                ))}
+                {visibleArticles.length === 0 ? (
+                  <EmptyState text="最近24小时暂无新情报，可等待下一次自动采集或手动刷新。" />
+                ) : null}
+              </div>
+            ) : null}
 
-            <DailySummary
-              dailyBrief={dailyBrief}
-              favorites={favorites}
-              visibleArticles={visibleArticles}
-              onExport={exportMarkdown}
-            />
+            {activeNav === "论文雷达" ? (
+              <PaperRadar
+                articles={filteredRecentArticles}
+                favorites={favorites}
+                selectedLearningTasks={selectedLearningTasks}
+                onToggleFavorite={toggleFavorite}
+                onToggleLearningTask={toggleLearningTask}
+              />
+            ) : null}
+
+            {activeNav === "项目实验室" ? (
+              <ProjectLab
+                articles={filteredRecentArticles}
+                favorites={favorites}
+                selectedLearningTasks={selectedLearningTasks}
+                onToggleFavorite={toggleFavorite}
+                onToggleLearningTask={toggleLearningTask}
+              />
+            ) : null}
+
+            {activeNav === "产品观察" ? (
+              <ProductObservation
+                articles={filteredRecentArticles}
+                favorites={favorites}
+                selectedLearningTasks={selectedLearningTasks}
+                onToggleFavorite={toggleFavorite}
+                onToggleLearningTask={toggleLearningTask}
+              />
+            ) : null}
+
+            {activeNav === "我的素材库" ? (
+              <MaterialLibrary
+                articles={visibleArticles}
+                favorites={favorites}
+                materialPurposesById={materialPurposesById}
+                onSetMaterialPurpose={setMaterialPurpose}
+              />
+            ) : null}
+
+            {activeNav === "学习计划" ? (
+              <LearningPlan
+                completedTaskIds={completedTaskIds}
+                favorites={favorites}
+                selectedLearningTasks={selectedLearningTasks}
+                sourceArticles={filteredRecentArticles.length ? filteredRecentArticles : feedArticles}
+                onToggleTaskDone={toggleTaskDone}
+              />
+            ) : null}
+
+            {activeNav !== "学习计划" ? (
+              <DailySummary
+                dailyBrief={dailyBrief}
+                favorites={favorites}
+                visibleArticles={visibleArticles}
+                onExport={exportMarkdown}
+              />
+            ) : null}
           </section>
 
           <aside className="right-rail">
-            <TrendPanel />
-            <ReadingPanel />
-            <MaterialPanel />
-            <SkillPanel />
+            <ContextRail
+              activeNav={activeNav}
+              articles={visibleArticles.length ? visibleArticles : filteredRecentArticles}
+              completedTaskIds={completedTaskIds}
+              favorites={favorites}
+              selectedLearningTasks={selectedLearningTasks}
+            />
           </aside>
         </div>
       </section>

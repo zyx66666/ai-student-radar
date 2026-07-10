@@ -498,6 +498,66 @@ button {
   font-weight: 700;
 }
 
+.student-fields,
+.paper-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.student-fields div,
+.info-block {
+  min-width: 0;
+  padding: 10px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.46);
+}
+
+.student-fields span,
+.info-block span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 720;
+}
+
+.student-fields strong,
+.info-block strong {
+  display: block;
+  margin-top: 5px;
+  color: #24484f;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.save-as-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  margin-top: 11px;
+}
+
+.save-as-row span,
+.save-as-row em {
+  font-size: 12px;
+  font-style: normal;
+}
+
+.save-as-row span {
+  color: var(--muted);
+  font-weight: 760;
+}
+
+.save-as-row em {
+  padding: 6px 9px;
+  border-radius: 13px;
+  color: #25565d;
+  background: rgba(255, 255, 255, 0.5);
+  font-weight: 740;
+}
+
 .article-side {
   display: grid;
   align-content: space-between;
@@ -594,6 +654,237 @@ button {
 .action.active {
   color: white;
   background: linear-gradient(135deg, #e36d60, #d4923d);
+}
+
+.action.learning.active {
+  background: linear-gradient(135deg, #139fab, #39ad85);
+}
+
+.tool-page,
+.learning-page,
+.material-library {
+  display: grid;
+  gap: 14px;
+}
+
+.metric-strip {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.metric-card {
+  display: grid;
+  gap: 5px;
+  min-height: 82px;
+  align-content: center;
+  padding: 13px;
+  border-radius: 22px;
+  text-align: center;
+}
+
+.metric-card strong {
+  color: #0b8792;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.metric-card span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.inner-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.inner-tabs button {
+  min-height: 36px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.5);
+  color: #486168;
+  font-size: 13px;
+  font-weight: 720;
+  white-space: nowrap;
+}
+
+.inner-tabs button.selected {
+  color: white;
+  background: linear-gradient(135deg, #214f5a, #148996);
+}
+
+.paper-card,
+.transform-card,
+.task-card,
+.material-bucket,
+.learning-progress {
+  border-radius: 28px;
+  padding: 16px;
+}
+
+.paper-card-heading,
+.learning-progress,
+.bucket-heading,
+.task-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.paper-card h2,
+.transform-card h2 {
+  margin: 8px 0 0;
+  font-size: 19px;
+  line-height: 1.35;
+}
+
+.compact-score {
+  min-width: 126px;
+}
+
+.paper-actions {
+  justify-content: flex-start;
+  margin-top: 14px;
+}
+
+.card-lab-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.transform-card {
+  display: grid;
+  gap: 12px;
+}
+
+.material-library {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.bucket-heading h3 {
+  margin: 0;
+  color: #195e67;
+  font-size: 16px;
+}
+
+.bucket-heading span {
+  display: grid;
+  place-items: center;
+  min-width: 28px;
+  height: 28px;
+  border-radius: 99px;
+  color: white;
+  background: linear-gradient(135deg, #139fab, #39ad85);
+  font-weight: 800;
+}
+
+.bucket-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.bucket-item {
+  display: grid;
+  gap: 8px;
+  padding: 11px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.46);
+}
+
+.bucket-item strong {
+  color: #24484f;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.bucket-item p {
+  margin: 0;
+  color: #4a646a;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.bucket-item select {
+  min-height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.62);
+  color: #24484f;
+  padding: 0 9px;
+}
+
+.bucket-empty {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.learning-progress h2 {
+  margin: 7px 0 0;
+  font-size: 22px;
+}
+
+.learning-progress strong {
+  color: #0b8792;
+  font-size: 34px;
+}
+
+.learning-progress > span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.task-section h3 {
+  margin: 4px 0 10px;
+  color: #195e67;
+  font-size: 18px;
+}
+
+.task-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.task-card {
+  display: grid;
+  gap: 11px;
+}
+
+.task-card.completed {
+  opacity: 0.78;
+}
+
+.task-card-top > span {
+  padding: 6px 9px;
+  border-radius: 13px;
+  color: #25565d;
+  background: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  font-weight: 740;
+}
+
+.task-card h4 {
+  margin: 0;
+  color: #17353c;
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.task-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .right-rail {
@@ -930,8 +1221,18 @@ button {
   }
 
   .daily-summary,
-  .summary-actions {
+  .summary-actions,
+  .metric-strip,
+  .card-lab-grid,
+  .material-library,
+  .task-grid {
     grid-template-columns: 1fr;
+  }
+
+  .paper-card-heading,
+  .learning-progress {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
 
@@ -972,7 +1273,9 @@ button {
   }
 
   .score-grid,
-  .material-grid {
+  .material-grid,
+  .student-fields,
+  .paper-grid {
     grid-template-columns: 1fr;
   }
 
