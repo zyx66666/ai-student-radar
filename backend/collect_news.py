@@ -217,6 +217,18 @@ def parse_date(value: str | None) -> str:
         return dt.datetime.now(UTC).isoformat()
 
 
+def parse_datetime(value: str | None) -> dt.datetime | None:
+    if not value:
+        return None
+    try:
+        parsed = dt.datetime.fromisoformat(clean_text(value).replace("Z", "+00:00"))
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=UTC)
+        return parsed.astimezone(UTC)
+    except Exception:
+        return None
+
+
 def infer_tags_and_category(title: str, summary: str, source: Source) -> tuple[str, list[str]]:
     text = f"{title} {summary}".casefold()
     tags = list(source.tags)
@@ -799,8 +811,10 @@ def enrich_missing_analysis(conn: sqlite3.Connection, api_key: str | None, model
     return updated
 
 
-def export_json(conn: sqlite3.Connection, path: Path, limit: int) -> int:
+def export_json(conn: sqlite3.Connection, path: Path, limit: int, export_days: int) -> int:
     path.parent.mkdir(parents=True, exist_ok=True)
+    cutoff = dt.datetime.now(UTC) - dt.timedelta(days=max(1, export_days))
+    cutoff_iso = cutoff.isoformat()
     rows = conn.execute(
         """
         SELECT
@@ -810,13 +824,20 @@ def export_json(conn: sqlite3.Connection, path: Path, limit: int) -> int:
             actionability_score, spam_score, final_score, analysis_provider,
             is_favorite, created_at
         FROM articles
+        WHERE
+            published_at >= ?
+            OR published_at IS NULL
+            OR published_at = ''
+            OR created_at >= ?
         ORDER BY final_score DESC, published_at DESC, id DESC
-        LIMIT ?
         """,
-        (limit,),
+        (cutoff_iso, cutoff_iso),
     ).fetchall()
     payload = []
     for row in rows:
+        article_time = parse_datetime(row[4]) or parse_datetime(row[22])
+        if article_time is None or article_time < cutoff:
+            continue
         tags = json.loads(row[7] or "[]")
         payload.append(
             {
@@ -845,6 +866,8 @@ def export_json(conn: sqlite3.Connection, path: Path, limit: int) -> int:
                 "created_at": row[22],
             }
         )
+        if len(payload) >= limit:
+            break
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     return len(payload)
 
@@ -895,6 +918,7 @@ def main() -> int:
     parser.add_argument("--json", type=Path, default=JSON_PATH, help="Exported news.json path")
     parser.add_argument("--limit-per-source", type=int, default=12, help="Max items to ingest per source")
     parser.add_argument("--export-limit", type=int, default=60, help="Max items in public JSON")
+    parser.add_argument("--export-days", type=int, default=3, help="Only export articles from the last N days to public JSON")
     parser.add_argument("--llm-limit", type=int, default=40, help="Max articles to analyze with LLM when OPENAI_API_KEY is set; use 0 for all")
     parser.add_argument("--reanalyze-all", action="store_true", help="Recompute analysis fields for existing database rows")
     args = parser.parse_args()
@@ -906,7 +930,7 @@ def main() -> int:
     incoming, llm_used = enrich_with_llm(incoming, api_key, model, args.llm_limit)
     inserted, skipped = save_articles(conn, incoming)
     enriched_existing = enrich_missing_analysis(conn, api_key, model, args.llm_limit, args.reanalyze_all)
-    exported = export_json(conn, args.json, args.export_limit)
+    exported = export_json(conn, args.json, args.export_limit, args.export_days)
     provider = f"openai:{model}" if api_key else "local_rules"
     print(f"[done] provider={provider} collected={len(incoming)} inserted={inserted} skipped={skipped} llm_used={llm_used} enriched_existing={enriched_existing} exported={exported}")
     print(f"[db] {args.db}")

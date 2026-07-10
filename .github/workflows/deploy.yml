@@ -5,8 +5,8 @@ on:
     branches:
       - main
   schedule:
-    # 00:00 UTC = 08:00 Asia/Shanghai
-    - cron: "0 0 * * *"
+    # 00:00 / 04:00 / 10:00 UTC = 08:00 / 12:00 / 18:00 Asia/Shanghai
+    - cron: "0 0,4,10 * * *"
   workflow_dispatch:
 
 permissions:
@@ -40,7 +40,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           AI_RADAR_MODEL: ${{ vars.AI_RADAR_MODEL }}
         run: |
-          python backend/collect_news.py --limit-per-source 12 --export-limit 60
+          python backend/collect_news.py --limit-per-source 12 --export-limit 60 --export-days 3
 
       - name: Commit updated data
         if: github.event_name != 'push'

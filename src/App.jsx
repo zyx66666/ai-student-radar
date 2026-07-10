@@ -98,6 +98,32 @@ async function fetchNewsArticles(cacheBust = false) {
   return payload.map(hydrateFeedArticle);
 }
 
+function parseArticleTime(value) {
+  const timestamp = Date.parse(value);
+  return Number.isNaN(timestamp) ? null : timestamp;
+}
+
+function isWithinHours(publishedAt, hours) {
+  const timestamp = parseArticleTime(publishedAt);
+  if (timestamp === null) {
+    return false;
+  }
+  const now = Date.now();
+  return timestamp <= now + 5 * 60 * 1000 && now - timestamp <= hours * 60 * 60 * 1000;
+}
+
+function isWithinDays(publishedAt, days) {
+  return isWithinHours(publishedAt, days * 24);
+}
+
+function sortByScoreAndTime(left, right) {
+  const scoreDelta = (right.finalScore ?? right.relevance ?? 0) - (left.finalScore ?? left.relevance ?? 0);
+  if (scoreDelta !== 0) {
+    return scoreDelta;
+  }
+  return (parseArticleTime(right.publishedAt) ?? 0) - (parseArticleTime(left.publishedAt) ?? 0);
+}
+
 function formatFeedTime(value) {
   if (!value) {
     return "刚刚";
@@ -137,6 +163,7 @@ function hydrateFeedArticle(article, index) {
     id: article.id ?? index + 1,
     title: article.title,
     source: article.source ?? "AI Radar",
+    publishedAt: article.published_at,
     time: formatFeedTime(article.published_at),
     category: article.category ?? "AI新闻",
     finalScore: score,
@@ -237,7 +264,7 @@ function TopBar({ query, setQuery, refreshCount, onRefresh }) {
         <span>采集 126</span>
         <span>过滤 54</span>
         <span>保留 72</span>
-        <span>每日北京时间 08:00 自动采集</span>
+        <span>每日北京时间 08:00 / 12:00 / 18:00 自动采集</span>
       </div>
 
       <button className="icon-button primary" onClick={onRefresh} type="button">
@@ -442,10 +469,11 @@ function DailySummary({ visibleArticles, favorites, onExport }) {
   );
 }
 
-function buildMarkdown(items, favorites) {
+function buildMarkdown(items, favorites, activeNav) {
   const date = getBeijingDisplayDate();
+  const reportTitle = activeNav === "今日精选" ? "最近24小时 AI 情报 Top10" : `AI Student Radar ${activeNav}`;
   const lines = [
-    `# AI Student Radar 日报 ${date}`,
+    `# ${reportTitle} ${date}`,
     "",
     "## 今日主线",
     "具身智能、多模态 Agent、机器人仿真和 Agent 安全是今天最值得追踪的方向。",
@@ -504,11 +532,15 @@ export default function App() {
 
   const visibleArticles = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
+    const isTodaySelection = activeNav === "今日精选";
+    const windowedArticles = feedArticles.filter((article) =>
+      isTodaySelection ? isWithinHours(article.publishedAt, 24) : isWithinDays(article.publishedAt, 3),
+    );
 
-    return feedArticles.filter((article) => {
+    const filteredArticles = windowedArticles.filter((article) => {
       const categoryMatch = category === "全部" || article.category === category;
       const navMatch =
-        activeNav === "今日精选" ||
+        isTodaySelection ||
         activeNav === "学习计划" ||
         (activeNav === "我的收藏" && favorites.has(article.id)) ||
         (activeNav === "论文雷达" && article.actions.includes("读论文")) ||
@@ -526,6 +558,8 @@ export default function App() {
 
       return categoryMatch && navMatch && queryMatch;
     });
+
+    return isTodaySelection ? filteredArticles.sort(sortByScoreAndTime).slice(0, 10) : filteredArticles;
   }, [activeNav, category, favorites, feedArticles, query]);
 
   function toggleFavorite(id) {
@@ -541,7 +575,7 @@ export default function App() {
   }
 
   function exportMarkdown() {
-    const markdown = buildMarkdown(visibleArticles, favorites);
+    const markdown = buildMarkdown(visibleArticles, favorites, activeNav);
     const blob = new Blob([markdown], { type: "text/markdown;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -592,7 +626,7 @@ export default function App() {
               <div>
                 <div className="section-label">
                   <Flame size={17} />
-                  今日 Top 10
+                  最近24小时 Top 10
                 </div>
                 <h2>从信息流转成学习和申请素材</h2>
               </div>
@@ -617,7 +651,11 @@ export default function App() {
                 <div className="empty-state glass-panel">
                   <Star size={22} />
                   <strong>没有匹配情报</strong>
-                  <span>换一个关键词或分类试试。</span>
+                  <span>
+                    {activeNav === "今日精选"
+                      ? "最近24小时暂无新情报，可等待下一次自动采集或手动刷新。"
+                      : "换一个关键词或分类试试。"}
+                  </span>
                 </div>
               ) : null}
             </div>

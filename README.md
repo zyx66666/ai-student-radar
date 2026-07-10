@@ -7,7 +7,7 @@
 - 今日 Top 情报卡片：来源、时间、分类、可信度、热度、相关度、摘要和行动建议。
 - 学生视角沉淀：为什么值得看、涉及知识点、可做小项目、申请素材。
 - 筛选与搜索：按机器人、具身智能、AI Agent、多模态、AI 产品、AI 安全、开源项目筛选。
-- 本地交互：收藏、刷新状态、导出 Markdown 日报。
+- 本地交互：收藏、重新读取已部署数据、导出 Markdown 日报。
 - 响应式 UI：桌面三栏看板，移动端纵向信息流。
 
 ## 本地开发
@@ -54,6 +54,14 @@ public/data/news.json
 
 AI HOT 使用公开 REST API，按其 skill 要求携带 `aihot-skill` User-Agent，不需要 API Key 或 MCP server。
 
+### 前端刷新窗口
+
+- 系统每天北京时间 08:00 / 12:00 / 18:00 自动采集并部署新的 `news.json`。
+- “今日精选”实际含义是“最近24小时 Top10”，不是自然日当天 00:00 到现在。
+- 论文雷达、机器人/具身智能、AI 产品、开源项目、学习计划和我的收藏默认展示最近3天资讯。
+- 页面刷新按钮只会重新读取已部署的 `news.json`，不会实时采集全网新闻。
+- 如需真正实时采集，后续需要 Serverless API 或后端服务触发 GitHub Actions / 运行采集任务。
+
 常用采集参数：
 
 ```bash
@@ -89,7 +97,7 @@ final_score = 相关度 35% + 来源可信度 20% + 新颖性 15% + 热度 15% +
 本项目已配置 GitHub Actions：
 
 - push 到 `main`：自动 build 并部署到 GitHub Pages。
-- 每天北京时间 08:00：自动采集新闻、更新 `backend/data/news.sqlite`、导出 `public/data/news.json`、build 并部署。
+- 每天北京时间 08:00 / 12:00 / 18:00：自动采集新闻、更新 `backend/data/news.sqlite`、导出最近3天的 `public/data/news.json`、build 并部署。
 - `workflow_dispatch`：可在 GitHub Actions 页面手动触发一次数据更新和部署。
 
 部署 workflow 位于：
