@@ -354,6 +354,122 @@ def suggest_action(category: str, tags: list[str]) -> str:
     return "收藏并写 3 条要点：它解决什么问题、需要哪些知识、能做什么小项目。"
 
 
+def estimate_difficulty(category: str, tags: list[str]) -> str:
+    if category == "论文" or "论文" in tags:
+        return "进阶"
+    if category in ("机器人/具身智能", "AI芯片", "AI安全"):
+        return "中高"
+    if category in ("AI产品", "融资动态"):
+        return "入门"
+    return "中等"
+
+
+def estimate_read_time(summary: str) -> str:
+    length = len(clean_text(summary))
+    if length >= 520:
+        return "5 min"
+    if length >= 260:
+        return "3 min"
+    return "2 min"
+
+
+def build_research_value(category: str, tags: list[str]) -> str:
+    if category == "论文" or "论文" in tags:
+        return "可转化为论文阅读笔记，重点拆研究问题、方法、数据集、结果和局限。"
+    if category == "机器人/具身智能":
+        return "适合沉淀到机器人方向科研计划，关注 VLA、控制、仿真和真实数据闭环。"
+    if category in ("多模态", "AI Agent", "AI安全"):
+        return "可作为研究生申请素材，提炼问题定义、评价指标和可复现实验。"
+    return "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。"
+
+
+def build_pm_value(category: str, tags: list[str]) -> str:
+    if category in ("AI产品", "AI Agent", "融资动态"):
+        return "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。"
+    if "开源项目" in tags:
+        return "适合分析开源项目的用户场景、上手门槛、社区活跃度和产品化机会。"
+    return "可提炼为趋势观察，判断技术变化如何影响产品机会。"
+
+
+def enrich_public_fields(article: dict) -> dict:
+    tags = article.get("tags") or []
+    category = normalize_category(article.get("category"))
+    tldr = clean_text(article.get("one_sentence_summary") or article.get("summary"))[:180]
+    why_it_matters = clean_text(article.get("importance")) or f"它和{category}相关，值得作为今日 AI 情报追踪。"
+    next_action = clean_text(article.get("action_suggestion")) or suggest_action(category, tags)
+    return {
+        "tldr": tldr,
+        "why_it_matters": why_it_matters,
+        "student_value": clean_text(article.get("audience")) or "AI/机器人方向学生可用作学习、科研申请或产品分析素材。",
+        "research_value": build_research_value(category, tags),
+        "pm_value": build_pm_value(category, tags),
+        "difficulty": article.get("difficulty") or estimate_difficulty(category, tags),
+        "read_time": article.get("read_time") or estimate_read_time(article.get("summary") or ""),
+        "next_action": next_action,
+    }
+
+
+def build_clusters(articles: list[dict]) -> list[dict]:
+    buckets: dict[str, list[dict]] = {}
+    for article in articles:
+        category = normalize_category(article.get("category"))
+        tags = article.get("tags") or []
+        if category == "论文" and ("机器人" in tags or "具身智能" in tags):
+            topic = "机器人论文与具身智能"
+        elif category == "论文":
+            topic = "论文研究"
+        elif category in ("机器人/具身智能", "自动驾驶"):
+            topic = "机器人/具身智能"
+        elif category in ("AI Agent", "AI产品", "开源项目"):
+            topic = "Agent 应用与 AI 产品"
+        elif category in ("AI芯片", "融资动态"):
+            topic = "产业、算力与融资"
+        else:
+            topic = category
+        buckets.setdefault(topic, []).append(article)
+
+    clusters = []
+    for topic, items in buckets.items():
+        heat = clamp_score(sum((item.get("final_score") or item.get("score") or 60) for item in items) / max(len(items), 1) + min(len(items), 8) * 2)
+        top = sorted(items, key=lambda item: item.get("final_score") or item.get("score") or 0, reverse=True)[0]
+        clusters.append(
+            {
+                "topic": topic,
+                "heat": heat,
+                "article_count": len(items),
+                "why_hot": f"{topic}在最近资讯中出现 {len(items)} 次，代表事件是《{top.get('title', '今日精选')}》。",
+                "student_action": suggest_action(normalize_category(top.get("category")), top.get("tags") or []),
+                "article_ids": [item.get("id") for item in items[:6]],
+            }
+        )
+    return sorted(clusters, key=lambda item: (item["heat"], item["article_count"]), reverse=True)[:8]
+
+
+def build_daily_brief(articles: list[dict]) -> dict:
+    if not articles:
+        return {
+            "headline": "最近暂无高价值 AI 情报",
+            "summary": "当前导出的数据窗口内没有可展示内容，可等待下一次自动采集。",
+            "student_actions": ["等待下一次自动采集", "检查数据源或手动触发 GitHub Actions"],
+        }
+    top = max(articles, key=lambda item: item.get("final_score") or item.get("score") or 0)
+    category_counts: dict[str, int] = {}
+    for article in articles:
+        category = normalize_category(article.get("category"))
+        category_counts[category] = category_counts.get(category, 0) + 1
+    leading = sorted(category_counts.items(), key=lambda item: item[1], reverse=True)[:3]
+    theme = "、".join(category for category, _count in leading)
+    return {
+        "headline": f"今日主线：{theme}值得重点追踪",
+        "summary": f"最近数据中，{theme}最活跃。最高推荐内容是《{top.get('title')}》，适合转化为学习笔记、科研计划素材或产品分析卡。",
+        "student_actions": [
+            suggest_action(normalize_category(top.get("category")), top.get("tags") or []),
+            "把最高分内容加入收藏，并补充 3 条可复现/可分析要点。",
+            "每周复盘时按主题整理成申请素材库或产品案例库。",
+        ],
+    }
+
+
 ANALYSIS_SCHEMA = {
     "type": "object",
     "additionalProperties": False,
@@ -811,7 +927,7 @@ def enrich_missing_analysis(conn: sqlite3.Connection, api_key: str | None, model
     return updated
 
 
-def export_json(conn: sqlite3.Connection, path: Path, limit: int, export_days: int) -> int:
+def export_json(conn: sqlite3.Connection, path: Path, limit: int, export_days: int, analysis_provider: str) -> int:
     path.parent.mkdir(parents=True, exist_ok=True)
     cutoff = dt.datetime.now(UTC) - dt.timedelta(days=max(1, export_days))
     cutoff_iso = cutoff.isoformat()
@@ -833,43 +949,60 @@ def export_json(conn: sqlite3.Connection, path: Path, limit: int, export_days: i
         """,
         (cutoff_iso, cutoff_iso),
     ).fetchall()
-    payload = []
+    articles = []
+    candidate_count = 0
     for row in rows:
         article_time = parse_datetime(row[4]) or parse_datetime(row[22])
         if article_time is None or article_time < cutoff:
             continue
+        candidate_count += 1
+        if len(articles) >= limit:
+            continue
         tags = json.loads(row[7] or "[]")
-        payload.append(
-            {
-                "id": row[0],
-                "title": row[1],
-                "url": row[2],
-                "source": row[3],
-                "published_at": row[4],
-                "summary": row[5],
-                "category": row[6],
-                "tags": tags,
-                "score": row[8],
-                "one_sentence_summary": row[9] or row[5],
-                "importance": row[10] or "",
-                "audience": row[11] or "",
-                "action_suggestion": row[12] or "",
-                "relevance_score": row[13] or 0,
-                "credibility_score": row[14] or 0,
-                "novelty_score": row[15] or 0,
-                "trend_score": row[16] or 0,
-                "actionability_score": row[17] or 0,
-                "spam_score": row[18] or 0,
-                "final_score": row[19] or row[8],
-                "analysis_provider": row[20] or "local_rules",
-                "is_favorite": bool(row[21]),
-                "created_at": row[22],
-            }
-        )
-        if len(payload) >= limit:
-            break
+        article = {
+            "id": row[0],
+            "title": row[1],
+            "url": row[2],
+            "source": row[3],
+            "published_at": row[4],
+            "summary": row[5],
+            "category": row[6],
+            "tags": tags,
+            "score": row[8],
+            "one_sentence_summary": row[9] or row[5],
+            "importance": row[10] or "",
+            "audience": row[11] or "",
+            "action_suggestion": row[12] or "",
+            "relevance_score": row[13] or 0,
+            "credibility_score": row[14] or 0,
+            "novelty_score": row[15] or 0,
+            "trend_score": row[16] or 0,
+            "actionability_score": row[17] or 0,
+            "spam_score": row[18] or 0,
+            "final_score": row[19] or row[8],
+            "analysis_provider": row[20] or "local_rules",
+            "is_favorite": bool(row[21]),
+            "created_at": row[22],
+        }
+        article.update(enrich_public_fields(article))
+        articles.append(article)
+    source_count = len({article["source"] for article in articles})
+    payload = {
+        "meta": {
+            "generated_at": dt.datetime.now(UTC).isoformat(),
+            "collected_count": candidate_count,
+            "filtered_count": max(candidate_count - len(articles), 0),
+            "kept_count": len(articles),
+            "source_count": source_count,
+            "analysis_provider": analysis_provider,
+            "schedule_label": "每日北京时间 08:00 / 12:00 / 18:00 自动采集",
+        },
+        "daily_brief": build_daily_brief(articles),
+        "clusters": build_clusters(articles),
+        "articles": articles,
+    }
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    return len(payload)
+    return len(articles)
 
 
 def collect(limit_per_source: int) -> list[dict]:
@@ -930,8 +1063,8 @@ def main() -> int:
     incoming, llm_used = enrich_with_llm(incoming, api_key, model, args.llm_limit)
     inserted, skipped = save_articles(conn, incoming)
     enriched_existing = enrich_missing_analysis(conn, api_key, model, args.llm_limit, args.reanalyze_all)
-    exported = export_json(conn, args.json, args.export_limit, args.export_days)
     provider = f"openai:{model}" if api_key else "local_rules"
+    exported = export_json(conn, args.json, args.export_limit, args.export_days, provider)
     print(f"[done] provider={provider} collected={len(incoming)} inserted={inserted} skipped={skipped} llm_used={llm_used} enriched_existing={enriched_existing} exported={exported}")
     print(f"[db] {args.db}")
     print(f"[json] {args.json}")

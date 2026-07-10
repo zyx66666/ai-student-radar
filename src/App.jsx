@@ -25,6 +25,7 @@ import {
   Star,
   Target,
   TrendingUp,
+  X,
 } from "lucide-react";
 import duneBackground from "./assets/dune-background.png";
 import {
@@ -58,6 +59,27 @@ const actionIcons = {
 const defaultActions = ["写笔记", "收藏"];
 const beijingTimeZone = "Asia/Shanghai";
 const favoritesStorageKey = "ai-student-radar-favorites";
+const scheduleLabel = "每日北京时间 08:00 / 12:00 / 18:00 自动采集";
+
+function normalizeNewsPayload(payload) {
+  if (Array.isArray(payload)) {
+    return {
+      meta: null,
+      dailyBrief: null,
+      clusters: [],
+      articles: payload,
+    };
+  }
+  if (payload && Array.isArray(payload.articles)) {
+    return {
+      meta: payload.meta ?? null,
+      dailyBrief: payload.daily_brief ?? null,
+      clusters: Array.isArray(payload.clusters) ? payload.clusters : [],
+      articles: payload.articles,
+    };
+  }
+  throw new Error("news.json format is invalid");
+}
 
 function normalizeFavoriteId(id) {
   if (typeof id === "number" && Number.isFinite(id)) {
@@ -129,10 +151,16 @@ async function fetchNewsArticles(cacheBust = false) {
     throw new Error(`news.json ${response.status}`);
   }
   const payload = await response.json();
-  if (!Array.isArray(payload) || payload.length === 0) {
+  const normalized = normalizeNewsPayload(payload);
+  if (normalized.articles.length === 0) {
     throw new Error("news.json is empty");
   }
-  return payload.map(hydrateFeedArticle);
+  return {
+    meta: normalized.meta,
+    dailyBrief: normalized.dailyBrief,
+    clusters: normalized.clusters,
+    articles: normalized.articles.map(hydrateFeedArticle),
+  };
 }
 
 function parseArticleTime(value) {
@@ -203,6 +231,48 @@ function buildActions(article) {
   return Array.from(actions);
 }
 
+function articleQuotaGroup(article) {
+  const tags = article.knowledge ?? article.tags ?? [];
+  if (article.category === "论文" || tags.includes("论文") || article.source?.includes("arXiv")) {
+    return "paper";
+  }
+  if (article.category === "机器人/具身智能" || tags.includes("机器人") || tags.includes("具身智能")) {
+    return "robotics";
+  }
+  if (["AI产品", "AI Agent", "开源项目"].includes(article.category)) {
+    return "product_agent";
+  }
+  if (["融资动态", "AI芯片"].includes(article.category) || tags.includes("算力")) {
+    return "industry";
+  }
+  return "other";
+}
+
+function applyTopQuotas(items) {
+  const quotas = {
+    paper: 4,
+    robotics: 3,
+    product_agent: 3,
+    industry: 2,
+    other: 10,
+  };
+  const used = {};
+  const selected = [];
+  for (const article of items) {
+    const group = articleQuotaGroup(article);
+    used[group] = used[group] ?? 0;
+    if (used[group] >= quotas[group]) {
+      continue;
+    }
+    selected.push(article);
+    used[group] += 1;
+    if (selected.length >= 10) {
+      break;
+    }
+  }
+  return selected;
+}
+
 function hydrateFeedArticle(article, index) {
   const score = article.final_score ?? article.score ?? 72;
   const tags = Array.isArray(article.tags) && article.tags.length ? article.tags : [article.category ?? "AI新闻"];
@@ -220,11 +290,17 @@ function hydrateFeedArticle(article, index) {
     credibility: article.credibility_score ?? Math.min(99, Math.max(60, score + 6)),
     heat: article.trend_score ?? Math.min(99, Math.max(55, score)),
     relevance,
-    summary: article.one_sentence_summary || article.summary || "这条内容来自自动采集源，建议打开原文进一步判断价值。",
-    why: article.importance || `来自 ${article.source ?? "可信来源"}，与 ${tags.slice(0, 3).join("、")} 相关，适合纳入每日 AI 情报追踪。`,
+    summary: article.tldr || article.one_sentence_summary || article.summary || "这条内容来自自动采集源，建议打开原文进一步判断价值。",
+    why: article.why_it_matters || article.importance || `来自 ${article.source ?? "可信来源"}，与 ${tags.slice(0, 3).join("、")} 相关，适合纳入每日 AI 情报追踪。`,
+    studentValue: article.student_value || article.audience || "适合作为学习、科研申请或产品分析素材。",
+    researchValue: article.research_value || "可提炼为研究计划或论文阅读素材。",
+    pmValue: article.pm_value || "可转化为产品分析卡片。",
+    difficulty: article.difficulty || "中等",
+    readTime: article.read_time || "3 min",
     actions: buildActions({ ...article, tags }),
     knowledge: tags.slice(0, 4),
     project:
+      article.next_action ||
       article.action_suggestion ||
       (article.category === "AI产品"
         ? "整理一张产品分析卡：用户痛点、核心能力、竞品和 PM 启发"
@@ -289,7 +365,16 @@ function Sidebar({ active, onSelect, favoritesCount }) {
   );
 }
 
-function TopBar({ query, setQuery, refreshCount, onRefresh }) {
+function TopBar({ query, setQuery, refreshCount, onRefresh, meta, loadedCount }) {
+  const stats = meta
+    ? [
+        `采集 ${meta.collected_count ?? loadedCount}`,
+        `过滤 ${meta.filtered_count ?? 0}`,
+        `保留 ${meta.kept_count ?? loadedCount}`,
+        `来源 ${meta.source_count ?? "-"}`,
+      ]
+    : [`已加载 ${loadedCount} 条`];
+
   return (
     <header className="topbar glass-panel">
       <div className="date-block">
@@ -311,10 +396,10 @@ function TopBar({ query, setQuery, refreshCount, onRefresh }) {
       </label>
 
       <div className="top-stats" aria-label="今日统计">
-        <span>采集 126</span>
-        <span>过滤 54</span>
-        <span>保留 72</span>
-        <span>每日北京时间 08:00 / 12:00 / 18:00 自动采集</span>
+        {stats.map((item) => (
+          <span key={item}>{item}</span>
+        ))}
+        <span>{meta?.schedule_label ?? scheduleLabel}</span>
       </div>
 
       <button className="icon-button primary" onClick={onRefresh} type="button">
@@ -500,8 +585,116 @@ function SkillPanel() {
   );
 }
 
-function DailySummary({ visibleArticles, favorites, onExport }) {
+function buildFallbackBrief(visibleArticles) {
+  if (!visibleArticles.length) {
+    return {
+      headline: "今日主线：等待下一批高价值情报",
+      summary: "当前页面没有匹配内容，可以调整筛选条件，或等待下一次自动采集更新 news.json。",
+      student_actions: ["调整分类或关键词", "等待下一次自动采集", "手动刷新已部署的 news.json"],
+    };
+  }
   const top = visibleArticles[0];
+  const categoryCounts = visibleArticles.reduce((acc, article) => {
+    acc[article.category] = (acc[article.category] ?? 0) + 1;
+    return acc;
+  }, {});
+  const leading = Object.entries(categoryCounts)
+    .sort((left, right) => right[1] - left[1])
+    .slice(0, 3)
+    .map(([category]) => category)
+    .join("、");
+  return {
+    headline: `今日主线：${leading}值得重点追踪`,
+    summary: `当前页面最值得沉淀的是《${top.title}》。可以把它转化为学习笔记、科研计划素材或产品分析卡。`,
+    student_actions: [top.project, "收藏最高分内容并补充 3 条要点", "每周复盘时整理为申请素材库"],
+  };
+}
+
+function buildFallbackClusters(items) {
+  const buckets = items.reduce((acc, article) => {
+    const key = article.category || article.knowledge?.[0] || "AI动态";
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(article);
+    return acc;
+  }, {});
+
+  return Object.entries(buckets)
+    .map(([topic, articlesInCluster]) => {
+      const top = [...articlesInCluster].sort(sortByScoreAndTime)[0];
+      const heat = Math.min(
+        100,
+        Math.round(
+          articlesInCluster.reduce((sum, article) => sum + (article.finalScore ?? article.relevance ?? 60), 0) /
+            articlesInCluster.length +
+            Math.min(articlesInCluster.length, 8) * 2,
+        ),
+      );
+      return {
+        topic,
+        heat,
+        article_count: articlesInCluster.length,
+        why_hot: `${topic}在当前页面出现 ${articlesInCluster.length} 次，代表内容是《${top.title}》。`,
+        student_action: top.project,
+      };
+    })
+    .sort((left, right) => right.heat - left.heat)
+    .slice(0, 8);
+}
+
+function ClusterModal({ clusters, articles, onClose }) {
+  const visibleClusters = clusters.length ? clusters : buildFallbackClusters(articles);
+
+  return (
+    <div className="modal-backdrop" role="presentation" onMouseDown={onClose}>
+      <section
+        aria-modal="true"
+        className="cluster-modal glass-panel"
+        onMouseDown={(event) => event.stopPropagation()}
+        role="dialog"
+      >
+        <div className="cluster-modal-heading">
+          <div>
+            <div className="section-label">
+              <Layers3 size={17} />
+              热点聚类
+            </div>
+            <h2>从零散资讯看主题走势</h2>
+          </div>
+          <button className="icon-button" onClick={onClose} type="button">
+            <X size={17} />
+            <span>关闭</span>
+          </button>
+        </div>
+
+        <div className="cluster-list">
+          {visibleClusters.map((cluster) => (
+            <article className="cluster-card" key={cluster.topic}>
+              <div className="cluster-card-top">
+                <h3>{cluster.topic}</h3>
+                <strong>{cluster.heat ?? 70}</strong>
+              </div>
+              <p>{cluster.why_hot}</p>
+              <div className="cluster-meta">
+                <span>{cluster.article_count ?? 0} 篇相关文章</span>
+                <span>热度 {cluster.heat ?? 70}</span>
+              </div>
+              <div className="project-line">
+                <Target size={15} />
+                <span>{cluster.student_action}</span>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function DailySummary({ visibleArticles, favorites, onExport, dailyBrief }) {
+  const brief = dailyBrief?.headline ? dailyBrief : buildFallbackBrief(visibleArticles);
+  const actions = Array.isArray(brief.student_actions) ? brief.student_actions.slice(0, 3) : [];
 
   return (
     <section className="daily-summary glass-panel">
@@ -510,11 +703,15 @@ function DailySummary({ visibleArticles, favorites, onExport }) {
           <CheckCircle2 size={17} />
           每日总结
         </div>
-        <h2>今日主线：具身智能和多模态 Agent 正在合流</h2>
-        <p>
-          最值得沉淀的是机器人 VLA、低成本多模态 Agent、仿真数据闭环和 Agent
-          权限边界。建议把 {top?.title ?? "今日精选"} 写成一张研究计划素材卡。
-        </p>
+        <h2>{brief.headline}</h2>
+        <p>{brief.summary}</p>
+        {actions.length ? (
+          <div className="summary-action-list">
+            {actions.map((action) => (
+              <span key={action}>{action}</span>
+            ))}
+          </div>
+        ) : null}
       </div>
       <div className="summary-actions">
         <div>
@@ -534,14 +731,20 @@ function DailySummary({ visibleArticles, favorites, onExport }) {
   );
 }
 
-function buildMarkdown(items, favorites, activeNav) {
+function buildMarkdown(items, favorites, activeNav, dailyBrief) {
   const date = getBeijingDisplayDate();
-  const reportTitle = activeNav === "今日精选" ? "最近24小时 AI 情报 Top10" : `AI Student Radar ${activeNav}`;
+  const reportTitle = activeNav === "今日精选" ? "今日精选 · 最近24小时 AI 情报 Top10" : `AI Student Radar ${activeNav}`;
+  const brief = dailyBrief?.headline ? dailyBrief : buildFallbackBrief(items);
   const lines = [
-    `# ${reportTitle} ${date}`,
+    `# ${reportTitle} · ${date}`,
     "",
     "## 今日主线",
-    "具身智能、多模态 Agent、机器人仿真和 Agent 安全是今天最值得追踪的方向。",
+    brief.headline,
+    "",
+    brief.summary,
+    "",
+    "## 学生行动建议",
+    ...(Array.isArray(brief.student_actions) ? brief.student_actions.map((action) => `- ${action}`) : []),
     "",
     "## Top 情报",
   ];
@@ -551,6 +754,7 @@ function buildMarkdown(items, favorites, activeNav) {
       "",
       `### ${index + 1}. ${item.title}${favorites.has(item.id) ? " [已收藏]" : ""}`,
       `- 来源：${item.source} / ${item.time} / ${item.category}`,
+      `- 原文链接：${item.url || "无"}`,
       `- 推荐分：${item.finalScore ?? item.relevance}`,
       `- 评分：可信度 ${item.credibility}，热度 ${item.heat}，相关度 ${item.relevance}`,
       `- 摘要：${item.summary}`,
@@ -570,19 +774,29 @@ export default function App() {
   const [favorites, setFavorites] = useState(() => loadFavoriteIds());
   const [refreshCount, setRefreshCount] = useState(0);
   const [feedArticles, setFeedArticles] = useState(articles);
+  const [newsMeta, setNewsMeta] = useState(null);
+  const [dailyBrief, setDailyBrief] = useState(null);
+  const [clusters, setClusters] = useState([]);
+  const [clusterOpen, setClusterOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
 
     async function loadNews() {
       try {
-        const nextArticles = await fetchNewsArticles();
+        const nextNews = await fetchNewsArticles();
         if (!cancelled) {
-          setFeedArticles(nextArticles);
+          setFeedArticles(nextNews.articles);
+          setNewsMeta(nextNews.meta);
+          setDailyBrief(nextNews.dailyBrief);
+          setClusters(nextNews.clusters);
         }
       } catch (error) {
         if (!cancelled) {
           setFeedArticles(articles);
+          setNewsMeta(null);
+          setDailyBrief(null);
+          setClusters([]);
           console.info("Using bundled mock articles:", error);
         }
       }
@@ -635,7 +849,7 @@ export default function App() {
       return categoryMatch && navMatch && queryMatch;
     });
 
-    return isTodaySelection ? filteredArticles.sort(sortByScoreAndTime).slice(0, 10) : filteredArticles;
+    return isTodaySelection ? applyTopQuotas(filteredArticles.sort(sortByScoreAndTime)) : filteredArticles;
   }, [activeNav, category, favorites, feedArticles, query]);
 
   function toggleFavorite(id) {
@@ -655,7 +869,7 @@ export default function App() {
   }
 
   function exportMarkdown() {
-    const markdown = buildMarkdown(visibleArticles, favorites, activeNav);
+    const markdown = buildMarkdown(visibleArticles, favorites, activeNav, dailyBrief);
     const blob = new Blob([markdown], { type: "text/markdown;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -667,8 +881,11 @@ export default function App() {
 
   async function refreshDashboardData() {
     try {
-      const nextArticles = await fetchNewsArticles(true);
-      setFeedArticles(nextArticles);
+      const nextNews = await fetchNewsArticles(true);
+      setFeedArticles(nextNews.articles);
+      setNewsMeta(nextNews.meta);
+      setDailyBrief(nextNews.dailyBrief);
+      setClusters(nextNews.clusters);
       setRefreshCount((count) => count + 1);
     } catch (error) {
       console.info("Refresh kept current dashboard data:", error);
@@ -692,6 +909,8 @@ export default function App() {
           refreshCount={refreshCount}
           setQuery={setQuery}
           onRefresh={refreshDashboardData}
+          meta={newsMeta}
+          loadedCount={feedArticles.length}
         />
 
         <div className="mobile-menu glass-panel">
@@ -710,7 +929,7 @@ export default function App() {
                 </div>
                 <h2>从信息流转成学习和申请素材</h2>
               </div>
-              <button className="ghost-button" type="button">
+              <button className="ghost-button" onClick={() => setClusterOpen(true)} type="button">
                 查看聚类
                 <ChevronRight size={16} />
               </button>
@@ -743,6 +962,7 @@ export default function App() {
             </div>
 
             <DailySummary
+              dailyBrief={dailyBrief}
               favorites={favorites}
               visibleArticles={visibleArticles}
               onExport={exportMarkdown}
@@ -757,6 +977,13 @@ export default function App() {
           </aside>
         </div>
       </section>
+      {clusterOpen ? (
+        <ClusterModal
+          articles={visibleArticles.length ? visibleArticles : feedArticles}
+          clusters={clusters}
+          onClose={() => setClusterOpen(false)}
+        />
+      ) : null}
     </main>
   );
 }

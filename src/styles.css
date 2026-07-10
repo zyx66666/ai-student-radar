@@ -719,6 +719,23 @@ button {
   line-height: 1.62;
 }
 
+.summary-action-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.summary-action-list span,
+.cluster-meta span {
+  padding: 6px 9px;
+  border-radius: 13px;
+  color: #25565d;
+  background: rgba(255, 255, 255, 0.48);
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .summary-actions {
   display: flex;
   align-items: stretch;
@@ -764,6 +781,86 @@ button {
   margin-top: 4px;
   color: var(--muted);
   font-size: 13px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background: rgba(207, 226, 224, 0.42);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.cluster-modal {
+  display: grid;
+  gap: 16px;
+  width: min(880px, 100%);
+  max-height: min(760px, calc(100vh - 44px));
+  overflow: auto;
+  border-radius: 30px;
+  padding: 18px;
+}
+
+.cluster-modal-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.cluster-modal-heading h2 {
+  margin: 7px 0 0;
+  font-size: 24px;
+  line-height: 1.15;
+}
+
+.cluster-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.cluster-card {
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.cluster-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cluster-card h3 {
+  margin: 0;
+  color: #17353c;
+  font-size: 16px;
+}
+
+.cluster-card strong {
+  color: #0b8792;
+  font-size: 28px;
+}
+
+.cluster-card p {
+  margin: 10px 0 0;
+  color: #3b5a60;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.cluster-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 12px;
 }
 
 @media (max-width: 1180px) {
@@ -881,6 +978,15 @@ button {
 
   .summary-actions {
     display: grid;
+  }
+
+  .cluster-list {
+    grid-template-columns: 1fr;
+  }
+
+  .cluster-modal-heading {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
 
