@@ -3,6 +3,13 @@ dist/
 .env
 .env.*
 *.log
+backend/data/*.sqlite3
+backend/data/*.db
+*.sqlite-wal
+*.sqlite-shm
+**/__pycache__/
+**pycache**/
+.pytest_cache/
 vite.out.log
 vite.err.log
 qa-*.png

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Archive,
   Bell,
@@ -54,6 +54,67 @@ const actionIcons = {
   做项目: Target,
   收藏: Heart,
 };
+
+const defaultActions = ["写笔记", "收藏"];
+
+function formatFeedTime(value) {
+  if (!value) {
+    return "刚刚";
+  }
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return "刚刚";
+  }
+  return date.toLocaleTimeString("zh-CN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+}
+
+function buildActions(article) {
+  const tags = article.tags ?? [];
+  const actions = new Set(defaultActions);
+  if (article.category === "论文" || tags.includes("论文") || article.source?.includes("arXiv")) {
+    actions.add("读论文");
+  }
+  if (tags.includes("开源项目") || article.source?.includes("Hugging Face")) {
+    actions.add("看代码");
+  }
+  if (["机器人", "具身智能", "机器人/具身智能", "AI Agent", "多模态"].includes(article.category)) {
+    actions.add("做项目");
+  }
+  return Array.from(actions);
+}
+
+function hydrateFeedArticle(article, index) {
+  const score = article.final_score ?? article.score ?? 72;
+  const tags = Array.isArray(article.tags) && article.tags.length ? article.tags : [article.category ?? "AI新闻"];
+  const relevance = article.relevance_score ?? Math.min(99, Math.max(58, score + (tags.some((tag) => ["机器人", "具身智能", "机器人/具身智能", "AI Agent", "多模态"].includes(tag)) ? 8 : 0)));
+
+  return {
+    id: article.id ?? index + 1,
+    title: article.title,
+    source: article.source ?? "AI Radar",
+    time: formatFeedTime(article.published_at),
+    category: article.category ?? "AI新闻",
+    finalScore: score,
+    credibility: article.credibility_score ?? Math.min(99, Math.max(60, score + 6)),
+    heat: article.trend_score ?? Math.min(99, Math.max(55, score)),
+    relevance,
+    summary: article.one_sentence_summary || article.summary || "这条内容来自自动采集源，建议打开原文进一步判断价值。",
+    why: article.importance || `来自 ${article.source ?? "可信来源"}，与 ${tags.slice(0, 3).join("、")} 相关，适合纳入每日 AI 情报追踪。`,
+    actions: buildActions({ ...article, tags }),
+    knowledge: tags.slice(0, 4),
+    project:
+      article.action_suggestion ||
+      (article.category === "AI产品"
+        ? "整理一张产品分析卡：用户痛点、核心能力、竞品和 PM 启发"
+        : article.category === "论文"
+          ? "按研究问题、方法、结果、局限和可复现性写一页阅读笔记"
+          : "把这条动态拆成一个可复现的小项目或申请素材片段"),
+  };
+}
 
 function clampScore(score) {
   return Math.max(0, Math.min(100, score));
@@ -165,6 +226,7 @@ function CategoryTabs({ selected, setSelected }) {
 
 function ArticleCard({ article, favorite, onToggleFavorite }) {
   const relevanceTone = article.relevance > 90 ? "green" : "cyan";
+  const finalScore = article.finalScore ?? article.relevance;
 
   return (
     <article className="article-card glass-panel">
@@ -193,6 +255,10 @@ function ArticleCard({ article, favorite, onToggleFavorite }) {
       </div>
 
       <div className="article-side">
+        <div className="final-score">
+          <span>推荐分</span>
+          <strong>{finalScore}</strong>
+        </div>
         <div className="score-grid">
           <ScorePill label="可信度" value={article.credibility} tone="blue" />
           <ScorePill label="热度" value={article.heat} tone="amber" />
@@ -350,10 +416,11 @@ function buildMarkdown(items, favorites) {
       "",
       `### ${index + 1}. ${item.title}${favorites.has(item.id) ? " [已收藏]" : ""}`,
       `- 来源：${item.source} / ${item.time} / ${item.category}`,
+      `- 推荐分：${item.finalScore ?? item.relevance}`,
       `- 评分：可信度 ${item.credibility}，热度 ${item.heat}，相关度 ${item.relevance}`,
       `- 摘要：${item.summary}`,
-      `- 为什么值得看：${item.why}`,
-      `- 小项目：${item.project}`,
+      `- 推荐理由：${item.why}`,
+      `- 行动建议：${item.project}`,
       `- 知识点：${item.knowledge.join("、")}`,
     );
   });
@@ -367,11 +434,43 @@ export default function App() {
   const [category, setCategory] = useState("全部");
   const [favorites, setFavorites] = useState(new Set([1, 2]));
   const [refreshCount, setRefreshCount] = useState(0);
+  const [feedArticles, setFeedArticles] = useState(articles);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadNews() {
+      try {
+        const response = await fetch(`${import.meta.env.BASE_URL}data/news.json`, { cache: "no-store" });
+        if (!response.ok) {
+          throw new Error(`news.json ${response.status}`);
+        }
+        const payload = await response.json();
+        if (!Array.isArray(payload) || payload.length === 0) {
+          throw new Error("news.json is empty");
+        }
+        if (!cancelled) {
+          setFeedArticles(payload.map(hydrateFeedArticle));
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setFeedArticles(articles);
+          console.info("Using bundled mock articles:", error);
+        }
+      }
+    }
+
+    loadNews();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const visibleArticles = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
 
-    return articles.filter((article) => {
+    return feedArticles.filter((article) => {
       const categoryMatch = category === "全部" || article.category === category;
       const navMatch =
         activeNav === "今日精选" ||
@@ -379,7 +478,7 @@ export default function App() {
         (activeNav === "我的收藏" && favorites.has(article.id)) ||
         (activeNav === "论文雷达" && article.actions.includes("读论文")) ||
         (activeNav === "机器人/具身智能" &&
-          ["机器人", "具身智能"].includes(article.category)) ||
+          ["机器人", "具身智能", "机器人/具身智能"].includes(article.category)) ||
         (activeNav === "AI产品" && article.category === "AI产品") ||
         (activeNav === "开源项目" && article.actions.includes("看代码"));
 
@@ -392,7 +491,7 @@ export default function App() {
 
       return categoryMatch && navMatch && queryMatch;
     });
-  }, [activeNav, category, favorites, query]);
+  }, [activeNav, category, favorites, feedArticles, query]);
 
   function toggleFavorite(id) {
     setFavorites((current) => {

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
+    "fetch:news": "python backend/collect_news.py",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1"
   },

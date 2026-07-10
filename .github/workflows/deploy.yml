@@ -1,13 +1,16 @@
-name: Deploy to GitHub Pages
+name: Build and Deploy to GitHub Pages
 
 on:
   push:
     branches:
       - main
+  schedule:
+    # 00:00 UTC = 08:00 Asia/Shanghai
+    - cron: "0 0 * * *"
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -22,6 +25,35 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        if: github.event_name != 'push'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Collect AI news
+        if: github.event_name != 'push'
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          AI_RADAR_MODEL: ${{ vars.AI_RADAR_MODEL }}
+        run: |
+          python backend/collect_news.py --limit-per-source 12 --export-limit 60
+
+      - name: Commit updated data
+        if: github.event_name != 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add backend/data/news.sqlite public/data/news.json
+          if git diff --cached --quiet; then
+            echo "No data changes to commit."
+          else
+            git commit -m "chore: update daily AI radar data [skip ci]"
+            git push
+          fi
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -31,7 +63,20 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Resolve Vite base path
+        id: base
+        shell: bash
+        run: |
+          repo_name="${GITHUB_REPOSITORY#*/}"
+          if [[ "$repo_name" == *.github.io ]]; then
+            echo "path=/" >> "$GITHUB_OUTPUT"
+          else
+            echo "path=/${repo_name}/" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build
+        env:
+          VITE_BASE_PATH: ${{ steps.base.outputs.path }}
         run: npm run build
 
       - name: Setup Pages

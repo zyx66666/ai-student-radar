@@ -10,13 +10,17 @@ export const navItems = [
 
 export const categories = [
   "全部",
-  "机器人",
-  "具身智能",
+  "大模型",
   "AI Agent",
+  "机器人/具身智能",
   "多模态",
   "AI产品",
+  "AI芯片",
+  "自动驾驶",
   "AI安全",
+  "论文",
   "开源项目",
+  "融资动态",
 ];
 
 export const articles = [
