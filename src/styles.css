@@ -338,6 +338,13 @@ button {
   letter-spacing: 0;
 }
 
+.feed-heading h2.daily-page-title {
+  max-width: 920px;
+  font-size: clamp(18px, 2vw, 24px);
+  line-height: 1.45;
+  font-weight: 760;
+}
+
 .ghost-button {
   display: inline-flex;
   align-items: center;
@@ -480,6 +487,13 @@ button {
   flex: 0 0 auto;
   margin-top: 3px;
   color: var(--green);
+}
+
+.project-line strong {
+  display: block;
+  margin-bottom: 2px;
+  color: #245e66;
+  font-size: 12px;
 }
 
 .knowledge-row {

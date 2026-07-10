@@ -285,29 +285,55 @@ function articleQuotaGroup(article) {
   return "other";
 }
 
-function applyTopQuotas(items) {
-  const quotas = {
-    paper: 4,
-    robotics: 3,
-    product_agent: 3,
-    industry: 2,
-    other: 10,
-  };
+function normalizeTitleForDedupe(title) {
+  return String(title ?? "")
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, "")
+    .trim();
+}
+
+function uniqueByTitle(items) {
+  const seen = new Set();
+  return items.filter((article) => {
+    const normalizedTitle = normalizeTitleForDedupe(article.title);
+    if (!normalizedTitle || seen.has(normalizedTitle)) {
+      return false;
+    }
+    seen.add(normalizedTitle);
+    return true;
+  });
+}
+
+function applyDiverseQuotas(items, quotas, limit = 10, groupGetter = articleQuotaGroup) {
   const used = {};
   const selected = [];
   for (const article of items) {
-    const group = articleQuotaGroup(article);
+    const group = groupGetter(article);
     used[group] = used[group] ?? 0;
-    if (used[group] >= quotas[group]) {
+    if (used[group] >= (quotas[group] ?? limit)) {
       continue;
     }
     selected.push(article);
     used[group] += 1;
-    if (selected.length >= 10) {
+    if (selected.length >= limit) {
       break;
     }
   }
   return selected;
+}
+
+function applyTopQuotas(items) {
+  return applyDiverseQuotas(
+    items,
+    {
+      paper: 4,
+      robotics: 3,
+      product_agent: 3,
+      industry: 2,
+      other: 10,
+    },
+    10,
+  );
 }
 
 function getArticleTags(article) {
@@ -409,7 +435,7 @@ function getSaveAs(article) {
     return article.saveAs;
   }
   if (article.contentType === "paper") {
-    return ["论文选题", "研究计划素材", "英文阅读"];
+    return ["论文选题", "申请素材", "学习笔记"];
   }
   if (article.contentType === "product") {
     return ["产品案例", "学习笔记"];
@@ -421,6 +447,163 @@ function getSaveAs(article) {
     return ["项目灵感", "申请素材"];
   }
   return ["学习笔记", "暂存"];
+}
+
+function isAiHotArticle(article) {
+  const tags = getArticleTags(article);
+  return article.source === "AI HOT 精选" || tags.includes("AI HOT");
+}
+
+function isFinancingOnlyArticle(article) {
+  const text = articleText(article);
+  const financing = includesAnyText([text], ["融资", "投资", "估值", "募资", "fundraise", "funding", "raises", "round"]);
+  const technicalSignal = includesAnyText(
+    [text],
+    ["模型", "Agent", "工具", "论文", "开源", "GitHub", "Hugging Face", "机器人", "多模态", "benchmark", "产品", "workflow"],
+  );
+  return financing && !technicalSignal;
+}
+
+function isMarketingNoiseArticle(article) {
+  const text = articleText(article);
+  return includesAnyText([text], ["限时", "优惠", "折扣", "邀请码", "注册", "广告", "赞助", "购买", "课程报名", "营销"]);
+}
+
+function computeNoisePenalty(article) {
+  const text = articleText(article);
+  let penalty = article.spam_score ?? article.spamScore ?? 0;
+  if (isFinancingOnlyArticle(article)) {
+    penalty += 18;
+  }
+  if (isMarketingNoiseArticle(article)) {
+    penalty += 18;
+  }
+  if (includesAnyText([text], ["震惊", "重磅炸裂", "全网沸腾", "封神", "吊打"])) {
+    penalty += 8;
+  }
+  if (String(article.summary ?? "").trim().length < 24) {
+    penalty += 10;
+  }
+  if ((article.relevance_score ?? article.relevance ?? article.finalScore ?? 70) < 58) {
+    penalty += 6;
+  }
+  return clampScore(penalty);
+}
+
+function computeStudentDailyScores(article) {
+  const tags = getArticleTags(article);
+  const text = articleText(article);
+  const contentType = article.contentType || inferContentType(article);
+  const topic = article.topic || inferTopic(article);
+  const relevanceBase = article.relevance_score ?? article.relevance ?? article.finalScore ?? 70;
+  const student_relevance = clampScore(
+    relevanceBase +
+      (includesAnyText([text], ["AI", "大模型", "Agent", "多模态", "机器人", "具身", "论文", "开源", "产品"]) ? 8 : 0) -
+      (includesAnyText([text], ["融资", "估值", "股价"]) ? 10 : 0),
+  );
+  const learning_value = clampScore(
+    (article.actionability_score ?? article.finalScore ?? 68) +
+      (["paper", "open_source", "tool"].includes(contentType) ? 12 : 0) +
+      (tags.some((tag) => ["论文", "开源项目", "AI Agent", "机器人", "多模态"].includes(tag)) ? 6 : 0),
+  );
+  const source_credibility = clampScore(article.credibility_score ?? article.credibility ?? (isAiHotArticle(article) ? 82 : 70));
+  const trend_importance = clampScore(
+    article.trend_score ??
+      article.heat ??
+      (["大模型", "AI Agent", "多模态", "机器人/具身智能", "AI产品"].includes(topic) ? 76 : 64),
+  );
+  const readability = clampScore(
+    article.difficulty === "入门" ? 88 : article.difficulty === "中等" ? 80 : article.readTime === "2 min" || article.readTime === "3 min" ? 78 : 66,
+  );
+  const product_project_inspiration = clampScore(
+    (["product", "open_source", "tool"].includes(contentType) ? 84 : 64) +
+      (includesAnyText([text], ["workflow", "工具", "项目", "demo", "代码", "产品", "Agent"]) ? 8 : 0),
+  );
+  const noise_penalty = computeNoisePenalty(article);
+  const student_daily_score = Math.round(
+    student_relevance * 0.3 +
+      learning_value * 0.2 +
+      source_credibility * 0.15 +
+      trend_importance * 0.15 +
+      readability * 0.1 +
+      product_project_inspiration * 0.1 -
+      noise_penalty,
+  );
+
+  return {
+    student_relevance,
+    learning_value,
+    source_credibility,
+    trend_importance,
+    readability,
+    product_project_inspiration,
+    noise_penalty,
+    student_daily_score: clampScore(student_daily_score),
+  };
+}
+
+function getDailyDiversityGroup(article) {
+  const text = articleText(article);
+  if (includesAnyText([text], ["Agent", "工作流", "workflow", "自动化", "工具调用", "coding agent"])) {
+    return "agent_tool";
+  }
+  if (isPaperArticle(article) || includesAnyText([text], ["论文", "benchmark", "评测", "方法", "arXiv"])) {
+    return "paper_method";
+  }
+  if (article.contentType === "open_source" || includesAnyText([text], ["开源", "GitHub", "Hugging Face", "repo", "代码"])) {
+    return "open_source";
+  }
+  if (article.contentType === "product" || article.topic === "AI产品" || includesAnyText([text], ["产品", "用户", "案例"])) {
+    return "product_case";
+  }
+  if (article.topic === "机器人/具身智能" || includesAnyText([text], ["机器人", "具身", "多模态", "VLA", "视频", "图像"])) {
+    return "multimodal_robotics";
+  }
+  if (includesAnyText([text], ["算力", "芯片", "产业", "公司", "发布", "模型", "OpenAI", "Google", "Anthropic", "Meta", "NVIDIA"])) {
+    return "model_industry";
+  }
+  return "trend_background";
+}
+
+function selectStudentDailyTop10(items) {
+  const top20 = uniqueByTitle(items)
+    .filter((article) => isAiHotArticle(article))
+    .filter((article) => !isFinancingOnlyArticle(article))
+    .filter((article) => !isMarketingNoiseArticle(article))
+    .filter((article) => String(article.summary ?? "").trim().length > 0)
+    .filter((article) => (article.studentDailyBreakdown?.student_relevance ?? 0) >= 60)
+    .filter((article) => (article.studentDailyBreakdown?.noise_penalty ?? 0) <= 15)
+    .sort((left, right) => {
+      const scoreDelta = (right.studentDailyScore ?? 0) - (left.studentDailyScore ?? 0);
+      if (scoreDelta !== 0) {
+        return scoreDelta;
+      }
+      return (parseArticleTime(right.publishedAt) ?? 0) - (parseArticleTime(left.publishedAt) ?? 0);
+    })
+    .slice(0, 20);
+
+  const diversified = applyDiverseQuotas(
+    top20,
+    {
+      model_industry: 2,
+      agent_tool: 2,
+      paper_method: 2,
+      open_source: 1,
+      product_case: 1,
+      multimodal_robotics: 1,
+      trend_background: 1,
+    },
+    10,
+    getDailyDiversityGroup,
+  );
+
+  if (diversified.length >= 10) {
+    return diversified;
+  }
+
+  const selectedIds = new Set(diversified.map((article) => article.id));
+  const fillers = top20.filter((article) => !selectedIds.has(article.id));
+  return [...diversified, ...fillers].slice(0, 10);
 }
 
 function isPaperSource(article) {
@@ -688,6 +871,7 @@ function hydrateFeedArticle(article, index) {
   const topic = article.topic || inferTopic({ ...article, tags, knowledge: tags });
   const contentType = article.content_type || article.contentType || inferContentType({ ...article, tags, knowledge: tags, topic });
   const normalizedArticle = { ...article, tags, topic, contentType };
+  const studentDailyBreakdown = computeStudentDailyScores(normalizedArticle);
   const studentReason =
     article.student_reason ||
     article.studentReason ||
@@ -720,7 +904,10 @@ function hydrateFeedArticle(article, index) {
     finalScore: score,
     credibility: article.credibility_score ?? Math.min(99, Math.max(60, score + 6)),
     heat: article.trend_score ?? Math.min(99, Math.max(55, score)),
+    spamScore: article.spam_score ?? article.spamScore ?? 0,
     relevance,
+    studentDailyScore: article.student_daily_score ?? article.studentDailyScore ?? studentDailyBreakdown.student_daily_score,
+    studentDailyBreakdown,
     summary: article.tldr || article.one_sentence_summary || article.summary || "这条内容来自自动采集源，建议打开原文进一步判断价值。",
     why: article.why_it_matters || article.importance || `来自 ${article.source ?? "可信来源"}，与 ${tags.slice(0, 3).join("、")} 相关，适合纳入每日 AI 情报追踪。`,
     studentValue: article.student_value || article.audience || "适合作为学习、科研申请或产品分析素材。",
@@ -878,9 +1065,9 @@ function CategoryTabs({ selected, setSelected }) {
   );
 }
 
-function ArticleCard({ article, favorite, learningTaskSelected, onToggleFavorite, onToggleLearningTask }) {
+function ArticleCard({ article, favorite, learningTaskSelected, scoreLabel = "推荐分", scoreValue, onToggleFavorite, onToggleLearningTask }) {
   const relevanceTone = article.relevance > 90 ? "green" : "cyan";
-  const finalScore = article.finalScore ?? article.relevance;
+  const finalScore = scoreValue ?? article.finalScore ?? article.relevance;
   const articleUrl = getSafeArticleUrl(article.url);
   const primaryLearningTask = getPrimaryLearningTask(article);
 
@@ -934,7 +1121,10 @@ function ArticleCard({ article, favorite, learningTaskSelected, onToggleFavorite
         </div>
         <div className="project-line">
           <Target size={16} />
-          <span>{article.nextAction}</span>
+          <span>
+            <strong>今日行动建议</strong>
+            {article.nextAction}
+          </span>
         </div>
         <div className="save-as-row">
           <span>可沉淀为</span>
@@ -946,7 +1136,7 @@ function ArticleCard({ article, favorite, learningTaskSelected, onToggleFavorite
 
       <div className="article-side">
         <div className="final-score">
-          <span>推荐分</span>
+          <span>{scoreLabel}</span>
           <strong>{finalScore}</strong>
         </div>
         <div className="score-grid">
@@ -1762,7 +1952,7 @@ function DailySummary({ visibleArticles, favorites, onExport, dailyBrief }) {
 
 function buildMarkdown(items, favorites, activeNav, dailyBrief) {
   const date = getBeijingDisplayDate();
-  const reportTitle = activeNav === "今日必读" ? "今日必读 · 最近24小时 AI 情报 Top10" : `AI Student Radar ${activeNav}`;
+  const reportTitle = activeNav === "今日必读" ? "今日必读 · AI HOT 学生友好版 Top10" : `AI Student Radar ${activeNav}`;
   const brief = dailyBrief?.headline ? dailyBrief : buildFallbackBrief(items);
   const lines = [
     `# ${reportTitle} · ${date}`,
@@ -1784,7 +1974,7 @@ function buildMarkdown(items, favorites, activeNav, dailyBrief) {
       `### ${index + 1}. ${item.title}${favorites.has(item.id) ? " [已收藏]" : ""}`,
       `- 来源：${item.source} / ${item.time} / ${item.category}`,
       `- 原文链接：${item.url || "无"}`,
-      `- 推荐分：${item.finalScore ?? item.relevance}`,
+      `- ${activeNav === "今日必读" ? "学生必读分" : "推荐分"}：${activeNav === "今日必读" ? item.studentDailyScore : item.finalScore ?? item.relevance}`,
       `- 评分：可信度 ${item.credibility}，热度 ${item.heat}，相关度 ${item.relevance}`,
       `- 摘要：${item.summary}`,
       `- 推荐理由：${item.why}`,
@@ -1884,14 +2074,8 @@ export default function App() {
   }, [category, feedArticles, query]);
 
   const todayArticles = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
-    const candidates = feedArticles
-      .filter((article) => isWithinHours(article.publishedAt, 24))
-      .filter((article) => article.category !== "融资动态" && article.topic !== "融资动态")
-      .filter((article) => matchesCategory(article, category) && matchesSearch(article, normalizedQuery))
-      .sort(sortByScoreAndTime);
-    return applyTopQuotas(candidates).slice(0, 10);
-  }, [category, feedArticles, query]);
+    return selectStudentDailyTop10(feedArticles);
+  }, [feedArticles]);
 
   const visibleArticles = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -1988,8 +2172,8 @@ export default function App() {
 
   const pageCopy = {
     今日必读: {
-      label: "最近24小时 Top 10",
-      title: "今天最值得学生看的 AI 内容",
+      label: "AI HOT 学生友好版 Top 10",
+      title: "每天从 AI HOT 精选中，为 AI 方向大学生/研究生筛出最值得看的 10 条内容。不是资讯越多越好，而是帮你判断今天哪些内容值得读、值得收藏、值得转化成学习或申请素材。",
       cluster: true,
     },
     论文雷达: {
@@ -2058,7 +2242,7 @@ export default function App() {
                   <Flame size={17} />
                   {pageCopy.label}
                 </div>
-                <h2>{pageCopy.title}</h2>
+                <h2 className={activeNav === "今日必读" ? "daily-page-title" : undefined}>{pageCopy.title}</h2>
               </div>
               {pageCopy.cluster ? (
                 <button className="ghost-button" onClick={() => setClusterOpen(true)} type="button">
@@ -2068,7 +2252,7 @@ export default function App() {
               ) : null}
             </div>
 
-            <CategoryTabs selected={category} setSelected={setCategory} />
+            {activeNav !== "今日必读" ? <CategoryTabs selected={category} setSelected={setCategory} /> : null}
 
             {activeNav === "今日必读" ? (
               <div className="article-list">
@@ -2078,12 +2262,14 @@ export default function App() {
                     favorite={favorites.has(article.id)}
                     key={article.id}
                     learningTaskSelected={selectedLearningTasks.has(getPrimaryLearningTask(article).id)}
+                    scoreLabel="学生必读分"
+                    scoreValue={article.studentDailyScore}
                     onToggleFavorite={() => toggleFavorite(article.id)}
                     onToggleLearningTask={toggleLearningTask}
                   />
                 ))}
                 {visibleArticles.length === 0 ? (
-                  <EmptyState text="最近24小时暂无新情报，可等待下一次自动采集或手动刷新。" />
+                  <EmptyState text="AI HOT 精选里暂时没有满足学生必读规则的内容，可等待下一次自动采集或手动刷新。" />
                 ) : null}
               </div>
             ) : null}
