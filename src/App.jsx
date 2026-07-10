@@ -56,6 +56,47 @@ const actionIcons = {
 };
 
 const defaultActions = ["写笔记", "收藏"];
+const beijingTimeZone = "Asia/Shanghai";
+
+function getBeijingDateParts(date = new Date()) {
+  const parts = new Intl.DateTimeFormat("zh-CN", {
+    timeZone: beijingTimeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    weekday: "short",
+  }).formatToParts(date);
+  const value = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  return {
+    year: value.year,
+    month: value.month,
+    day: value.day,
+    weekday: value.weekday,
+  };
+}
+
+function getBeijingDisplayDate(date = new Date()) {
+  const { year, month, day, weekday } = getBeijingDateParts(date);
+  return `${year}.${month}.${day} ${weekday}`;
+}
+
+function getBeijingFileDate(date = new Date()) {
+  const { year, month, day } = getBeijingDateParts(date);
+  return `${year}-${month}-${day}`;
+}
+
+async function fetchNewsArticles(cacheBust = false) {
+  const suffix = cacheBust ? `?t=${Date.now()}` : "";
+  const response = await fetch(`${import.meta.env.BASE_URL}data/news.json${suffix}`, { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`news.json ${response.status}`);
+  }
+  const payload = await response.json();
+  if (!Array.isArray(payload) || payload.length === 0) {
+    throw new Error("news.json is empty");
+  }
+  return payload.map(hydrateFeedArticle);
+}
 
 function formatFeedTime(value) {
   if (!value) {
@@ -177,7 +218,7 @@ function TopBar({ query, setQuery, refreshCount, onRefresh }) {
       <div className="date-block">
         <CalendarDays size={19} />
         <div>
-          <span>2026.07.05 周日</span>
+          <span>{getBeijingDisplayDate()}</span>
           <strong>今日 AI 情报</strong>
         </div>
       </div>
@@ -196,6 +237,7 @@ function TopBar({ query, setQuery, refreshCount, onRefresh }) {
         <span>采集 126</span>
         <span>过滤 54</span>
         <span>保留 72</span>
+        <span>每日北京时间 08:00 自动采集</span>
       </div>
 
       <button className="icon-button primary" onClick={onRefresh} type="button">
@@ -401,7 +443,7 @@ function DailySummary({ visibleArticles, favorites, onExport }) {
 }
 
 function buildMarkdown(items, favorites) {
-  const date = "2026.07.05 周日";
+  const date = getBeijingDisplayDate();
   const lines = [
     `# AI Student Radar 日报 ${date}`,
     "",
@@ -441,16 +483,9 @@ export default function App() {
 
     async function loadNews() {
       try {
-        const response = await fetch(`${import.meta.env.BASE_URL}data/news.json`, { cache: "no-store" });
-        if (!response.ok) {
-          throw new Error(`news.json ${response.status}`);
-        }
-        const payload = await response.json();
-        if (!Array.isArray(payload) || payload.length === 0) {
-          throw new Error("news.json is empty");
-        }
+        const nextArticles = await fetchNewsArticles();
         if (!cancelled) {
-          setFeedArticles(payload.map(hydrateFeedArticle));
+          setFeedArticles(nextArticles);
         }
       } catch (error) {
         if (!cancelled) {
@@ -511,9 +546,19 @@ export default function App() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = "ai-student-radar-2026-07-05.md";
+    link.download = `ai-student-radar-${getBeijingFileDate()}.md`;
     link.click();
     URL.revokeObjectURL(url);
+  }
+
+  async function refreshDashboardData() {
+    try {
+      const nextArticles = await fetchNewsArticles(true);
+      setFeedArticles(nextArticles);
+      setRefreshCount((count) => count + 1);
+    } catch (error) {
+      console.info("Refresh kept current dashboard data:", error);
+    }
   }
 
   return (
@@ -532,7 +577,7 @@ export default function App() {
           query={query}
           refreshCount={refreshCount}
           setQuery={setQuery}
-          onRefresh={() => setRefreshCount((count) => count + 1)}
+          onRefresh={refreshDashboardData}
         />
 
         <div className="mobile-menu glass-panel">
