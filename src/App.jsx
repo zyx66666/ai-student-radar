@@ -57,6 +57,43 @@ const actionIcons = {
 
 const defaultActions = ["写笔记", "收藏"];
 const beijingTimeZone = "Asia/Shanghai";
+const favoritesStorageKey = "ai-student-radar-favorites";
+
+function normalizeFavoriteId(id) {
+  if (typeof id === "number" && Number.isFinite(id)) {
+    return id;
+  }
+  if (typeof id === "string") {
+    const trimmed = id.trim();
+    if (!trimmed) {
+      return null;
+    }
+    return /^\d+$/.test(trimmed) ? Number(trimmed) : trimmed;
+  }
+  return null;
+}
+
+function loadFavoriteIds() {
+  try {
+    if (typeof window === "undefined" || !window.localStorage) {
+      return new Set();
+    }
+    const raw = window.localStorage.getItem(favoritesStorageKey);
+    if (!raw) {
+      return new Set();
+    }
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) {
+      return new Set();
+    }
+    const validIds = parsed
+      .map(normalizeFavoriteId)
+      .filter((id) => id !== null);
+    return new Set(validIds);
+  } catch {
+    return new Set();
+  }
+}
 
 function getBeijingDateParts(date = new Date()) {
   const parts = new Intl.DateTimeFormat("zh-CN", {
@@ -530,7 +567,7 @@ export default function App() {
   const [activeNav, setActiveNav] = useState("今日精选");
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("全部");
-  const [favorites, setFavorites] = useState(new Set([1, 2]));
+  const [favorites, setFavorites] = useState(() => loadFavoriteIds());
   const [refreshCount, setRefreshCount] = useState(0);
   const [feedArticles, setFeedArticles] = useState(articles);
 
@@ -557,6 +594,17 @@ export default function App() {
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(
+        favoritesStorageKey,
+        JSON.stringify(Array.from(favorites)),
+      );
+    } catch {
+      // ignore localStorage errors
+    }
+  }, [favorites]);
 
   const visibleArticles = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -591,12 +639,16 @@ export default function App() {
   }, [activeNav, category, favorites, feedArticles, query]);
 
   function toggleFavorite(id) {
+    const favoriteId = normalizeFavoriteId(id);
+    if (favoriteId === null) {
+      return;
+    }
     setFavorites((current) => {
       const next = new Set(current);
-      if (next.has(id)) {
-        next.delete(id);
+      if (next.has(favoriteId)) {
+        next.delete(favoriteId);
       } else {
-        next.add(id);
+        next.add(favoriteId);
       }
       return next;
     });
@@ -682,6 +734,8 @@ export default function App() {
                   <span>
                     {activeNav === "今日精选"
                       ? "最近24小时暂无新情报，可等待下一次自动采集或手动刷新。"
+                      : activeNav === "我的收藏"
+                        ? "还没有收藏内容，点击资讯卡片里的收藏按钮即可加入。"
                       : "换一个关键词或分类试试。"}
                   </span>
                 </div>
