@@ -1,10 +1,10 @@
 {
   "meta": {
-    "generated_at": "2026-07-11T06:06:01.328469+00:00",
-    "collected_count": 126,
-    "filtered_count": 66,
+    "generated_at": "2026-07-11T10:52:20.409662+00:00",
+    "collected_count": 132,
+    "filtered_count": 72,
     "kept_count": 60,
-    "source_count": 17,
+    "source_count": 18,
     "analysis_provider": "local_rules",
     "schedule_label": "每日北京时间 08:00 / 12:00 / 18:00 自动采集"
   },
@@ -20,9 +20,9 @@
   "clusters": [
     {
       "topic": "机器人/具身智能",
-      "heat": 92,
-      "article_count": 13,
-      "why_hot": "机器人/具身智能在最近资讯中出现 13 次，代表事件是《Early to Share, Late to Save: Synchronisation-Driven Communication Gating in Bandwidth-Constrained Cooperative VLN》。",
+      "heat": 91,
+      "article_count": 14,
+      "why_hot": "机器人/具身智能在最近资讯中出现 14 次，代表事件是《Early to Share, Late to Save: Synchronisation-Driven Communication Gating in Bandwidth-Constrained Cooperative VLN》。",
       "student_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。",
       "article_ids": [
         147,
@@ -31,6 +31,21 @@
         151,
         109,
         110
+      ]
+    },
+    {
+      "topic": "论文研究",
+      "heat": 88,
+      "article_count": 8,
+      "why_hot": "论文研究在最近资讯中出现 8 次，代表事件是《宇树G1人形机器人完成首例活体微创手术》。",
+      "student_action": "按研究问题、方法、数据集、结果、局限和可复现性写一页论文阅读笔记。",
+      "article_ids": [
+        221,
+        222,
+        114,
+        209,
+        115,
+        121
       ]
     },
     {
@@ -46,21 +61,6 @@
         153,
         158,
         161
-      ]
-    },
-    {
-      "topic": "论文研究",
-      "heat": 87,
-      "article_count": 10,
-      "why_hot": "论文研究在最近资讯中出现 10 次，代表事件是《宇树G1人形机器人完成首例活体微创手术》。",
-      "student_action": "按研究问题、方法、数据集、结果、局限和可复现性写一页论文阅读笔记。",
-      "article_ids": [
-        221,
-        222,
-        114,
-        209,
-        115,
-        121
       ]
     },
     {
@@ -91,11 +91,12 @@
     },
     {
       "topic": "大模型",
-      "heat": 74,
-      "article_count": 2,
-      "why_hot": "大模型在最近资讯中出现 2 次，代表事件是《Cognition 推出 SWE-1.7，接近 GPT 5.5 与 Opus 智能水平》。",
+      "heat": 78,
+      "article_count": 3,
+      "why_hot": "大模型在最近资讯中出现 3 次，代表事件是《蚂蚁集团 Robbyant 发布 LingBot-VA 2.0，首个原生具身基础模型》。",
       "student_action": "收藏并写 3 条要点：它解决什么问题、需要哪些知识、能做什么小项目。",
       "article_ids": [
+        241,
         165,
         168
       ]
@@ -880,6 +881,44 @@
       "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
     },
     {
+      "id": 241,
+      "title": "蚂蚁集团 Robbyant 发布 LingBot-VA 2.0，首个原生具身基础模型",
+      "url": "https://aihot.virxact.com/items/cmrg3dsyt00g4iha7og0687tc",
+      "source": "AI HOT · MarkTechPost（RSS）",
+      "published_at": "2026-07-11T07:56:11+00:00",
+      "summary": "蚂蚁集团旗下具身智能团队 Robbyant 发布 LingBot-VA 2.0，首个原生具身基础模型。该模型采用因果 DiT 架构，视频专家约 13.0B 参数（约 1.9B 激活），训练规模约 15.3B 参数，推理时每 token 约 2.5B 激活。模型引入多块预测（MCP）实现 2.3 倍训练加速，并通过前瞻推理将推理延迟降至 142 ms/chunk。在 RoboTwin 2.0 的 50 个任务上，干净与随机演示数据平均成功率分别达 93.8% 和 93.4%。",
+      "category": "大模型",
+      "tags": [
+        "AI HOT",
+        "中文",
+        "AI新闻",
+        "大模型"
+      ],
+      "score": 74,
+      "one_sentence_summary": "这条内容关注《蚂蚁集团 Robbyant 发布 LingBot-VA 2.0，首个原生具身基础模型》，适合作为大模型方向的每日追踪素材。",
+      "importance": "它和大模型相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "audience": "AI/机器人方向本科生、准备申请研究生的同学",
+      "action_suggestion": "收藏并写 3 条要点：它解决什么问题、需要哪些知识、能做什么小项目。",
+      "relevance_score": 48,
+      "credibility_score": 72,
+      "novelty_score": 63,
+      "trend_score": 74,
+      "actionability_score": 52,
+      "spam_score": 0,
+      "final_score": 74,
+      "analysis_provider": "local_rules",
+      "is_favorite": false,
+      "created_at": "2026-07-11T10:52:18.201199+00:00",
+      "tldr": "这条内容关注《蚂蚁集团 Robbyant 发布 LingBot-VA 2.0，首个原生具身基础模型》，适合作为大模型方向的每日追踪素材。",
+      "why_it_matters": "它和大模型相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
+      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
+      "pm_value": "可提炼为趋势观察，判断技术变化如何影响产品机会。",
+      "difficulty": "中等",
+      "read_time": "2 min",
+      "next_action": "收藏并写 3 条要点：它解决什么问题、需要哪些知识、能做什么小项目。"
+    },
+    {
       "id": 157,
       "title": "Elon Musk称赞Anthropic并承诺不切断其算力",
       "url": "https://aihot.virxact.com/items/cmre1vdj600h8ihwk2g9d8r99",
@@ -1070,6 +1109,46 @@
       "pm_value": "可提炼为趋势观察，判断技术变化如何影响产品机会。",
       "difficulty": "中高",
       "read_time": "5 min",
+      "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
+    },
+    {
+      "id": 242,
+      "title": "China's Orca world model matches specialized robotics systems without ever seeing a single action label",
+      "url": "https://the-decoder.com/chinas-orca-world-model-matches-specialized-robotics-systems-without-ever-seeing-a-single-action-label/",
+      "source": "The Decoder",
+      "published_at": "2026-07-11T09:03:26+00:00",
+      "summary": "The Beijing Academy of Artificial Intelligence has released Orca, a world model that predicts abstract world states instead of tokens or pixels. Trained on 125,000 hours of video without a single action label, Orca matches the specialized π0.5 on five robotics tasks and could help ease the field's chronic data shortage. The article China's Orca world model matches specialized robotics systems without ever seeing a single action label appeared first on The Decoder .",
+      "category": "机器人/具身智能",
+      "tags": [
+        "The Decoder",
+        "AI研究",
+        "趋势",
+        "大模型",
+        "机器人",
+        "具身智能"
+      ],
+      "score": 72,
+      "one_sentence_summary": "这条内容关注《China's Orca world model matches specialized robotics systems without ever seeing a single action label》，适合作为机器人/具身智能方向的每日追踪素材。",
+      "importance": "它和机器人/具身智能相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "audience": "AI/机器人方向本科生、准备申请研究生的同学",
+      "action_suggestion": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。",
+      "relevance_score": 78,
+      "credibility_score": 82,
+      "novelty_score": 68,
+      "trend_score": 60,
+      "actionability_score": 59,
+      "spam_score": 0,
+      "final_score": 72,
+      "analysis_provider": "local_rules",
+      "is_favorite": false,
+      "created_at": "2026-07-11T10:52:18.201199+00:00",
+      "tldr": "这条内容关注《China's Orca world model matches specialized robotics systems without ever seeing a single action label》，适合作为机器人/具身智能方向的每日追踪素材。",
+      "why_it_matters": "它和机器人/具身智能相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
+      "research_value": "适合沉淀到机器人方向科研计划，关注 VLA、控制、仿真和真实数据闭环。",
+      "pm_value": "可提炼为趋势观察，判断技术变化如何影响产品机会。",
+      "difficulty": "中高",
+      "read_time": "3 min",
       "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
     },
     {
@@ -2316,82 +2395,6 @@
       "is_favorite": false,
       "created_at": "2026-07-10T07:33:24.809735+00:00",
       "tldr": "这条内容关注《Using AI-based Learning Assistants in Higher Education: A Large-Scale Descriptive Analysis》，适合作为论文方向的每日追踪素材。",
-      "why_it_matters": "它和论文相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
-      "research_value": "可转化为论文阅读笔记，重点拆研究问题、方法、数据集、结果和局限。",
-      "pm_value": "可提炼为趋势观察，判断技术变化如何影响产品机会。",
-      "difficulty": "进阶",
-      "read_time": "5 min",
-      "next_action": "按研究问题、方法、数据集、结果、局限和可复现性写一页论文阅读笔记。"
-    },
-    {
-      "id": 176,
-      "title": "Workflow as Knowledge: Semantic Persistence for LLM-Mediated Workflows",
-      "url": "https://arxiv.org/abs/2607.08740v1",
-      "source": "arXiv cs.AI",
-      "published_at": "2026-07-09T17:40:46+00:00",
-      "summary": "Large language model (LLM) applications increasingly use explicit workflows for tool use, retrieval, branching, checkpointing, and human approval. Existing workflow systems already address many execution concerns. This paper proposes a Lisp-inspired but language-independent conceptual model: symbolic forms, object identity, and live-image thinking are used as explanatory lenses, not implementation commitments. In this model, workflow definitions, workflow instances, inference records, context snapshots, and dependency relations are represented as persistent knowledge objects in a shared knowledge substrate. Its central semantic distinction is between derive and infer: derive is deterministic",
-      "category": "论文",
-      "tags": [
-        "arXiv",
-        "AI",
-        "论文",
-        "大模型"
-      ],
-      "score": 69,
-      "one_sentence_summary": "这条内容关注《Workflow as Knowledge: Semantic Persistence for LLM-Mediated Workflows》，适合作为论文方向的每日追踪素材。",
-      "importance": "它和论文相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "audience": "AI/机器人方向本科生、准备申请研究生的同学",
-      "action_suggestion": "按研究问题、方法、数据集、结果、局限和可复现性写一页论文阅读笔记。",
-      "relevance_score": 70,
-      "credibility_score": 84,
-      "novelty_score": 64,
-      "trend_score": 55,
-      "actionability_score": 67,
-      "spam_score": 0,
-      "final_score": 69,
-      "analysis_provider": "local_rules",
-      "is_favorite": false,
-      "created_at": "2026-07-10T07:50:31.783356+00:00",
-      "tldr": "这条内容关注《Workflow as Knowledge: Semantic Persistence for LLM-Mediated Workflows》，适合作为论文方向的每日追踪素材。",
-      "why_it_matters": "它和论文相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
-      "research_value": "可转化为论文阅读笔记，重点拆研究问题、方法、数据集、结果和局限。",
-      "pm_value": "可提炼为趋势观察，判断技术变化如何影响产品机会。",
-      "difficulty": "进阶",
-      "read_time": "5 min",
-      "next_action": "按研究问题、方法、数据集、结果、局限和可复现性写一页论文阅读笔记。"
-    },
-    {
-      "id": 177,
-      "title": "The Illusion of Equivalency: Statistical Characterization of Quantization Effects in LLMs",
-      "url": "https://arxiv.org/abs/2607.08734v1",
-      "source": "arXiv cs.AI",
-      "published_at": "2026-07-09T17:35:02+00:00",
-      "summary": "Post-training quantization is widely used to deploy large language models in resource-constrained settings, yet its evaluation relies almost exclusively on accuracy and perplexity. We show that these metrics fail to capture behavioral changes induced by quantization. We introduce correctness agreement, a decision-level metric that measures overlap in correct predictions between a base model and its quantized variants, independent of absolute accuracy. Across multiple models and quantization schemes from 8-bit to 2-bit, we find that behavioral divergence emerges under moderate quantization even when task performance appears preserved. To explain this effect, we analyze quantization as a struc",
-      "category": "论文",
-      "tags": [
-        "arXiv",
-        "AI",
-        "论文",
-        "大模型"
-      ],
-      "score": 69,
-      "one_sentence_summary": "这条内容关注《The Illusion of Equivalency: Statistical Characterization of Quantization Effects in LLMs》，适合作为论文方向的每日追踪素材。",
-      "importance": "它和论文相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "audience": "AI/机器人方向本科生、准备申请研究生的同学",
-      "action_suggestion": "按研究问题、方法、数据集、结果、局限和可复现性写一页论文阅读笔记。",
-      "relevance_score": 70,
-      "credibility_score": 84,
-      "novelty_score": 69,
-      "trend_score": 55,
-      "actionability_score": 60,
-      "spam_score": 0,
-      "final_score": 69,
-      "analysis_provider": "local_rules",
-      "is_favorite": false,
-      "created_at": "2026-07-10T07:50:31.783356+00:00",
-      "tldr": "这条内容关注《The Illusion of Equivalency: Statistical Characterization of Quantization Effects in LLMs》，适合作为论文方向的每日追踪素材。",
       "why_it_matters": "它和论文相关，可作为学习路线、科研计划或产品案例库的素材。",
       "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
       "research_value": "可转化为论文阅读笔记，重点拆研究问题、方法、数据集、结果和局限。",
