@@ -551,6 +551,206 @@ function filterPaperArticles(articles, { timeRangeLabel, direction, query }) {
     .sort((left, right) => (parseArticleTime(right.publishedAt) ?? 0) - (parseArticleTime(left.publishedAt) ?? 0));
 }
 
+function compactSentence(value, fallback = null) {
+  const text = String(value ?? "").replace(/\s+/g, " ").trim();
+  if (!text) {
+    return fallback;
+  }
+  return text.length > 94 ? `${text.slice(0, 92)}…` : text;
+}
+
+function productCaseType(article) {
+  const text = articleText(article);
+  const lower = text.toLowerCase();
+  const productSignal = includesAnyText(
+    [text],
+    [
+      "产品",
+      "应用",
+      "工具",
+      "app",
+      "saas",
+      "agent",
+      "workflow",
+      "copilot",
+      "coding",
+      "搜索",
+      "办公",
+      "教育",
+      "科研",
+      "github",
+      "hugging face",
+      "开源",
+      "browser",
+      "自动化",
+      "发布",
+      "推出",
+      "上线",
+    ],
+  );
+  if (!article.title || !article.summary || isFinancingOnlyArticle(article) || isMarketingNoiseArticle(article)) {
+    return "not_product_case";
+  }
+  if (isPaperArticle(article) && !includesAnyText([text], ["工具", "产品", "app", "平台", "github", "hugging face", "demo"])) {
+    return "not_product_case";
+  }
+  if (includesAnyText([text], ["股价", "估值", "高管", "诉讼", "监管"]) && !productSignal) {
+    return "not_product_case";
+  }
+  if (includesAnyText([text], ["github", "repo", "开源", "hugging face", "sdk", "代码"]) && productSignal) {
+    return "open_source_tool";
+  }
+  if (includesAnyText([text], ["agent", "智能体", "workflow", "自动化", "computer use", "browser", "tool use", "多步骤"])) {
+    return "agent_workflow";
+  }
+  if (includesAnyText([text], ["api", "模型能力", "model", "gpt", "claude", "gemini", "多模态", "语音", "视频"]) && includesAnyText([text], ["产品", "应用", "app", "平台", "发布", "接入", "集成"])) {
+    return "model_to_product";
+  }
+  if (includesAnyText([text], ["战略", "合作", "收购", "生态", "商业化", "competition", "partner"]) && productSignal) {
+    return "company_strategy";
+  }
+  if (article.contentType === "product" || article.contentType === "tool" || article.category === "AI产品" || lower.includes("product hunt")) {
+    return "ai_tool";
+  }
+  return productSignal ? "ai_tool" : "not_product_case";
+}
+
+function productTypeLabel(type) {
+  return {
+    ai_tool: "AI 工具 / 应用产品",
+    agent_workflow: "AI Agent / 自动化工作流",
+    model_to_product: "模型能力产品化",
+    company_strategy: "公司战略 / 商业事件",
+    open_source_tool: "开源工具 / GitHub 项目",
+  }[type] ?? "产品案例";
+}
+
+function productField(label, value) {
+  const text = compactSentence(value);
+  return text ? { label, value: text } : null;
+}
+
+function inferMimicableFeature(article, type) {
+  const text = articleText(article);
+  if (type === "agent_workflow") {
+    return "Agent 执行过程可视化面板：展示任务步骤、工具调用和需要人工确认的节点。";
+  }
+  if (type === "open_source_tool") {
+    return "GitHub README → 学生可复现步骤生成器：抽取安装、输入输出和常见报错。";
+  }
+  if (includesAnyText([text], ["论文", "paper", "arxiv", "research"])) {
+    return "论文标题 → 研究问题 / 方法 / 数据集 / 阅读难度卡片。";
+  }
+  if (includesAnyText([text], ["search", "搜索", "research", "检索"])) {
+    return "搜索结果 → 来源可信度、核心结论和引用链接三栏卡片。";
+  }
+  if (includesAnyText([text], ["office", "文档", "slides", "表格", "办公"])) {
+    return "文档内容 → 摘要、待办、风险提示和下一步邮件草稿。";
+  }
+  if (type === "model_to_product") {
+    return "模型能力 demo 对比页：同一输入下展示旧流程、新 AI 流程和失败边界。";
+  }
+  return "用户输入 → 关键判断 → 可导出结果的三步最小功能。";
+}
+
+function buildProductCase(article) {
+  const type = article.product_case_type || article.productCaseType || productCaseType(article);
+  if (type === "not_product_case") {
+    return {
+      product_case_type: type,
+      product_type_label: "不适合进入产品观察",
+      visible_sections: [],
+    };
+  }
+
+  const title = compactSentence(article.title, "这条产品动态");
+  const summary = compactSentence(article.summary);
+  const tags = getArticleTags(article);
+  const topic = article.topic || tags[0] || "AI";
+  const isCoding = includesAnyText([articleText(article)], ["coding", "代码", "开发", "ide", "copilot"]);
+  const isEducation = includesAnyText([articleText(article)], ["教育", "学习", "tutor", "课程"]);
+  const isResearch = includesAnyText([articleText(article)], ["科研", "论文", "research", "arxiv"]);
+  const audience = isCoding
+    ? "想观察 AI Coding 和开发者工具的学生"
+    : isEducation
+      ? "关注 AI 教育产品和学习工具的学生"
+      : isResearch
+        ? "想把科研工具转成阅读或项目效率工具的学生"
+        : article.studentFit || "想训练 AI 产品判断力的学生";
+
+  const fields = {
+    product_insight: article.product_insight || article.productInsight || `${title} 的看点在于把 ${topic} 能力包装成可被用户直接触发的产品动作。`,
+    user_scenario: article.user_scenario || (summary ? `可从这条动态里观察用户在「${summary}」场景下如何减少判断或操作成本。` : null),
+    user_pain: article.user_pain || (includesAnyText([articleText(article)], ["效率", "自动", "workflow", "办公", "代码"]) ? "用户痛点是重复操作多、上下文切换频繁，需要更短的完成路径。" : null),
+    ai_capability_anchor: article.ai_capability_anchor || (includesAnyText([articleText(article)], ["agent", "智能体", "workflow"]) ? "AI 落点在任务拆解、工具调用和执行结果反馈。" : includesAnyText([articleText(article)], ["多模态", "image", "video", "语音"]) ? "AI 落点在多模态输入理解和生成结果交付。" : null),
+    product_flow: article.product_flow || null,
+    automated_workflow: article.automated_workflow || (type === "agent_workflow" ? "把用户目标拆成计划、调用工具、返回结果和人工确认几个步骤。" : null),
+    product_boundary: article.product_boundary || (type === "agent_workflow" ? "值得关注自动化边界：哪些步骤必须让用户确认，哪些结果可以自动执行。" : null),
+    productization_value: article.productization_value || (type === "model_to_product" ? `${title} 说明模型能力只有进入具体入口、权限和反馈闭环后，才变成可用产品。` : null),
+    affected_products: article.affected_products || (type === "model_to_product" ? "可能影响搜索、办公、开发者工具或内容生产类产品的交互方式。" : null),
+    event_summary: article.event_summary || (type === "company_strategy" ? summary : null),
+    product_competition_point: article.product_competition_point || (type === "company_strategy" ? "重点看它如何改变产品入口、生态合作或用户迁移成本。" : null),
+    tool_value: article.tool_value || (type === "open_source_tool" ? `${title} 的价值在于给学生一个能打开、能测试、能改造的具体工具入口。` : null),
+    suitable_user: article.suitable_user || audience,
+    minimum_demo: article.minimum_demo || (type === "open_source_tool" ? "先跑通 README 的最小示例，再记录输入、输出和失败条件。" : null),
+    project_output: article.project_output || (type === "open_source_tool" ? "最终产出一个带截图、步骤和改进想法的 README 小实验。" : null),
+    student_takeaway: article.student_takeaway || article.pmValue || `学生可以借这条动态练习判断：${title} 是在优化入口、流程、成本还是结果质量。`,
+    mimicable_feature: article.mimicable_feature || inferMimicableFeature(article, type),
+  };
+
+  const sectionRules = {
+    ai_tool: ["product_insight", "user_scenario", "user_pain", "ai_capability_anchor", "mimicable_feature"],
+    agent_workflow: ["product_insight", "automated_workflow", "ai_capability_anchor", "product_boundary", "mimicable_feature"],
+    model_to_product: ["product_insight", "productization_value", "affected_products", "student_takeaway"],
+    company_strategy: ["event_summary", "product_competition_point", "student_takeaway"],
+    open_source_tool: ["tool_value", "suitable_user", "minimum_demo", "project_output"],
+  };
+  const fieldLabels = {
+    product_insight: "产品看点",
+    user_scenario: "用户场景",
+    user_pain: "用户痛点",
+    ai_capability_anchor: "AI 能力落点",
+    product_flow: "核心链路",
+    automated_workflow: "自动化工作流",
+    product_boundary: "产品边界",
+    productization_value: "产品化价值",
+    affected_products: "影响的产品形态",
+    event_summary: "事件摘要",
+    product_competition_point: "产品竞争点",
+    tool_value: "工具价值",
+    suitable_user: "适合谁看",
+    minimum_demo: "最小 demo",
+    project_output: "最终产出物",
+    student_takeaway: "学生启发",
+    mimicable_feature: "可模仿的小功能",
+  };
+  const visibleSections = (article.visible_sections || article.visibleSections || sectionRules[type] || [])
+    .map((key) => productField(fieldLabels[key] || key, fields[key]))
+    .filter(Boolean)
+    .slice(0, type === "company_strategy" ? 3 : 4);
+
+  return {
+    ...fields,
+    product_case_type: type,
+    product_type_label: article.product_type_label || article.productTypeLabel || productTypeLabel(type),
+    one_line_insight:
+      article.one_line_insight ||
+      article.oneLineInsight ||
+      (type === "company_strategy"
+        ? `${title} 的产品看点是它可能改变 AI 产品的入口、生态或竞争边界。`
+        : `${title} 的产品看点是把 ${topic} 从技术能力转成更具体的用户任务。`),
+    why_for_students:
+      article.why_for_students ||
+      article.whyForStudents ||
+      `适合学生看，因为它能训练你把「${topic} 动态」拆成用户、场景、功能边界和可模仿的小实验。`,
+    visible_sections: visibleSections,
+  };
+}
+
+function isProductObservationArticle(article) {
+  return article.productCase?.product_case_type && article.productCase.product_case_type !== "not_product_case";
+}
+
 function getSaveAs(article) {
   if (Array.isArray(article.save_as) && article.save_as.length) {
     return article.save_as;
@@ -1078,6 +1278,14 @@ function hydrateFeedArticle(article, index) {
     article.why_it_matters ||
     article.importance ||
     `它能帮你判断 ${topic} 方向的新问题、新方法或产品机会，适合转成可复用素材。`;
+  const studentFit =
+    article.student_fit ||
+    article.studentFit ||
+    (score >= 86 ? "适合重点跟进的本科高年级/申请准备学生" : "适合建立方向认知的本科生");
+  const summary = article.tldr || article.one_sentence_summary || article.summary || "这条内容来自自动采集源，建议打开原文进一步判断价值。";
+  const why = article.why_it_matters || article.importance || `来自 ${article.source ?? "可信来源"}，与 ${tags.slice(0, 3).join("、")} 相关，适合纳入每日 AI 情报追踪。`;
+  const researchValue = article.research_value || "可提炼为研究计划或论文阅读素材。";
+  const pmValue = article.pm_value || "可转化为产品分析卡片。";
   const nextAction =
     article.next_action ||
     article.nextAction ||
@@ -1089,6 +1297,20 @@ function hydrateFeedArticle(article, index) {
         : contentType === "open_source" || contentType === "tool"
           ? "打开项目页，跑通 README 中最小示例并记录依赖和输入输出。"
           : "收藏后写 3 条学习笔记：发生了什么、为什么重要、下一步能做什么。");
+  const productInsight =
+    article.product_insight ||
+    article.productInsight ||
+    (contentType === "product" || contentType === "tool"
+      ? `观察《${article.title}》如何把 ${topic} 能力落到一个具体用户任务。`
+      : null);
+  const productCase = buildProductCase({
+    ...normalizedArticle,
+    summary,
+    studentFit,
+    studentReason,
+    pmValue,
+    productInsight,
+  });
 
   return {
     id: article.id ?? index + 1,
@@ -1108,13 +1330,13 @@ function hydrateFeedArticle(article, index) {
     relevance,
     studentDailyScore: article.student_daily_score ?? article.studentDailyScore ?? studentDailyBreakdown.student_daily_score,
     studentDailyBreakdown,
-    summary: article.tldr || article.one_sentence_summary || article.summary || "这条内容来自自动采集源，建议打开原文进一步判断价值。",
-    why: article.why_it_matters || article.importance || `来自 ${article.source ?? "可信来源"}，与 ${tags.slice(0, 3).join("、")} 相关，适合纳入每日 AI 情报追踪。`,
+    summary,
+    why,
     studentValue: article.student_value || article.audience || "适合作为学习、科研申请或产品分析素材。",
-    studentFit: article.student_fit || article.studentFit || (score >= 86 ? "适合重点跟进的本科高年级/申请准备学生" : "适合建立方向认知的本科生"),
+    studentFit,
     studentReason,
-    researchValue: article.research_value || "可提炼为研究计划或论文阅读素材。",
-    pmValue: article.pm_value || "可转化为产品分析卡片。",
+    researchValue,
+    pmValue,
     difficulty: article.difficulty || "中等",
     readTime: article.read_time || "3 min",
     nextAction,
@@ -1129,10 +1351,12 @@ function hydrateFeedArticle(article, index) {
       (contentType === "open_source" || contentType === "tool"
         ? "跑通最小示例，记录安装步骤、输入输出和一个可改进点。"
         : "把关键结论转成一个 1 页实验或项目想法。"),
-    productInsight:
-      article.product_insight ||
-      article.productInsight ||
-      "从目标用户、痛点、核心链路、AI 能力和可模仿功能五个角度拆解。",
+    productCase,
+    productCaseType: productCase.product_case_type,
+    productTypeLabel: productCase.product_type_label,
+    oneLineInsight: productCase.one_line_insight,
+    whyForStudents: productCase.why_for_students,
+    productInsight,
     actions: buildActions({ ...article, tags }),
     knowledge: tags.slice(0, 4),
     paperInsight: article.paper_insight ?? article.paperInsight ?? null,
@@ -1786,34 +2010,45 @@ function ProjectCard({ article, favorite, learningTaskSelected, onToggleFavorite
   );
 }
 
-function ProductObservation({ articles: sourceArticles, favorites, selectedLearningTasks, onToggleFavorite, onToggleLearningTask }) {
-  const productItems = sourceArticles
-    .filter((article) => article.contentType === "product" || article.category === "AI产品" || article.topic === "AI产品")
-    .sort(sortByScoreAndTime);
+function ProductObservation({
+  articles: sourceArticles,
+  favorites,
+  selectedLearningTasks,
+  selectedProductId,
+  onSelectProduct,
+  onToggleFavorite,
+  onToggleLearningTask,
+}) {
+  const productItems = sourceArticles.filter(isProductObservationArticle).sort(sortByScoreAndTime);
 
   return (
-    <div className="card-lab-grid">
+    <div className="product-observation-layout">
+      <div className="product-case-list">
       {productItems.map((article) => (
         <ProductCard
           article={article}
           favorite={favorites.has(article.id)}
+          selected={selectedProductId === article.id}
           key={article.id}
           learningTaskSelected={selectedLearningTasks.has(getPrimaryLearningTask(article).id)}
+          onSelect={() => onSelectProduct(selectedProductId === article.id ? null : article.id)}
           onToggleFavorite={() => onToggleFavorite(article.id)}
           onToggleLearningTask={onToggleLearningTask}
         />
       ))}
-      {!productItems.length ? <EmptyState text="当前筛选下暂无产品案例，试试切到 AI产品 或 Agent 分类。" /> : null}
+      </div>
+      {!productItems.length ? <EmptyState text="当前筛选下暂无明确用户场景的 AI 产品案例，可切到全部或等待下一次采集。" /> : null}
     </div>
   );
 }
 
-function ProductCard({ article, favorite, learningTaskSelected, onToggleFavorite, onToggleLearningTask }) {
+function ProductCard({ article, favorite, learningTaskSelected, selected, onSelect, onToggleFavorite, onToggleLearningTask }) {
   const articleUrl = getSafeArticleUrl(article.url);
   const primaryLearningTask = getPrimaryLearningTask(article);
+  const productCase = article.productCase;
 
   return (
-    <article className="transform-card glass-panel product-card">
+    <article className={selected ? "product-case-card glass-panel selected" : "product-case-card glass-panel"}>
       <div className="article-meta">
         <span>{article.source}</span>
         <span>{article.time}</span>
@@ -1827,22 +2062,85 @@ function ProductCard({ article, favorite, learningTaskSelected, onToggleFavorite
           article.title
         )}
       </h2>
-      <div className="paper-grid">
-        <InfoBlock label="目标用户" value={article.studentFit} />
-        <InfoBlock label="解决的痛点" value={article.studentReason} />
-        <InfoBlock label="核心功能链路" value={article.productInsight} />
-        <InfoBlock label="使用的AI能力" value={article.knowledge.join("、") || article.topic} />
-        <InfoBlock label="竞品或相似产品" value="同类 AI Agent、Copilot、自动化工作流或垂直工具" />
-        <InfoBlock label="产品思维启发" value={article.pmValue} />
-        <InfoBlock label="可模仿的小功能" value="做一个输入内容、生成结构化卡片、支持导出的最小功能闭环" />
+      <div className="product-type-row">
+        <span>{productCase.product_type_label}</span>
+        {(article.knowledge ?? []).slice(0, 2).map((tag) => (
+          <em key={tag}>{tag}</em>
+        ))}
       </div>
-      <CardActions
-        favorite={favorite}
-        learningTaskSelected={learningTaskSelected}
-        onToggleFavorite={onToggleFavorite}
-        onToggleLearningTask={() => onToggleLearningTask(primaryLearningTask.id)}
-      />
+      <div className="product-brief">
+        <InfoBlock label="一句话产品看点" value={productCase.one_line_insight} />
+        <InfoBlock label="适合学生看的原因" value={productCase.why_for_students} />
+      </div>
+      {selected ? (
+        <div className="mobile-product-details">
+          <ProductCaseDetails article={article} compact />
+        </div>
+      ) : null}
+      <div className="action-row paper-actions product-actions">
+        <button className={selected ? "action learning active" : "action learning"} onClick={onSelect} type="button">
+          <Layers3 size={15} />
+          <span>{selected ? "收起拆解" : "展开拆解"}</span>
+        </button>
+        <button className={favorite ? "action active" : "action"} onClick={onToggleFavorite} type="button">
+          <Heart size={15} />
+          <span>{favorite ? "已收藏" : "收藏"}</span>
+        </button>
+        <button className={learningTaskSelected ? "action learning active" : "action learning"} onClick={() => onToggleLearningTask(primaryLearningTask.id)} type="button">
+          <GraduationCap size={15} />
+          <span>{learningTaskSelected ? "已加入计划" : "加入学习计划"}</span>
+        </button>
+      </div>
     </article>
+  );
+}
+
+function ProductCaseDetails({ article, compact = false }) {
+  const productCase = article.productCase;
+  const articleUrl = getSafeArticleUrl(article.url);
+  return (
+    <div className={compact ? "product-detail compact" : "product-detail"}>
+      <div className="product-detail-heading">
+        <span>{productCase.product_type_label}</span>
+        <h3>{article.title}</h3>
+        <p>{productCase.one_line_insight}</p>
+      </div>
+      <div className="product-detail-grid">
+        {productCase.visible_sections.map((section) => (
+          <InfoBlock label={section.label} value={section.value} key={section.label} />
+        ))}
+      </div>
+      <div className="product-detail-actions">
+        {articleUrl ? (
+          <a className="action learning" href={articleUrl} target="_blank" rel="noopener noreferrer">
+            <ChevronRight size={15} />
+            <span>打开原文</span>
+          </a>
+        ) : null}
+        <span>{article.nextAction}</span>
+      </div>
+    </div>
+  );
+}
+
+function ProductPracticePanel({ articles }) {
+  const productItems = articles.filter(isProductObservationArticle).slice(0, 3);
+  const items = productItems.map((article, index) => {
+    const feature = article.productCase?.mimicable_feature || article.productCase?.student_takeaway || article.oneLineInsight;
+    return `${index + 1}. 选择《${article.title}》，画出一个「用户输入 → AI 处理 → 可交付结果」小闭环：${feature}`;
+  });
+  return <SimplePanel icon={Target} title="今日产品练习" items={items} />;
+}
+
+function ProductDetailPanel({ article }) {
+  return (
+    <section className="side-panel glass-panel product-side-panel">
+      <div className="panel-heading">
+        <Layers3 size={18} />
+        <h3>选中文章拆解</h3>
+      </div>
+      <ProductCaseDetails article={article} />
+    </section>
   );
 }
 
@@ -2334,7 +2632,7 @@ function WeeklyPaperRoutePanel() {
   );
 }
 
-function ContextRail({ activeNav, articles: railArticles, favorites, selectedLearningTasks, completedTaskIds, onJumpToArticle }) {
+function ContextRail({ activeNav, articles: railArticles, favorites, selectedLearningTasks, completedTaskIds, onJumpToArticle, selectedProductArticle }) {
   if (activeNav === "今日必读") {
     return <TodaySidePanels articles={railArticles} onJumpToArticle={onJumpToArticle} />;
   }
@@ -2375,9 +2673,7 @@ function ContextRail({ activeNav, articles: railArticles, favorites, selectedLea
   if (activeNav === "产品观察") {
     return (
       <>
-        <SimplePanel icon={Layers3} title="产品拆解角度" items={["目标用户", "核心痛点", "AI 能力链路", "竞品与可模仿功能"]} />
-        <SimplePanel icon={Sparkles} title="今日可模仿功能" items={railArticles.slice(0, 4).map((item) => item.productInsight)} />
-        <MaterialPanel />
+        {selectedProductArticle ? <ProductDetailPanel article={selectedProductArticle} /> : <ProductPracticePanel articles={railArticles} />}
       </>
     );
   }
@@ -2626,6 +2922,7 @@ export default function App() {
   const [dailyBrief, setDailyBrief] = useState(null);
   const [clusters, setClusters] = useState([]);
   const [clusterOpen, setClusterOpen] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState(null);
   const [highlightedArticleId, setHighlightedArticleId] = useState(null);
   const dailyArticleRefs = useRef({});
 
@@ -2727,13 +3024,20 @@ export default function App() {
       return filteredRecentArticles.filter((article) => ["open_source", "tool"].includes(article.contentType) || article.actions.includes("看代码"));
     }
     if (activeNav === "产品观察") {
-      return filteredRecentArticles.filter((article) => article.contentType === "product" || article.topic === "AI产品");
+      return filteredRecentArticles.filter(isProductObservationArticle);
     }
     if (activeNav === "我的素材库") {
       return feedArticles.filter((article) => favorites.has(article.id) && matchesCategory(article, category) && matchesSearch(article, normalizedQuery));
     }
     return filteredRecentArticles;
   }, [activeNav, category, favorites, feedArticles, filteredRecentArticles, paperRadarArticles, query, todayArticles]);
+
+  const selectedProductArticle = useMemo(() => {
+    if (activeNav !== "产品观察" || selectedProductId === null) {
+      return null;
+    }
+    return visibleArticles.find((article) => article.id === selectedProductId) ?? null;
+  }, [activeNav, selectedProductId, visibleArticles]);
 
   function toggleFavorite(id) {
     const favoriteId = normalizeFavoriteId(id);
@@ -2858,8 +3162,16 @@ export default function App() {
     cluster: false,
   };
 
+  const shellClassName = [
+    "app-shell",
+    activeNav === "今日必读" ? "today-view" : "",
+    activeNav === "产品观察" ? "product-view" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <main className={activeNav === "今日必读" ? "app-shell today-view" : "app-shell"}>
+    <main className={shellClassName}>
       <img className="dune-asset" src={duneBackground} alt="" aria-hidden="true" />
       <div className="ambient-lines" aria-hidden="true" />
 
@@ -2965,9 +3277,11 @@ export default function App() {
 
             {activeNav === "产品观察" ? (
               <ProductObservation
-                articles={filteredRecentArticles}
+                articles={visibleArticles}
                 favorites={favorites}
+                selectedProductId={selectedProductId}
                 selectedLearningTasks={selectedLearningTasks}
+                onSelectProduct={setSelectedProductId}
                 onToggleFavorite={toggleFavorite}
                 onToggleLearningTask={toggleLearningTask}
               />
@@ -3009,6 +3323,7 @@ export default function App() {
               completedTaskIds={completedTaskIds}
               favorites={favorites}
               onJumpToArticle={jumpToDailyArticle}
+              selectedProductArticle={selectedProductArticle}
               selectedLearningTasks={selectedLearningTasks}
             />
           </aside>

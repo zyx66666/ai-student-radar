@@ -1009,6 +1009,122 @@ button {
   gap: 12px;
 }
 
+.product-observation-layout,
+.product-case-list {
+  display: grid;
+  gap: 12px;
+}
+
+.product-case-card {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 28px;
+}
+
+.product-case-card.selected {
+  border-color: rgba(17, 174, 184, 0.42);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.82), rgba(232, 251, 249, 0.52)),
+    rgba(255, 255, 255, 0.42);
+  box-shadow: 0 20px 62px rgba(17, 116, 128, 0.18);
+}
+
+.product-case-card h2 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+.product-type-row,
+.product-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+}
+
+.product-type-row span,
+.product-type-row em {
+  padding: 6px 9px;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.5);
+  color: #25565d;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 740;
+}
+
+.product-type-row span {
+  color: #0b6f79;
+  background:
+    linear-gradient(135deg, rgba(19, 159, 171, 0.16), rgba(57, 173, 133, 0.14)),
+    rgba(255, 255, 255, 0.54);
+}
+
+.product-brief,
+.product-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.product-actions {
+  justify-content: flex-start;
+}
+
+.mobile-product-details {
+  display: none;
+}
+
+.product-detail {
+  display: grid;
+  gap: 12px;
+}
+
+.product-detail.compact {
+  padding-top: 2px;
+}
+
+.product-detail-heading span {
+  display: inline-flex;
+  width: fit-content;
+  padding: 6px 9px;
+  border-radius: 13px;
+  color: #0b6f79;
+  background: rgba(255, 255, 255, 0.54);
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.product-detail-heading h3 {
+  margin: 10px 0 6px;
+  color: #17353c;
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+.product-detail-heading p {
+  margin: 0;
+  color: #3c6265;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.product-detail-actions {
+  padding-top: 2px;
+}
+
+.product-detail-actions .action {
+  text-decoration: none;
+}
+
+.product-detail-actions > span {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
 .transform-card {
   display: grid;
   gap: 12px;
@@ -1527,9 +1643,17 @@ button {
     display: none;
   }
 
+  .product-view .right-rail {
+    display: none;
+  }
+
   .today-view .today-mobile-panels {
     display: grid;
     gap: 14px;
+  }
+
+  .product-view .mobile-product-details {
+    display: block;
   }
 
   .article-card {
@@ -1572,6 +1696,8 @@ button {
   .summary-actions,
   .metric-strip,
   .card-lab-grid,
+  .product-brief,
+  .product-detail-grid,
   .material-library,
   .task-grid {
     grid-template-columns: 1fr;
