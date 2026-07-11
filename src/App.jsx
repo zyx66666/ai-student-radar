@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Archive,
   Bell,
@@ -565,6 +565,81 @@ function getDailyDiversityGroup(article) {
   return "trend_background";
 }
 
+const dailyTopicRules = [
+  { topic: "机器人 / 具身智能", keywords: ["robot", "robotics", "vla", "embodied", "具身", "机器人", "sim2real", "机械臂"] },
+  { topic: "AI Agent", keywords: ["agent", "tool use", "workflow", "browser", "computer use", "自动化", "智能体", "工具调用"] },
+  { topic: "多模态", keywords: ["multimodal", "vlm", "vision-language", "image", "video", "audio", "多模态", "视觉语言", "图像", "视频"] },
+  { topic: "AI 安全", keywords: ["safety", "alignment", "jailbreak", "permission", "security", "risk", "安全", "对齐", "越狱", "权限"] },
+  { topic: "开源工具", keywords: ["open-source", "github", "repo", "release", "开源", "复现", "代码"] },
+  { topic: "论文 / 研究方法", keywords: ["benchmark", "evaluation", "paper", "arxiv", "论文", "评测", "方法", "实验"] },
+  { topic: "AI 产品", keywords: ["product", "app", "saas", "应用", "产品", "商业化", "用户"] },
+  { topic: "AI 芯片", keywords: ["chip", "gpu", "nvidia", "算力", "芯片", "推理加速"] },
+  { topic: "自动驾驶", keywords: ["autonomous driving", "dashcam", "自动驾驶", "驾驶", "车载"] },
+  { topic: "医疗 AI", keywords: ["medical", "health", "medicine", "医疗", "诊断"] },
+  { topic: "教育 AI", keywords: ["education", "learning", "tutor", "教育", "学习助手"] },
+  { topic: "模型评测", keywords: ["benchmark", "eval", "evaluation", "leaderboard", "评测", "榜单"] },
+  { topic: "开发工具", keywords: ["coding", "developer", "devtool", "ide", "编程", "开发工具", "代码助手"] },
+  { topic: "大模型", keywords: ["llm", "large language model", "gpt", "claude", "gemini", "大模型", "基础模型"] },
+];
+
+function extractDailyTopicTags(article) {
+  const text = [
+    article.title,
+    article.summary,
+    article.category,
+    article.studentValue,
+    article.studentReason,
+    article.nextAction,
+    ...(article.tags ?? []),
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+  const matched = dailyTopicRules
+    .filter((rule) => rule.keywords.some((keyword) => text.includes(keyword.toLowerCase())))
+    .map((rule) => rule.topic);
+  if (!matched.length && article.topic) {
+    matched.push(article.topic === "机器人/具身智能" ? "机器人 / 具身智能" : article.topic);
+  }
+  return Array.from(new Set(matched)).slice(0, 3);
+}
+
+function getDailyScoreLevel(score) {
+  if (score >= 90) {
+    return "今日必读";
+  }
+  if (score >= 80) {
+    return "优先阅读";
+  }
+  return "可以浏览";
+}
+
+function normalizeDailyArticle(article, index) {
+  const topicTags = extractDailyTopicTags(article);
+  const extraUseTags = [];
+  if (article.contentType === "open_source" || article.contentType === "tool") {
+    extraUseTags.push("工具上手", "开源工具");
+  }
+  if (article.contentType === "trend") {
+    extraUseTags.push("长期趋势");
+  }
+  if (article.topic === "机器人/具身智能" || article.topic === "AI Agent") {
+    extraUseTags.push("研究方向");
+  }
+  const useTags = Array.from(new Set([...(article.saveAs ?? getSaveAs(article)), ...extraUseTags])).slice(0, 4);
+  return {
+    ...article,
+    rank: index + 1,
+    student_score: article.studentDailyScore,
+    student_reason: article.studentReason,
+    student_value: article.studentValue,
+    action_suggestion: article.nextAction,
+    reading_time: article.readTime,
+    topic_tags: topicTags,
+    use_tags: useTags,
+  };
+}
+
 function selectStudentDailyTop10(items) {
   const top20 = uniqueByTitle(items)
     .filter((article) => isAiHotArticle(article))
@@ -597,13 +672,14 @@ function selectStudentDailyTop10(items) {
     getDailyDiversityGroup,
   );
 
-  if (diversified.length >= 10) {
-    return diversified;
-  }
+  const selected = diversified.length >= 10
+    ? diversified
+    : [...diversified, ...top20.filter((article) => !new Set(diversified.map((item) => item.id)).has(article.id))].slice(0, 10);
 
-  const selectedIds = new Set(diversified.map((article) => article.id));
-  const fillers = top20.filter((article) => !selectedIds.has(article.id));
-  return [...diversified, ...fillers].slice(0, 10);
+  return selected
+    .filter((article) => (article.studentDailyScore ?? 0) >= 70)
+    .sort((left, right) => (right.studentDailyScore ?? 0) - (left.studentDailyScore ?? 0))
+    .map(normalizeDailyArticle);
 }
 
 function isPaperSource(article) {
@@ -1002,7 +1078,7 @@ function Sidebar({ active, onSelect, favoritesCount }) {
   );
 }
 
-function TopBar({ query, setQuery, refreshCount, onRefresh, meta, loadedCount }) {
+function TopBar({ query, setQuery, refreshCount, onRefresh, meta, loadedCount, compact = false }) {
   const stats = meta
     ? [
         `采集 ${meta.collected_count ?? loadedCount}`,
@@ -1013,7 +1089,7 @@ function TopBar({ query, setQuery, refreshCount, onRefresh, meta, loadedCount })
     : [`已加载 ${loadedCount} 条`];
 
   return (
-    <header className="topbar glass-panel">
+    <header className={compact ? "topbar glass-panel compact-topbar" : "topbar glass-panel"}>
       <div className="date-block">
         <CalendarDays size={19} />
         <div>
@@ -1022,15 +1098,17 @@ function TopBar({ query, setQuery, refreshCount, onRefresh, meta, loadedCount })
         </div>
       </div>
 
-      <label className="search-box">
-        <Search size={18} />
-        <input
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder="搜索机器人、Agent、论文、产品..."
-          aria-label="搜索情报"
-        />
-      </label>
+      {!compact ? (
+        <label className="search-box">
+          <Search size={18} />
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="搜索机器人、Agent、论文、产品..."
+            aria-label="搜索情报"
+          />
+        </label>
+      ) : null}
 
       <div className="top-stats" aria-label="今日统计">
         {stats.map((item) => (
@@ -1039,10 +1117,12 @@ function TopBar({ query, setQuery, refreshCount, onRefresh, meta, loadedCount })
         <span>{meta?.schedule_label ?? scheduleLabel}</span>
       </div>
 
-      <button className="icon-button primary" onClick={onRefresh} type="button">
-        <RefreshCcw size={18} />
-        <span>刷新 {refreshCount ? `+${refreshCount}` : ""}</span>
-      </button>
+      {!compact ? (
+        <button className="icon-button primary" onClick={onRefresh} type="button">
+          <RefreshCcw size={18} />
+          <span>刷新 {refreshCount ? `+${refreshCount}` : ""}</span>
+        </button>
+      ) : null}
     </header>
   );
 }
@@ -1167,6 +1247,87 @@ function ArticleCard({ article, favorite, learningTaskSelected, scoreLabel = "�
           >
             <GraduationCap size={15} />
             <span>{learningTaskSelected ? "已加入计划" : "加入学习计划"}</span>
+          </button>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function DailyArticleCard({ article, favorite, highlighted, onToggleFavorite, articleRef }) {
+  const [analysisOpen, setAnalysisOpen] = useState(false);
+  const articleUrl = getSafeArticleUrl(article.url);
+  const score = article.student_score ?? article.studentDailyScore ?? 0;
+
+  return (
+    <article ref={articleRef} className={highlighted ? "daily-article-card glass-panel highlighted" : "daily-article-card glass-panel"}>
+      <div className="daily-rank">No.{article.rank}</div>
+      <div className="daily-article-body">
+        <div className="article-meta">
+          <span>{article.source}</span>
+          <span>{article.time}</span>
+          <span>{article.category}</span>
+        </div>
+        <h2>
+          {articleUrl ? (
+            <a className="article-title-link" href={articleUrl} target="_blank" rel="noopener noreferrer" title="打开原文">
+              {article.title}
+            </a>
+          ) : (
+            article.title
+          )}
+        </h2>
+        <p className="summary">{article.summary}</p>
+        <p className="why">
+          <ShieldCheck size={16} />
+          {article.student_reason}
+        </p>
+        <div className="project-line">
+          <Target size={16} />
+          <span>
+            <strong>行动建议</strong>
+            {article.action_suggestion}
+          </span>
+        </div>
+        <div className="daily-meta-row">
+          <span>难度 {article.difficulty}</span>
+          <span>阅读 {article.reading_time}</span>
+        </div>
+        <div className="save-as-row">
+          <span>标签</span>
+          {[...(article.topic_tags ?? []), ...(article.use_tags ?? [])].slice(0, 6).map((item) => (
+            <em key={item}>{item}</em>
+          ))}
+        </div>
+        {analysisOpen ? (
+          <div className="student-analysis">
+            <InfoBlock label="适合谁看" value={article.student_value} />
+            <InfoBlock label="可沉淀为" value={(article.use_tags ?? []).join("、")} />
+            <InfoBlock label="可信度 / 热度 / 相关度" value={`${article.credibility} / ${article.heat} / ${article.relevance}`} />
+            <InfoBlock label="学生评分拆解" value={`学习价值 ${article.studentDailyBreakdown?.learning_value ?? "-"}，噪声扣分 ${article.studentDailyBreakdown?.noise_penalty ?? 0}`} />
+          </div>
+        ) : null}
+      </div>
+      <div className="daily-article-side">
+        <div className="daily-score">
+          <span>学生必读分</span>
+          <strong>{score}</strong>
+          <em>{getDailyScoreLevel(score)}</em>
+        </div>
+        <div className="daily-action-row">
+          {articleUrl ? (
+            <a className="action" href={articleUrl} target="_blank" rel="noopener noreferrer">
+              <ChevronRight size={15} />
+              <span>打开原文</span>
+            </a>
+          ) : null}
+          <button className="action" onClick={() => setAnalysisOpen((open) => !open)} type="button">
+            <BookOpen size={15} />
+            <span>学生解析</span>
+          </button>
+          <button className={favorite ? "action active" : "action"} onClick={onToggleFavorite} type="button">
+            <Heart size={15} />
+            <span>{favorite ? "已加入素材库" : "加入素材库"}</span>
           </button>
         </div>
       </div>
@@ -1710,7 +1871,156 @@ function SkillPanel() {
   );
 }
 
-function ContextRail({ activeNav, articles: railArticles, favorites, selectedLearningTasks, completedTaskIds }) {
+function rankWeight(rank) {
+  if (rank === 1) {
+    return 1.3;
+  }
+  if (rank <= 3) {
+    return 1.15;
+  }
+  if (rank <= 6) {
+    return 1;
+  }
+  return 0.85;
+}
+
+function buildDailyTrendItems(articles) {
+  const map = new Map();
+  articles.forEach((article, index) => {
+    const rank = article.rank ?? index + 1;
+    const weight = ((article.student_score ?? article.studentDailyScore ?? 70) / 100) * rankWeight(rank);
+    (article.topic_tags ?? extractDailyTopicTags(article)).slice(0, 3).forEach((topic) => {
+      const current = map.get(topic) ?? { topic, heat: 0, count: 0, ranks: [] };
+      current.heat += weight;
+      current.count += 1;
+      current.ranks.push(rank);
+      map.set(topic, current);
+    });
+  });
+  return Array.from(map.values())
+    .sort((left, right) => right.heat - left.heat)
+    .slice(0, 4);
+}
+
+function DailyTrendPanel({ articles }) {
+  const trends = buildDailyTrendItems(articles);
+  const maxHeat = Math.max(...trends.map((trend) => trend.heat), 1);
+
+  return (
+    <section className="side-panel glass-panel daily-side-panel">
+      <div className="panel-heading stacked">
+        <div>
+          <div className="panel-title-line">
+            <TrendingUp size={18} />
+            <h3>Top10 热点趋势</h3>
+          </div>
+          <p>基于今日 10 条必读资讯自动生成</p>
+        </div>
+      </div>
+      <div className="trend-list">
+        {trends.map((trend) => (
+          <div className="trend-item daily-trend-item" key={trend.topic} title={`命中：${trend.ranks.map((rank) => `No.${rank}`).join("、")}`}>
+            <div>
+              <span>{trend.topic}</span>
+              <strong>{trend.count}/10</strong>
+            </div>
+            <div className="meter" aria-label={`${trend.topic} 命中 ${trend.count} 条`}>
+              <i style={{ width: `${Math.max(18, (trend.heat / maxHeat) * 100)}%` }} />
+            </div>
+          </div>
+        ))}
+        {!trends.length ? <p className="side-empty">等待 Top10 数据生成趋势</p> : null}
+      </div>
+    </section>
+  );
+}
+
+function buildReadingRecommendations(articles) {
+  if (!articles.length) {
+    return [];
+  }
+  const recommendations = [];
+  const first = articles[0];
+  recommendations.push({
+    id: `main-${first.id}`,
+    article: first,
+    title: `先读 No.${first.rank}: 建立今日主线`,
+    reason: "这是今天学生必读分最高的内容，适合先读，帮助你理解今天最重要的 AI 变化。",
+    output: first.use_tags?.[0] ?? "学习笔记",
+  });
+
+  const learningKeywords = ["项目灵感", "论文选题", "学习资源", "工具上手", "课程汇报", "学习笔记"];
+  const learning = articles.find((article) => article.id !== first.id && article.use_tags?.some((tag) => learningKeywords.includes(tag))) ?? articles[1];
+  if (learning) {
+    recommendations.push({
+      id: `learning-${learning.id}`,
+      article: learning,
+      title: `再读 No.${learning.rank}: 转化为项目 / 论文灵感`,
+      reason: `它适合从 ${learning.topic_tags?.[0] ?? learning.category} 切入，整理成可执行的小任务或阅读卡。`,
+      output: learning.use_tags?.find((tag) => learningKeywords.includes(tag)) ?? learning.use_tags?.[0] ?? "项目灵感",
+    });
+  }
+
+  const saveKeywords = ["申请素材", "产品案例", "开源工具", "研究方向", "长期趋势"];
+  const usedIds = new Set(recommendations.map((item) => item.article.id));
+  const saved = articles.find((article) => !usedIds.has(article.id) && article.use_tags?.some((tag) => saveKeywords.includes(tag))) ??
+    articles.find((article) => !usedIds.has(article.id));
+  if (saved) {
+    recommendations.push({
+      id: `save-${saved.id}`,
+      article: saved,
+      title: `收藏 No.${saved.rank}: 加入长期素材库`,
+      reason: `它更适合长期追踪，可沉淀为 ${saved.use_tags?.[0] ?? "申请素材"}。`,
+      output: saved.use_tags?.find((tag) => saveKeywords.includes(tag)) ?? saved.use_tags?.[0] ?? "申请素材",
+    });
+  }
+
+  return recommendations.slice(0, Math.min(3, articles.length));
+}
+
+function DailyReadingPanel({ articles, onJumpToArticle }) {
+  const recommendations = buildReadingRecommendations(articles);
+
+  return (
+    <section className="side-panel glass-panel daily-side-panel">
+      <div className="panel-heading stacked">
+        <div>
+          <div className="panel-title-line">
+            <BookOpen size={18} />
+            <h3>我该读什么</h3>
+          </div>
+          <p>根据今日 Top10 自动推荐阅读顺序</p>
+        </div>
+      </div>
+      <ol className="daily-reading-list">
+        {recommendations.map((item) => (
+          <li key={item.id}>
+            <button onClick={() => onJumpToArticle(item.article.id)} type="button">
+              <strong>{item.title}</strong>
+              <span>{item.reason}</span>
+              <em>可转化成: {item.output}</em>
+            </button>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
+function TodaySidePanels({ articles, onJumpToArticle }) {
+  return (
+    <>
+      <DailyTrendPanel articles={articles} />
+      <DailyReadingPanel articles={articles} onJumpToArticle={onJumpToArticle} />
+    </>
+  );
+}
+
+function ContextRail({ activeNav, articles: railArticles, favorites, selectedLearningTasks, completedTaskIds, onJumpToArticle }) {
+  if (activeNav === "今日必读") {
+    return <TodaySidePanels articles={railArticles} onJumpToArticle={onJumpToArticle} />;
+  }
+
   if (activeNav === "论文雷达") {
     const papers = railArticles.filter(isPaperArticle).sort((left, right) => paperPriorityScore(right) - paperPriorityScore(left));
     const reproducible = papers.filter((article) => getPaperInsight(article).hasCode);
@@ -2000,6 +2310,8 @@ export default function App() {
   const [dailyBrief, setDailyBrief] = useState(null);
   const [clusters, setClusters] = useState([]);
   const [clusterOpen, setClusterOpen] = useState(false);
+  const [highlightedArticleId, setHighlightedArticleId] = useState(null);
+  const dailyArticleRefs = useRef({});
 
   useEffect(() => {
     let cancelled = false;
@@ -2146,8 +2458,20 @@ export default function App() {
     }));
   }
 
+  function jumpToDailyArticle(articleId) {
+    const target = dailyArticleRefs.current[articleId];
+    if (!target) {
+      return;
+    }
+    target.scrollIntoView({ behavior: "smooth", block: "center" });
+    setHighlightedArticleId(articleId);
+    window.setTimeout(() => {
+      setHighlightedArticleId((current) => (current === articleId ? null : current));
+    }, 1000);
+  }
+
   function exportMarkdown() {
-    const markdown = buildMarkdown(visibleArticles, favorites, activeNav, dailyBrief);
+    const markdown = buildMarkdown(visibleArticles, favorites, activeNav, activeNav === "今日必读" ? null : dailyBrief);
     const blob = new Blob([markdown], { type: "text/markdown;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -2172,9 +2496,9 @@ export default function App() {
 
   const pageCopy = {
     今日必读: {
-      label: "AI HOT 学生友好版 Top 10",
-      title: "每天从 AI HOT 精选中，为 AI 方向大学生/研究生筛出最值得看的 10 条内容。不是资讯越多越好，而是帮你判断今天哪些内容值得读、值得收藏、值得转化成学习或申请素材。",
-      cluster: true,
+      label: "AI HOT 学生友好榜 Top 10",
+      title: "每天从 AI HOT 精选中，为 AI 方向学生筛出最值得看的 10 条内容。不是资讯越多越好，而是帮你判断哪些值得读、哪些值得收藏、哪些可以转化成学习、项目或申请素材。",
+      cluster: false,
     },
     论文雷达: {
       label: "论文决策工具",
@@ -2208,7 +2532,7 @@ export default function App() {
   };
 
   return (
-    <main className="app-shell">
+    <main className={activeNav === "今日必读" ? "app-shell today-view" : "app-shell"}>
       <img className="dune-asset" src={duneBackground} alt="" aria-hidden="true" />
       <div className="ambient-lines" aria-hidden="true" />
 
@@ -2226,6 +2550,7 @@ export default function App() {
           onRefresh={refreshDashboardData}
           meta={newsMeta}
           loadedCount={feedArticles.length}
+          compact={activeNav === "今日必读"}
         />
 
         <div className="mobile-menu glass-panel">
@@ -2255,23 +2580,33 @@ export default function App() {
             {activeNav !== "今日必读" ? <CategoryTabs selected={category} setSelected={setCategory} /> : null}
 
             {activeNav === "今日必读" ? (
+              <>
+              <div className="today-mobile-panels">
+                <TodaySidePanels articles={visibleArticles} onJumpToArticle={jumpToDailyArticle} />
+              </div>
               <div className="article-list">
                 {visibleArticles.map((article) => (
-                  <ArticleCard
+                  <DailyArticleCard
+                    articleRef={(node) => {
+                      if (node) {
+                        dailyArticleRefs.current[article.id] = node;
+                      }
+                    }}
                     article={article}
                     favorite={favorites.has(article.id)}
+                    highlighted={highlightedArticleId === article.id}
                     key={article.id}
-                    learningTaskSelected={selectedLearningTasks.has(getPrimaryLearningTask(article).id)}
-                    scoreLabel="学生必读分"
-                    scoreValue={article.studentDailyScore}
                     onToggleFavorite={() => toggleFavorite(article.id)}
-                    onToggleLearningTask={toggleLearningTask}
                   />
                 ))}
+                {visibleArticles.length > 0 && visibleArticles.length < 10 ? (
+                  <div className="daily-note glass-panel">AI Hot 今日高分内容不足 10 条，已展示当前相对最值得阅读内容。</div>
+                ) : null}
                 {visibleArticles.length === 0 ? (
                   <EmptyState text="AI HOT 精选里暂时没有满足学生必读规则的内容，可等待下一次自动采集或手动刷新。" />
                 ) : null}
               </div>
+              </>
             ) : null}
 
             {activeNav === "论文雷达" ? (
@@ -2325,7 +2660,7 @@ export default function App() {
 
             {activeNav !== "学习计划" ? (
               <DailySummary
-                dailyBrief={dailyBrief}
+                dailyBrief={activeNav === "今日必读" ? null : dailyBrief}
                 favorites={favorites}
                 visibleArticles={visibleArticles}
                 onExport={exportMarkdown}
@@ -2339,6 +2674,7 @@ export default function App() {
               articles={visibleArticles.length ? visibleArticles : filteredRecentArticles}
               completedTaskIds={completedTaskIds}
               favorites={favorites}
+              onJumpToArticle={jumpToDailyArticle}
               selectedLearningTasks={selectedLearningTasks}
             />
           </aside>

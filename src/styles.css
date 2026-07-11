@@ -214,6 +214,10 @@ button {
   border-radius: 30px;
 }
 
+.compact-topbar {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
 .date-block {
   display: flex;
   align-items: center;
@@ -265,6 +269,8 @@ button {
 .top-stats {
   display: flex;
   gap: 6px;
+  justify-content: flex-end;
+  min-width: 0;
 }
 
 .top-stats span {
@@ -386,6 +392,125 @@ button {
 .article-list {
   display: grid;
   gap: 12px;
+}
+
+.today-mobile-panels {
+  display: none;
+}
+
+.daily-article-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) 176px;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 30px;
+  overflow: hidden;
+  transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.daily-article-card.highlighted {
+  border-color: rgba(17, 126, 218, 0.52);
+  background:
+    linear-gradient(145deg, rgba(238, 249, 255, 0.9), rgba(255, 255, 255, 0.5)),
+    rgba(232, 246, 255, 0.58);
+  box-shadow: 0 24px 80px rgba(17, 126, 218, 0.2);
+}
+
+.daily-rank {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 42px;
+  border-radius: 16px;
+  color: #0f6b73;
+  background: rgba(255, 255, 255, 0.66);
+  font-size: 13px;
+  font-weight: 840;
+}
+
+.daily-article-body {
+  min-width: 0;
+}
+
+.daily-article-card h2 {
+  margin: 8px 0;
+  font-size: 18px;
+  line-height: 1.35;
+  font-weight: 790;
+}
+
+.daily-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 11px;
+}
+
+.daily-meta-row span {
+  padding: 6px 9px;
+  border-radius: 13px;
+  color: #25565d;
+  background: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  font-weight: 740;
+}
+
+.daily-article-side {
+  display: grid;
+  align-content: space-between;
+  gap: 12px;
+}
+
+.daily-score {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border-radius: 20px;
+  background:
+    linear-gradient(135deg, rgba(19, 159, 171, 0.16), rgba(67, 125, 231, 0.14)),
+    rgba(255, 255, 255, 0.54);
+  text-align: center;
+}
+
+.daily-score span,
+.daily-score em {
+  color: #245e66;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 760;
+}
+
+.daily-score strong {
+  color: #0b8792;
+  font-size: 34px;
+  line-height: 1;
+  font-weight: 860;
+}
+
+.daily-action-row {
+  display: grid;
+  gap: 7px;
+}
+
+.daily-action-row .action {
+  justify-content: center;
+  text-decoration: none;
+}
+
+.student-analysis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.daily-note {
+  padding: 14px 16px;
+  border-radius: 24px;
+  color: #315a62;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .article-card {
@@ -926,6 +1051,23 @@ button {
   font-weight: 790;
 }
 
+.panel-heading.stacked {
+  align-items: flex-start;
+}
+
+.panel-title-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-heading p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
 .trend-list,
 .skill-list {
   display: grid;
@@ -947,6 +1089,10 @@ button {
   font-size: 12px;
 }
 
+.daily-trend-item strong {
+  color: #1c7882;
+}
+
 .meter,
 .skill-meter {
   height: 9px;
@@ -960,7 +1106,13 @@ button {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #10a7b4, #62bd74, #eba05d);
+  background: linear-gradient(90deg, #10a7b4, #39ad85, #437de7);
+}
+
+.side-empty {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 13px;
 }
 
 .reading-list {
@@ -971,6 +1123,49 @@ button {
   color: #33565d;
   font-size: 13px;
   line-height: 1.5;
+}
+
+.daily-reading-list {
+  display: grid;
+  gap: 12px;
+  margin: 14px 0 0;
+  padding-left: 22px;
+}
+
+.daily-reading-list li::marker {
+  color: #137d88;
+  font-weight: 820;
+}
+
+.daily-reading-list button {
+  display: grid;
+  gap: 5px;
+  width: 100%;
+  border: 0;
+  border-radius: 18px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.48);
+  color: #33565d;
+  text-align: left;
+}
+
+.daily-reading-list strong {
+  color: #17353c;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.daily-reading-list span,
+.daily-reading-list em {
+  color: #4a646a;
+  font-size: 12px;
+  line-height: 1.45;
+  font-style: normal;
+}
+
+.daily-reading-list em {
+  color: #1b6c75;
+  font-weight: 740;
 }
 
 .material-grid {
@@ -1200,6 +1395,10 @@ button {
     grid-template-columns: 1fr;
   }
 
+  .compact-topbar {
+    grid-template-columns: 1fr;
+  }
+
   .date-block,
   .top-stats,
   .icon-button.primary {
@@ -1214,8 +1413,33 @@ button {
     grid-template-columns: 1fr;
   }
 
+  .today-view .right-rail {
+    display: none;
+  }
+
+  .today-view .today-mobile-panels {
+    display: grid;
+    gap: 14px;
+  }
+
   .article-card {
     grid-template-columns: 40px minmax(0, 1fr);
+  }
+
+  .daily-article-card {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+
+  .daily-rank {
+    width: 48px;
+  }
+
+  .daily-article-side {
+    grid-column: 1 / -1;
+  }
+
+  .daily-action-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .article-side {
@@ -1289,7 +1513,9 @@ button {
   .score-grid,
   .material-grid,
   .student-fields,
-  .paper-grid {
+  .paper-grid,
+  .student-analysis,
+  .daily-action-row {
     grid-template-columns: 1fr;
   }
 
