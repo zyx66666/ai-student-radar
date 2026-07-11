@@ -62,6 +62,25 @@ const completedTaskIdsStorageKey = "ai-student-radar-completed-tasks";
 const materialPurposesStorageKey = "ai-student-radar-material-purposes";
 const scheduleLabel = "每日北京时间 08:00 / 12:00 / 18:00 自动采集";
 const materialPurposes = ["研究计划素材", "论文选题", "项目灵感", "产品案例", "课程汇报", "英文阅读", "暂存"];
+const paperTimeRanges = [
+  { label: "近 7 天", days: 7 },
+  { label: "近 30 天", days: 30 },
+  { label: "近 1 年", days: 365 },
+];
+const paperDirections = [
+  "全部",
+  "大模型",
+  "AI Agent",
+  "多模态",
+  "机器人 / 具身智能",
+  "AI 安全",
+  "AI 产品 / 应用",
+  "自动驾驶",
+  "AI 芯片 / 系统",
+  "医疗 AI",
+  "教育 AI",
+  "模型评测",
+];
 
 function normalizeNewsPayload(payload) {
   if (Array.isArray(payload)) {
@@ -425,6 +444,111 @@ function matchesSearch(article, normalizedQuery) {
     .join(" ")
     .toLowerCase()
     .includes(normalizedQuery);
+}
+
+function normalizePaperDirection(direction) {
+  if (direction === "机器人/具身智能") {
+    return "机器人 / 具身智能";
+  }
+  if (direction === "AI产品") {
+    return "AI 产品 / 应用";
+  }
+  if (direction === "AI芯片") {
+    return "AI 芯片 / 系统";
+  }
+  return direction;
+}
+
+function getPaperDirectionTags(article) {
+  const text = articleText(article).toLowerCase();
+  const directions = [];
+  if (includesAnyText([text], ["llm", "gpt", "claude", "gemini", "大模型", "基础模型"])) directions.push("大模型");
+  if (includesAnyText([text], ["agent", "tool use", "workflow", "browser", "智能体", "工具调用"])) directions.push("AI Agent");
+  if (includesAnyText([text], ["multimodal", "vlm", "vision-language", "image", "video", "audio", "多模态", "视觉语言"])) directions.push("多模态");
+  if (includesAnyText([text], ["robot", "robotics", "vla", "embodied", "具身", "机器人", "sim2real", "navigation"])) directions.push("机器人 / 具身智能");
+  if (includesAnyText([text], ["safety", "alignment", "jailbreak", "security", "risk", "安全", "对齐", "越狱"])) directions.push("AI 安全");
+  if (includesAnyText([text], ["product", "app", "saas", "应用", "产品", "商业化"])) directions.push("AI 产品 / 应用");
+  if (includesAnyText([text], ["autonomous driving", "dashcam", "自动驾驶", "驾驶"])) directions.push("自动驾驶");
+  if (includesAnyText([text], ["chip", "gpu", "nvidia", "算力", "芯片", "system", "系统"])) directions.push("AI 芯片 / 系统");
+  if (includesAnyText([text], ["medical", "health", "medicine", "医疗", "诊断"])) directions.push("医疗 AI");
+  if (includesAnyText([text], ["education", "learning", "tutor", "教育", "学习助手"])) directions.push("教育 AI");
+  if (includesAnyText([text], ["benchmark", "eval", "evaluation", "leaderboard", "评测", "榜单"])) directions.push("模型评测");
+  if (!directions.length && article.topic) {
+    directions.push(normalizePaperDirection(article.topic));
+  }
+  return Array.from(new Set(directions.filter((direction) => paperDirections.includes(direction)))).slice(0, 4);
+}
+
+function getPaperDifficulty(article) {
+  const tags = getArticleTags(article);
+  if (article.difficulty) {
+    return article.difficulty;
+  }
+  if (tags.includes("AI安全") || tags.includes("机器学习") || article.summary?.length > 900) {
+    return "中高";
+  }
+  if (tags.includes("论文") || tags.includes("arXiv")) {
+    return "中等";
+  }
+  return "入门";
+}
+
+function getEnglishReadingValue(article) {
+  const directions = getPaperDirectionTags(article).join("、") || "AI";
+  if (article.english_reading_value) {
+    return article.english_reading_value;
+  }
+  return `适合练习 Abstract 与 Introduction 阅读，重点关注 ${directions} 论文如何定义问题、组织动机和命名方法。`;
+}
+
+function getResearchReferenceValue(article) {
+  if (article.research_reference_value) {
+    return article.research_reference_value;
+  }
+  const directions = getPaperDirectionTags(article).join("、") || article.category || "AI";
+  return `可作为 ${directions} 方向的研究背景参考，积累相关任务定义、评价指标和英文写作表达。`;
+}
+
+function getPaperReadingSections(article) {
+  const text = articleText(article);
+  if (includesAnyText([text], ["benchmark", "evaluation", "评测", "leaderboard"])) {
+    return ["Abstract: 快速定位任务与评价对象", "Introduction: 记录 research gap", "Benchmark / Dataset: 理解数据构造", "Experiments: 关注指标和对比方法"];
+  }
+  if (includesAnyText([text], ["method", "framework", "propose", "方法", "模型"])) {
+    return ["Abstract: 看作者如何概括方法", "Introduction: 记录研究动机", "Method: 拆模块命名和流程", "Experiments: 看 ablation 与指标"];
+  }
+  return ["Abstract: 找研究问题", "Introduction: 找问题背景", "Method: 找核心假设", "Experiments: 找证据链"];
+}
+
+function getPaperSearchText(article) {
+  const insight = getPaperInsight(article);
+  return [
+    article.title,
+    article.summary,
+    article.source,
+    article.category,
+    article.authors,
+    article.arxiv_id,
+    insight.coreMethod,
+    insight.dataset,
+    ...(article.tags ?? []),
+    ...getPaperDirectionTags(article),
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+}
+
+function filterPaperArticles(articles, { timeRangeLabel, direction, query }) {
+  const range = paperTimeRanges.find((item) => item.label === timeRangeLabel) ?? paperTimeRanges[0];
+  const normalizedQuery = query.trim().toLowerCase();
+  return uniqueByTitle(articles)
+    .filter((article) => isPaperArticle(article))
+    .filter((article) => article.title && article.summary && getSafeArticleUrl(article.url))
+    .filter((article) => isWithinDays(article.publishedAt, range.days))
+    .filter((article) => direction === "全部" || getPaperDirectionTags(article).includes(direction))
+    .filter((article) => !normalizedQuery || getPaperSearchText(article).includes(normalizedQuery))
+    .sort((left, right) => (parseArticleTime(right.publishedAt) ?? 0) - (parseArticleTime(left.publishedAt) ?? 0));
 }
 
 function getSaveAs(article) {
@@ -1078,7 +1202,18 @@ function Sidebar({ active, onSelect, favoritesCount }) {
   );
 }
 
-function TopBar({ query, setQuery, refreshCount, onRefresh, meta, loadedCount, compact = false }) {
+function TopBar({
+  query,
+  setQuery,
+  refreshCount,
+  onRefresh,
+  meta,
+  loadedCount,
+  compact = false,
+  hideRefresh = false,
+  searchPlaceholder = "搜索机器人、Agent、论文、产品...",
+  extraStats = [],
+}) {
   const stats = meta
     ? [
         `采集 ${meta.collected_count ?? loadedCount}`,
@@ -1104,7 +1239,7 @@ function TopBar({ query, setQuery, refreshCount, onRefresh, meta, loadedCount, c
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="搜索机器人、Agent、论文、产品..."
+            placeholder={searchPlaceholder}
             aria-label="搜索情报"
           />
         </label>
@@ -1114,10 +1249,13 @@ function TopBar({ query, setQuery, refreshCount, onRefresh, meta, loadedCount, c
         {stats.map((item) => (
           <span key={item}>{item}</span>
         ))}
+        {extraStats.map((item) => (
+          <span key={item}>{item}</span>
+        ))}
         <span>{meta?.schedule_label ?? scheduleLabel}</span>
       </div>
 
-      {!compact ? (
+      {!compact && !hideRefresh ? (
         <button className="icon-button primary" onClick={onRefresh} type="button">
           <RefreshCcw size={18} />
           <span>刷新 {refreshCount ? `+${refreshCount}` : ""}</span>
@@ -1335,19 +1473,62 @@ function DailyArticleCard({ article, favorite, highlighted, onToggleFavorite, ar
   );
 }
 
-function PaperCard({ article, favorite, learningTaskSelected, onToggleFavorite, onToggleLearningTask }) {
+function exportPaperNote(article) {
+  const insight = getPaperInsight(article);
+  const lines = [
+    `# ${article.title}`,
+    "",
+    `- 来源: ${article.source}`,
+    `- 发布时间: ${article.time}`,
+    `- 方向: ${getPaperDirectionTags(article).join("、") || article.category}`,
+    `- 英文难度: ${getPaperDifficulty(article)}`,
+    `- 阅读时间: ${article.readTime}`,
+    `- 原文: ${article.url || "无"}`,
+    "",
+    "## Abstract",
+    article.summary,
+    "",
+    "## 英文阅读价值",
+    getEnglishReadingValue(article),
+    "",
+    "## 科研参考价值",
+    getResearchReferenceValue(article),
+    "",
+    "## 研究问题",
+    insight.researchQuestion,
+    "",
+    "## 核心方法",
+    insight.coreMethod,
+    "",
+    "## 实验 / Benchmark",
+    insight.dataset,
+    "",
+    "## 建议重点阅读",
+    ...getPaperReadingSections(article).map((item) => `- ${item}`),
+  ];
+  const blob = new Blob([lines.join("\n")], { type: "text/markdown;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `paper-note-${article.id}.md`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function PaperCard({ article, readingListSelected, onToggleReadingList, onOpenReading }) {
   const insight = getPaperInsight(article);
   const articleUrl = getSafeArticleUrl(article.url);
-  const primaryLearningTask = getPrimaryLearningTask(article);
+  const directionTags = getPaperDirectionTags(article);
+  const readingSections = getPaperReadingSections(article);
 
   return (
-    <article className="paper-card glass-panel">
+    <article className="paper-card glass-panel reading-paper-card">
       <div className="paper-card-heading">
         <div>
           <div className="article-meta">
             <span>{article.source}</span>
             <span>{article.time}</span>
-            <span>{insight.direction}</span>
+            <span>{article.authors || "作者待补充"}</span>
           </div>
           <h2>
             {articleUrl ? (
@@ -1359,42 +1540,59 @@ function PaperCard({ article, favorite, learningTaskSelected, onToggleFavorite, 
             )}
           </h2>
         </div>
-        <div className="final-score compact-score">
-          <span>论文优先级</span>
-          <strong>{insight.paperPriorityScore}</strong>
+        <div className="paper-difficulty">
+          <span>英文难度</span>
+          <strong>{getPaperDifficulty(article)}</strong>
+          <em>{article.readTime}</em>
         </div>
       </div>
 
-      <div className="paper-grid">
-        <InfoBlock label="研究方向" value={insight.direction} />
-        <InfoBlock label="一句话研究问题" value={insight.researchQuestion} />
-        <InfoBlock label="方法关键词" value={insight.coreMethod} />
-        <InfoBlock label="代码/数据/Benchmark" value={`${insight.hasCode ? "有代码线索" : "代码待确认"} · ${insight.dataset}`} />
-        <InfoBlock label="阅读难度" value={`${insight.undergraduateDifficulty} · ${insight.readTime}`} />
-        <InfoBlock label="推荐阅读方式" value={article.readingMode} />
-        <InfoBlock label="读前需要补充" value={article.knowledge.join("、") || "线性代数、深度学习基础、论文实验读法"} />
-        <InfoBlock label="30分钟阅读任务" value={insight.recommendedAction} />
-      </div>
-
-      <div className="save-as-row">
-        <span>可转化为</span>
-        {["研究计划素材", "课程项目", "毕设选题", "竞赛方向"].map((item) => (
+      <div className="save-as-row paper-direction-row">
+        <span>方向</span>
+        {directionTags.map((item) => (
           <em key={item}>{item}</em>
         ))}
+        {article.has_code || insight.hasCode ? <em>有代码</em> : null}
+      </div>
+
+      <div className="paper-reading-values">
+        <InfoBlock label="英文阅读价值" value={getEnglishReadingValue(article)} />
+        <InfoBlock label="科研参考价值" value={getResearchReferenceValue(article)} />
+        <InfoBlock label="研究问题" value={insight.researchQuestion} />
+        <InfoBlock label="核心方法" value={insight.coreMethod} />
+        <InfoBlock label="实验 / Benchmark" value={insight.dataset} />
+        <div className="info-block">
+          <span>建议重点阅读部分</span>
+          <ol className="paper-section-list">
+            {readingSections.map((section) => (
+              <li key={section}>{section}</li>
+            ))}
+          </ol>
+        </div>
       </div>
 
       <div className="action-row paper-actions">
-        <button className={favorite ? "action active" : "action"} onClick={onToggleFavorite} type="button">
-          <Heart size={15} />
-          <span>{favorite ? "已收藏" : "收藏"}</span>
+        {articleUrl ? (
+          <a className="action" href={articleUrl} target="_blank" rel="noopener noreferrer">
+            <ChevronRight size={15} />
+            <span>打开论文</span>
+          </a>
+        ) : null}
+        <button className="action" onClick={() => onOpenReading(article)} type="button">
+          <BookOpen size={15} />
+          <span>英文拆读</span>
         </button>
         <button
-          className={learningTaskSelected ? "action learning active" : "action learning"}
-          onClick={() => onToggleLearningTask?.(primaryLearningTask.id)}
+          className={readingListSelected ? "action learning active" : "action learning"}
+          onClick={() => onToggleReadingList(article)}
           type="button"
         >
-          <GraduationCap size={15} />
-          <span>{learningTaskSelected ? "已加入计划" : "加入学习计划"}</span>
+          <Heart size={15} />
+          <span>{readingListSelected ? "已加入阅读清单" : "加入阅读清单"}</span>
+        </button>
+        <button className="action" onClick={() => exportPaperNote(article)} type="button">
+          <Download size={15} />
+          <span>导出笔记</span>
         </button>
       </div>
     </article>
@@ -1410,55 +1608,106 @@ function InfoBlock({ label, value }) {
   );
 }
 
-function PaperRadar({ articles: sourceArticles, favorites, selectedLearningTasks, onToggleFavorite, onToggleLearningTask }) {
-  const [activeTab, setActiveTab] = useState("今日必读");
-  const papers = sourceArticles.filter(isPaperArticle).sort((left, right) => paperPriorityScore(right) - paperPriorityScore(left));
-  const stats = {
-    today: papers.filter((article) => isWithinHours(article.publishedAt, 24)).length,
-    deepRead: papers.filter((article) => getPaperInsight(article).paperPriorityScore >= 82).length,
-    reproducible: papers.filter((article) => getPaperInsight(article).hasCode).length,
-    application: papers.filter((article) => getPaperInsight(article).applicationScore >= 80).length,
-    robotics: papers.filter((article) => getPaperInsight(article).direction === "机器人/具身智能").length,
-  };
-  const tabs = ["今日必读", "可复现", "申请素材", "综述素材", "暂存池"];
-  const visiblePapers = papers.filter((article) => {
-    const insight = getPaperInsight(article);
-    if (activeTab === "可复现") return insight.hasCode;
-    if (activeTab === "申请素材") return insight.applicationScore >= 80;
-    if (activeTab === "综述素材") return insight.surveyScore >= 78;
-    if (activeTab === "暂存池") return insight.paperPriorityScore < 76;
-    return true;
-  });
+function EnglishReadingModal({ article, onClose }) {
+  if (!article) {
+    return null;
+  }
+  const firstSentence = String(article.summary || article.title).split(/(?<=[.!?。！？])\s+/)[0] || article.summary;
+  const terms = Array.from(new Set([...getPaperDirectionTags(article), ...article.knowledge, ...getArticleTags(article)])).slice(0, 6);
 
   return (
-    <div className="tool-page">
-      <section className="metric-strip">
-        <MetricCard label="今日论文" value={stats.today} />
-        <MetricCard label="建议精读" value={stats.deepRead} />
-        <MetricCard label="可复现" value={stats.reproducible} />
-        <MetricCard label="申请素材" value={stats.application} />
-        <MetricCard label="具身论文" value={stats.robotics} />
-      </section>
-      <div className="inner-tabs">
-        {tabs.map((tab) => (
-          <button className={activeTab === tab ? "selected" : ""} key={tab} onClick={() => setActiveTab(tab)} type="button">
-            {tab}
+    <div className="modal-backdrop" role="presentation" onMouseDown={onClose}>
+      <section className="cluster-modal glass-panel reading-modal" aria-modal="true" onMouseDown={(event) => event.stopPropagation()} role="dialog">
+        <div className="cluster-modal-heading">
+          <div>
+            <div className="section-label">
+              <BookOpen size={17} />
+              英文拆读
+            </div>
+            <h2>{article.title}</h2>
+          </div>
+          <button className="icon-button" onClick={onClose} type="button">
+            <X size={17} />
+            <span>关闭</span>
           </button>
-        ))}
-      </div>
+        </div>
+        <div className="reading-modal-grid">
+          <InfoBlock label="Abstract 原文" value={article.summary} />
+          <InfoBlock label="中文解释" value={`这篇论文主要讨论 ${getPaperDirectionTags(article).join("、") || article.category} 方向的问题，可先抓研究问题、方法和实验指标。`} />
+          <InfoBlock label="句子结构拆解" value={`Original Sentence: ${firstSentence}\n结构: 主语 + 谓语动词 + 核心方法/发现 + for/in + 应用场景。`} />
+          <InfoBlock label="关键词解释" value={terms.map((term) => `${term}: 阅读时记录定义、任务背景和上下文用法`).join("；")} />
+          <InfoBlock label="学术表达积累" value={"This paper addresses ... / We propose ... / Experimental results demonstrate ... / Our method outperforms ..."} />
+          <InfoBlock label="阅读提示" value={"先读 Abstract 和 Introduction，标出 research gap；再看 Method 的模块命名；最后用 Experiments 验证作者的证据链。"} />
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function PaperRadar({
+  articles: visiblePapers,
+  totalCount,
+  timeRange,
+  setTimeRange,
+  direction,
+  setDirection,
+  selectedLearningTasks,
+  onToggleLearningTask,
+}) {
+  const [visibleLimit, setVisibleLimit] = useState(30);
+  const [readingArticle, setReadingArticle] = useState(null);
+  const visibleSlice = visiblePapers.slice(0, visibleLimit);
+
+  useEffect(() => {
+    setVisibleLimit(timeRange === "近 1 年" ? 30 : 60);
+  }, [timeRange, direction]);
+
+  return (
+    <div className="tool-page paper-reading-page">
+      <section className="paper-filter-panel glass-panel">
+        <div className="paper-filter-row">
+          <span>时间范围</span>
+          <div className="inner-tabs paper-range-tabs">
+            {paperTimeRanges.map((range) => (
+              <button className={timeRange === range.label ? "selected" : ""} key={range.label} onClick={() => setTimeRange(range.label)} type="button">
+                {range.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="paper-filter-row">
+          <span>研究方向</span>
+          <div className="category-tabs paper-direction-tabs" role="tablist" aria-label="论文方向分类">
+            {paperDirections.map((item) => (
+              <button className={direction === item ? "selected" : ""} key={item} onClick={() => setDirection(item)} type="button">
+                {item}
+              </button>
+            ))}
+          </div>
+        </div>
+        <p className="paper-filter-summary">
+          当前筛选：{timeRange} · {direction} · 共 {totalCount} 篇论文
+        </p>
+      </section>
+
       <div className="article-list">
-        {visiblePapers.map((article) => (
+        {visibleSlice.map((article) => (
           <PaperCard
             article={article}
-            favorite={favorites.has(article.id)}
             key={article.id}
-            learningTaskSelected={selectedLearningTasks.has(getPrimaryLearningTask(article).id)}
-            onToggleFavorite={() => onToggleFavorite(article.id)}
-            onToggleLearningTask={onToggleLearningTask}
+            readingListSelected={selectedLearningTasks.has(getPrimaryLearningTask(article).id)}
+            onOpenReading={setReadingArticle}
+            onToggleReadingList={(paper) => onToggleLearningTask(getPrimaryLearningTask(paper).id)}
           />
         ))}
-        {!visiblePapers.length ? <EmptyState text="当前筛选下没有论文，可以切换 tab 或等待下一次采集。" /> : null}
+        {!visiblePapers.length ? <EmptyState text="当前筛选下没有论文，可以调整时间范围、方向或搜索关键词。" /> : null}
+        {visibleLimit < visiblePapers.length ? (
+          <button className="load-more-button glass-panel" onClick={() => setVisibleLimit((limit) => limit + 30)} type="button">
+            加载更多论文
+          </button>
+        ) : null}
       </div>
+      <EnglishReadingModal article={readingArticle} onClose={() => setReadingArticle(null)} />
     </div>
   );
 }
@@ -2016,21 +2265,86 @@ function TodaySidePanels({ articles, onJumpToArticle }) {
   );
 }
 
+function PaperDirectionDistributionPanel({ papers }) {
+  const counts = papers.reduce((acc, paper) => {
+    getPaperDirectionTags(paper).forEach((tag) => {
+      acc[tag] = (acc[tag] ?? 0) + 1;
+    });
+    return acc;
+  }, {});
+  const items = Object.entries(counts)
+    .map(([label, count]) => ({ label, count }))
+    .sort((left, right) => right.count - left.count)
+    .slice(0, 6);
+  const maxCount = Math.max(...items.map((item) => item.count), 1);
+
+  return (
+    <section className="side-panel glass-panel daily-side-panel">
+      <div className="panel-heading stacked">
+        <div>
+          <div className="panel-title-line">
+            <TrendingUp size={18} />
+            <h3>当前论文方向分布</h3>
+          </div>
+          <p>基于当前筛选结果生成</p>
+        </div>
+      </div>
+      <div className="trend-list">
+        {items.map((item) => (
+          <div className="trend-item daily-trend-item" key={item.label}>
+            <div>
+              <span>{item.label}</span>
+              <strong>{item.count} 篇</strong>
+            </div>
+            <div className="meter" aria-label={`${item.label} ${item.count} 篇`}>
+              <i style={{ width: `${Math.max(14, (item.count / maxCount) * 100)}%` }} />
+            </div>
+          </div>
+        ))}
+        {!items.length ? <p className="side-empty">当前筛选下暂无方向分布</p> : null}
+      </div>
+    </section>
+  );
+}
+
+function PaperReadingAdvicePanel({ papers }) {
+  const hasBenchmark = papers.some((paper) => includesAnyText([articleText(paper)], ["benchmark", "evaluation", "评测"]));
+  const hasMethod = papers.some((paper) => includesAnyText([articleText(paper)], ["method", "framework", "propose", "方法"]));
+  const items = [
+    "重点练习 Abstract 快速定位研究问题和任务边界。",
+    "关注 Introduction 中 research gap、motivation 和 contribution 的表达。",
+    hasMethod ? "学习 Method 部分如何命名模块、解释流程和连接公式/实验。" : "读 Method 时先画出输入、处理步骤和输出。",
+    hasBenchmark ? "对 Benchmark 论文，优先记录任务定义、数据来源和评价指标。" : "读 Experiments 时记录指标、baseline 和 ablation 设计。",
+  ].slice(0, 4);
+
+  return <SimplePanel icon={BookOpen} title="英文阅读建议" items={items} />;
+}
+
+function WeeklyPaperRoutePanel() {
+  return (
+    <SimplePanel
+      icon={Target}
+      title="本周阅读路线"
+      items={[
+        "先读 1 篇 Survey，建立方向框架。",
+        "再读 2 篇 Benchmark，理解任务和指标。",
+        "最后读 2 篇 Method，积累方法表达。",
+      ]}
+    />
+  );
+}
+
 function ContextRail({ activeNav, articles: railArticles, favorites, selectedLearningTasks, completedTaskIds, onJumpToArticle }) {
   if (activeNav === "今日必读") {
     return <TodaySidePanels articles={railArticles} onJumpToArticle={onJumpToArticle} />;
   }
 
   if (activeNav === "论文雷达") {
-    const papers = railArticles.filter(isPaperArticle).sort((left, right) => paperPriorityScore(right) - paperPriorityScore(left));
-    const reproducible = papers.filter((article) => getPaperInsight(article).hasCode);
-    const applicationReady = papers.filter((article) => getPaperInsight(article).applicationScore >= 80);
     return (
       <>
-        <SimplePanel icon={BookOpen} title="本周论文阅读漏斗" items={[`待扫读 ${papers.length} 篇`, `建议精读 ${papers.filter((item) => paperPriorityScore(item) >= 82).length} 篇`, `可复现 ${reproducible.length} 篇`]} />
-        <SimplePanel icon={Target} title="推荐精读方向" items={topTopics(papers).map((item) => `${item.topic} · ${item.count} 篇`)} />
-        <SimplePanel icon={Archive} title="申请素材论文" items={applicationReady.slice(0, 4).map((item) => item.title)} />
-        <SimplePanel icon={Code2} title="可复现论文" items={reproducible.slice(0, 4).map((item) => item.title)} />
+        <PaperDirectionDistributionPanel papers={railArticles} />
+        <PaperReadingAdvicePanel papers={railArticles} />
+        <WeeklyPaperRoutePanel />
       </>
     );
   }
@@ -2300,6 +2614,8 @@ export default function App() {
   const [activeNav, setActiveNav] = useState("今日必读");
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("全部");
+  const [paperTimeRange, setPaperTimeRange] = useState("近 7 天");
+  const [paperDirection, setPaperDirection] = useState("全部");
   const [favorites, setFavorites] = useState(() => loadFavoriteIds());
   const [selectedLearningTasks, setSelectedLearningTasks] = useState(() => loadStoredStringSet(selectedLearningTasksStorageKey));
   const [completedTaskIds, setCompletedTaskIds] = useState(() => loadStoredStringSet(completedTaskIdsStorageKey));
@@ -2389,13 +2705,23 @@ export default function App() {
     return selectStudentDailyTop10(feedArticles);
   }, [feedArticles]);
 
+  const paperRadarArticles = useMemo(
+    () =>
+      filterPaperArticles(feedArticles, {
+        timeRangeLabel: paperTimeRange,
+        direction: paperDirection,
+        query,
+      }),
+    [feedArticles, paperDirection, paperTimeRange, query],
+  );
+
   const visibleArticles = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
     if (activeNav === "今日必读") {
       return todayArticles;
     }
     if (activeNav === "论文雷达") {
-      return filteredRecentArticles.filter(isPaperArticle);
+      return paperRadarArticles;
     }
     if (activeNav === "项目实验室") {
       return filteredRecentArticles.filter((article) => ["open_source", "tool"].includes(article.contentType) || article.actions.includes("看代码"));
@@ -2407,7 +2733,7 @@ export default function App() {
       return feedArticles.filter((article) => favorites.has(article.id) && matchesCategory(article, category) && matchesSearch(article, normalizedQuery));
     }
     return filteredRecentArticles;
-  }, [activeNav, category, favorites, feedArticles, filteredRecentArticles, query, todayArticles]);
+  }, [activeNav, category, favorites, feedArticles, filteredRecentArticles, paperRadarArticles, query, todayArticles]);
 
   function toggleFavorite(id) {
     const favoriteId = normalizeFavoriteId(id);
@@ -2501,8 +2827,9 @@ export default function App() {
       cluster: false,
     },
     论文雷达: {
-      label: "论文决策工具",
-      title: "判断哪些论文值得精读、复现和写进申请",
+      label: "英文论文阅读",
+      title: "英文 AI 论文阅读雷达",
+      subtitle: "按时间与方向筛选近一年 AI 论文，帮助学生练习英文论文阅读，积累科研写作参考、研究思路和可引用文献。",
       cluster: false,
     },
     项目实验室: {
@@ -2551,6 +2878,9 @@ export default function App() {
           meta={newsMeta}
           loadedCount={feedArticles.length}
           compact={activeNav === "今日必读"}
+          hideRefresh={activeNav === "论文雷达"}
+          searchPlaceholder={activeNav === "论文雷达" ? "搜索论文标题、方向、关键词、作者、方法……" : undefined}
+          extraStats={activeNav === "论文雷达" ? ["最近更新：今日 08:00 / 12:00 / 18:00"] : []}
         />
 
         <div className="mobile-menu glass-panel">
@@ -2568,6 +2898,7 @@ export default function App() {
                   {pageCopy.label}
                 </div>
                 <h2 className={activeNav === "今日必读" ? "daily-page-title" : undefined}>{pageCopy.title}</h2>
+                {pageCopy.subtitle ? <p className="page-subtitle">{pageCopy.subtitle}</p> : null}
               </div>
               {pageCopy.cluster ? (
                 <button className="ghost-button" onClick={() => setClusterOpen(true)} type="button">
@@ -2577,7 +2908,7 @@ export default function App() {
               ) : null}
             </div>
 
-            {activeNav !== "今日必读" ? <CategoryTabs selected={category} setSelected={setCategory} /> : null}
+            {activeNav !== "今日必读" && activeNav !== "论文雷达" ? <CategoryTabs selected={category} setSelected={setCategory} /> : null}
 
             {activeNav === "今日必读" ? (
               <>
@@ -2611,10 +2942,13 @@ export default function App() {
 
             {activeNav === "论文雷达" ? (
               <PaperRadar
-                articles={filteredRecentArticles}
-                favorites={favorites}
+                articles={paperRadarArticles}
+                totalCount={paperRadarArticles.length}
+                timeRange={paperTimeRange}
+                setTimeRange={setPaperTimeRange}
+                direction={paperDirection}
+                setDirection={setPaperDirection}
                 selectedLearningTasks={selectedLearningTasks}
-                onToggleFavorite={toggleFavorite}
                 onToggleLearningTask={toggleLearningTask}
               />
             ) : null}
@@ -2658,7 +2992,7 @@ export default function App() {
               />
             ) : null}
 
-            {activeNav !== "学习计划" ? (
+            {activeNav !== "学习计划" && activeNav !== "论文雷达" ? (
               <DailySummary
                 dailyBrief={activeNav === "今日必读" ? null : dailyBrief}
                 favorites={favorites}

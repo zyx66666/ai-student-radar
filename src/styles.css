@@ -351,6 +351,14 @@ button {
   font-weight: 760;
 }
 
+.page-subtitle {
+  max-width: 860px;
+  margin: 8px 0 0;
+  color: #405e64;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
 .ghost-button {
   display: inline-flex;
   align-items: center;
@@ -867,6 +875,42 @@ button {
   padding: 16px;
 }
 
+.paper-filter-panel {
+  display: grid;
+  gap: 13px;
+  padding: 14px;
+  border-radius: 26px;
+}
+
+.paper-filter-row {
+  display: grid;
+  gap: 8px;
+}
+
+.paper-filter-row > span,
+.paper-filter-summary {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.paper-filter-summary {
+  margin: 0;
+}
+
+.paper-range-tabs {
+  flex-wrap: wrap;
+}
+
+.paper-direction-tabs {
+  padding: 0;
+}
+
+.reading-paper-card {
+  display: grid;
+  gap: 14px;
+}
+
 .paper-card-heading,
 .learning-progress,
 .bucket-heading,
@@ -884,13 +928,79 @@ button {
   line-height: 1.35;
 }
 
-.compact-score {
-  min-width: 126px;
+.paper-difficulty {
+  display: grid;
+  gap: 4px;
+  min-width: 118px;
+  padding: 10px 12px;
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgba(19, 159, 171, 0.14), rgba(67, 125, 231, 0.12)),
+    rgba(255, 255, 255, 0.54);
+  text-align: center;
+}
+
+.paper-difficulty span,
+.paper-difficulty em {
+  color: #245e66;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 760;
+}
+
+.paper-difficulty strong {
+  color: #0b8792;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.paper-direction-row {
+  margin-top: 0;
+}
+
+.paper-reading-values {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.paper-section-list {
+  margin: 6px 0 0;
+  padding-left: 18px;
+  color: #24484f;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .paper-actions {
   justify-content: flex-start;
   margin-top: 14px;
+}
+
+.paper-actions .action {
+  text-decoration: none;
+}
+
+.load-more-button {
+  min-height: 46px;
+  border: 0;
+  border-radius: 22px;
+  color: #195e67;
+  font-weight: 780;
+}
+
+.reading-modal {
+  width: min(980px, 100%);
+}
+
+.reading-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.reading-modal .info-block strong {
+  white-space: pre-line;
 }
 
 .card-lab-grid {
@@ -1472,6 +1582,10 @@ button {
     align-items: flex-start;
     flex-direction: column;
   }
+
+  .paper-difficulty {
+    width: 100%;
+  }
 }
 
 @media (max-width: 620px) {
@@ -1515,7 +1629,9 @@ button {
   .student-fields,
   .paper-grid,
   .student-analysis,
-  .daily-action-row {
+  .daily-action-row,
+  .paper-reading-values,
+  .reading-modal-grid {
     grid-template-columns: 1fr;
   }
 
