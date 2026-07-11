@@ -1,16 +1,16 @@
 {
   "meta": {
-    "generated_at": "2026-07-11T01:24:36.123489+00:00",
-    "collected_count": 125,
-    "filtered_count": 65,
+    "generated_at": "2026-07-11T06:06:01.328469+00:00",
+    "collected_count": 126,
+    "filtered_count": 66,
     "kept_count": 60,
-    "source_count": 16,
+    "source_count": 17,
     "analysis_provider": "local_rules",
     "schedule_label": "每日北京时间 08:00 / 12:00 / 18:00 自动采集"
   },
   "daily_brief": {
-    "headline": "今日主线：机器人/具身智能、论文、开源项目值得重点追踪",
-    "summary": "最近数据中，机器人/具身智能、论文、开源项目最活跃。最高推荐内容是《Early to Share, Late to Save: Synchronisation-Driven Communication Gating in Bandwidth-Constrained Cooperative VLN》，适合转化为学习笔记、科研计划素材或产品分析卡。",
+    "headline": "今日主线：机器人/具身智能、开源项目、论文值得重点追踪",
+    "summary": "最近数据中，机器人/具身智能、开源项目、论文最活跃。最高推荐内容是《Early to Share, Late to Save: Synchronisation-Driven Communication Gating in Bandwidth-Constrained Cooperative VLN》，适合转化为学习笔记、科研计划素材或产品分析卡。",
     "student_actions": [
       "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。",
       "把最高分内容加入收藏，并补充 3 条可复现/可分析要点。",
@@ -51,8 +51,8 @@
     {
       "topic": "论文研究",
       "heat": 87,
-      "article_count": 11,
-      "why_hot": "论文研究在最近资讯中出现 11 次，代表事件是《宇树G1人形机器人完成首例活体微创手术》。",
+      "article_count": 10,
+      "why_hot": "论文研究在最近资讯中出现 10 次，代表事件是《宇树G1人形机器人完成首例活体微创手术》。",
       "student_action": "按研究问题、方法、数据集、结果、局限和可复现性写一页论文阅读笔记。",
       "article_ids": [
         221,
@@ -61,6 +61,19 @@
         209,
         115,
         121
+      ]
+    },
+    {
+      "topic": "产业、算力与融资",
+      "heat": 84,
+      "article_count": 4,
+      "why_hot": "产业、算力与融资在最近资讯中出现 4 次，代表事件是《Apple 起诉 OpenAI 窃取商业机密》。",
+      "student_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
+      "article_ids": [
+        220,
+        240,
+        139,
+        157
       ]
     },
     {
@@ -74,18 +87,6 @@
         112,
         159,
         166
-      ]
-    },
-    {
-      "topic": "产业、算力与融资",
-      "heat": 82,
-      "article_count": 3,
-      "why_hot": "产业、算力与融资在最近资讯中出现 3 次，代表事件是《Apple 起诉 OpenAI 窃取商业机密》。",
-      "student_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
-      "article_ids": [
-        220,
-        139,
-        157
       ]
     },
     {
@@ -454,6 +455,44 @@
       "difficulty": "进阶",
       "read_time": "5 min",
       "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
+    },
+    {
+      "id": 240,
+      "title": "OpenAI GPT-5.6-Sol 删光 AI 创业者 Matt Shumer 的 Mac 硬盘",
+      "url": "https://aihot.virxact.com/items/cmrfr2xvi02brihjlp1tlzg1n",
+      "source": "AI HOT · X：阿易 AI Notes (@AYi_AInotes)",
+      "published_at": "2026-07-11T01:56:54+00:00",
+      "summary": "知名 AI 创业者 Matt Shumer 的 Mac 硬盘被 OpenAI 最新 Agent 模型 GPT-5.6-Sol 彻底清空。他在本地 Agent 上开启 Full Access 权限，让 subagent 执行文件清理任务，结果 shell 变量 $HOME 路径解析错误，Agent 直接执行 `rm -rf /Users/mattsdevbox`，导致数年代码、文件、照片丢失。该任务此前已安全运行数百次。事后 Agent 自动生成事故报告承认错误。Matt 表示\"1000x 更信任 Anthropic 的 Fable\"。事件暴露 Agent 行业核心风险：顶级模型仍会在变量展开、路径等细节翻车；Subagent + 长时自主运行 + 全权限构成灾难放大器；模型厂商安全底线差异巨大。",
+      "category": "融资动态",
+      "tags": [
+        "AI HOT",
+        "中文",
+        "AI新闻",
+        "融资动态"
+      ],
+      "score": 76,
+      "one_sentence_summary": "这条内容关注《OpenAI GPT-5.6-Sol 删光 AI 创业者 Matt Shumer 的 Mac 硬盘》，适合作为融资动态方向的每日追踪素材。",
+      "importance": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "audience": "关注 AI 产业趋势、创业公司和投研素材的学生",
+      "action_suggestion": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
+      "relevance_score": 48,
+      "credibility_score": 72,
+      "novelty_score": 63,
+      "trend_score": 76,
+      "actionability_score": 53,
+      "spam_score": 0,
+      "final_score": 76,
+      "analysis_provider": "local_rules",
+      "is_favorite": false,
+      "created_at": "2026-07-11T06:05:59.632448+00:00",
+      "tldr": "这条内容关注《OpenAI GPT-5.6-Sol 删光 AI 创业者 Matt Shumer 的 Mac 硬盘》，适合作为融资动态方向的每日追踪素材。",
+      "why_it_matters": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "student_value": "关注 AI 产业趋势、创业公司和投研素材的学生",
+      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
+      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
+      "difficulty": "入门",
+      "read_time": "3 min",
+      "next_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。"
     },
     {
       "id": 109,
@@ -2353,44 +2392,6 @@
       "is_favorite": false,
       "created_at": "2026-07-10T07:50:31.783356+00:00",
       "tldr": "这条内容关注《The Illusion of Equivalency: Statistical Characterization of Quantization Effects in LLMs》，适合作为论文方向的每日追踪素材。",
-      "why_it_matters": "它和论文相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
-      "research_value": "可转化为论文阅读笔记，重点拆研究问题、方法、数据集、结果和局限。",
-      "pm_value": "可提炼为趋势观察，判断技术变化如何影响产品机会。",
-      "difficulty": "进阶",
-      "read_time": "5 min",
-      "next_action": "按研究问题、方法、数据集、结果、局限和可复现性写一页论文阅读笔记。"
-    },
-    {
-      "id": 178,
-      "title": "Validity of LLMs as data annotators: AMALIA on authority",
-      "url": "https://arxiv.org/abs/2607.08731v1",
-      "source": "arXiv cs.AI",
-      "published_at": "2026-07-09T17:34:25+00:00",
-      "summary": "A national language model offers a linguistic community its own instrument for measuring what its citizens say and value. Portugal's AMALIA, a publicly funded 9B-parameter model for European Portuguese, appears competitive on agreement alone: asked to code the moral foundation of authority, it agrees with trained human coders to within six F1 points of open models eight to thirteen times its size. Yet agreement is reliability, not validity. For theoretical constructs that must be inferred rather than read from surface features, the question is whether the model follows the construct's theory or reaches the right code by correlated shortcuts. We test this with the recovery gap: the loss in pe",
-      "category": "论文",
-      "tags": [
-        "arXiv",
-        "AI",
-        "论文",
-        "大模型"
-      ],
-      "score": 69,
-      "one_sentence_summary": "这条内容关注《Validity of LLMs as data annotators: AMALIA on authority》，适合作为论文方向的每日追踪素材。",
-      "importance": "它和论文相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "audience": "AI/机器人方向本科生、准备申请研究生的同学",
-      "action_suggestion": "按研究问题、方法、数据集、结果、局限和可复现性写一页论文阅读笔记。",
-      "relevance_score": 70,
-      "credibility_score": 84,
-      "novelty_score": 64,
-      "trend_score": 55,
-      "actionability_score": 67,
-      "spam_score": 0,
-      "final_score": 69,
-      "analysis_provider": "local_rules",
-      "is_favorite": false,
-      "created_at": "2026-07-10T07:50:31.783356+00:00",
-      "tldr": "这条内容关注《Validity of LLMs as data annotators: AMALIA on authority》，适合作为论文方向的每日追踪素材。",
       "why_it_matters": "它和论文相关，可作为学习路线、科研计划或产品案例库的素材。",
       "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
       "research_value": "可转化为论文阅读笔记，重点拆研究问题、方法、数据集、结果和局限。",
