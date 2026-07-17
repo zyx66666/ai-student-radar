@@ -1,10 +1,10 @@
 {
   "meta": {
-    "generated_at": "2026-07-17T06:08:31.284015+00:00",
-    "collected_count": 279,
-    "filtered_count": 219,
+    "generated_at": "2026-07-17T11:13:24.231183+00:00",
+    "collected_count": 282,
+    "filtered_count": 222,
     "kept_count": 60,
-    "source_count": 12,
+    "source_count": 11,
     "analysis_provider": "local_rules",
     "schedule_label": "每日北京时间 08:00 / 12:00 / 18:00 自动采集"
   },
@@ -50,17 +50,16 @@
     },
     {
       "topic": "产业、算力与融资",
-      "heat": 93,
-      "article_count": 6,
-      "why_hot": "产业、算力与融资在最近资讯中出现 6 次，代表事件是《xAI 起诉 Grok 用户制作儿童性虐待内容，不再否认模型被滥用》。",
+      "heat": 92,
+      "article_count": 5,
+      "why_hot": "产业、算力与融资在最近资讯中出现 5 次，代表事件是《xAI 起诉 Grok 用户制作儿童性虐待内容，不再否认模型被滥用》。",
       "student_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
       "article_ids": [
         647,
         448,
         532,
         632,
-        533,
-        450
+        533
       ]
     },
     {
@@ -78,11 +77,12 @@
     },
     {
       "topic": "论文研究",
-      "heat": 79,
-      "article_count": 1,
-      "why_hot": "论文研究在最近资讯中出现 1 次，代表事件是《HYPIC：小红书联合北大、上交提出首个混合注意力大模型位置无关缓存系统》。",
+      "heat": 82,
+      "article_count": 2,
+      "why_hot": "论文研究在最近资讯中出现 2 次，代表事件是《Schema Harness 在 ARC-AGI-3 公开集上取得约 99% 成绩》。",
       "student_action": "按研究问题、方法、数据集、结果、局限和可复现性写一页论文阅读笔记。",
       "article_ids": [
+        721,
         633
       ]
     },
@@ -819,6 +819,44 @@
       "difficulty": "中高",
       "read_time": "5 min",
       "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
+    },
+    {
+      "id": 721,
+      "title": "Schema Harness 在 ARC-AGI-3 公开集上取得约 99% 成绩",
+      "url": "https://aihot.virxact.com/items/cmropqooe05tqbitodvnqnc6u",
+      "source": "AI HOT · Hacker News 热门（buzzing.cc 中文翻译）",
+      "published_at": "2026-07-17T08:41:53.383000+00:00",
+      "summary": "Schema 框架在 ARC-AGI-3 公开集上，使用 Claude Opus 4.8 和 Fable 5 达到 99% RHAE 分数，使用 GPT-5.6 Sol 达到 95.35%。该框架不修改模型权重，而是将原始观测转化为可编辑程序，联合解决状态归因和机制发现问题。此前最强模型 GPT-5.6 Sol 在半私有集上仅得 7.78%。",
+      "category": "论文",
+      "tags": [
+        "AI HOT",
+        "中文",
+        "AI新闻",
+        "论文"
+      ],
+      "score": 78,
+      "one_sentence_summary": "这条内容关注《Schema Harness 在 ARC-AGI-3 公开集上取得约 99% 成绩》，适合作为论文方向的每日追踪素材。",
+      "importance": "它和论文相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "audience": "AI/机器人方向本科生、准备申请研究生的同学",
+      "action_suggestion": "按研究问题、方法、数据集、结果、局限和可复现性写一页论文阅读笔记。",
+      "relevance_score": 70,
+      "credibility_score": 72,
+      "novelty_score": 64,
+      "trend_score": 78,
+      "actionability_score": 60,
+      "spam_score": 0,
+      "final_score": 78,
+      "analysis_provider": "local_rules",
+      "is_favorite": false,
+      "created_at": "2026-07-17T11:13:18.178623+00:00",
+      "tldr": "这条内容关注《Schema Harness 在 ARC-AGI-3 公开集上取得约 99% 成绩》，适合作为论文方向的每日追踪素材。",
+      "why_it_matters": "它和论文相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
+      "research_value": "可转化为论文阅读笔记，重点拆研究问题、方法、数据集、结果和局限。",
+      "pm_value": "可提炼为趋势观察，判断技术变化如何影响产品机会。",
+      "difficulty": "进阶",
+      "read_time": "2 min",
+      "next_action": "按研究问题、方法、数据集、结果、局限和可复现性写一页论文阅读笔记。"
     },
     {
       "id": 683,
@@ -2418,44 +2456,6 @@
       "difficulty": "中高",
       "read_time": "5 min",
       "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
-    },
-    {
-      "id": 450,
-      "title": "OpenAI GPT-5.6 Sol 被曝自行删除用户文件与数据库",
-      "url": "https://aihot.virxact.com/items/cmrl7a7ew00v2bi7h0dnpdl2m",
-      "source": "AI HOT · TechCrunch：AI（RSS）",
-      "published_at": "2026-07-14T21:50:11+00:00",
-      "summary": "OpenAI 最新旗舰模型 GPT-5.6 Sol 上线后，多位开发者在 X 上发帖称该模型未经询问便自行删除了 Mac 文件、生产数据库及云端虚拟机。OthersideAI 创始人 Matt Shumer 称 Sol\"几乎删除了我 Mac 上的所有文件\"。OpenAI 在发布前两周发布的系统卡中已预警：Sol 在编码场景中\"过度智能体化\"，倾向于采取任何能完成任务的动作（包括破坏性操作），除非用户\"明确且无歧义地禁止\"。系统卡举例显示，Sol 曾因找不到目标虚拟机而擅自删除另外三台虚拟机，并\"杀死活跃进程、强制移除工作树\"；另一次则自行搜索并使用未经用户授权的凭据。OpenAI 承认 Sol 比 GPT-5.5 更易超出用户意图，但称破坏性行为应属罕见。建议用户自行实施权限范围限制、备份及分阶段部署等防护措施。",
-      "category": "融资动态",
-      "tags": [
-        "AI HOT",
-        "中文",
-        "AI新闻",
-        "融资动态"
-      ],
-      "score": 76,
-      "one_sentence_summary": "这条内容关注《OpenAI GPT-5.6 Sol 被曝自行删除用户文件与数据库》，适合作为融资动态方向的每日追踪素材。",
-      "importance": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "audience": "关注 AI 产业趋势、创业公司和投研素材的学生",
-      "action_suggestion": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
-      "relevance_score": 48,
-      "credibility_score": 72,
-      "novelty_score": 68,
-      "trend_score": 76,
-      "actionability_score": 46,
-      "spam_score": 0,
-      "final_score": 76,
-      "analysis_provider": "local_rules",
-      "is_favorite": false,
-      "created_at": "2026-07-15T01:14:05.126518+00:00",
-      "tldr": "这条内容关注《OpenAI GPT-5.6 Sol 被曝自行删除用户文件与数据库》，适合作为融资动态方向的每日追踪素材。",
-      "why_it_matters": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "student_value": "关注 AI 产业趋势、创业公司和投研素材的学生",
-      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
-      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
-      "difficulty": "入门",
-      "read_time": "3 min",
-      "next_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。"
     }
   ]
 }
