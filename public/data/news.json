@@ -1,8 +1,8 @@
 {
   "meta": {
-    "generated_at": "2026-07-18T01:18:19.442313+00:00",
-    "collected_count": 241,
-    "filtered_count": 181,
+    "generated_at": "2026-07-18T05:55:37.987449+00:00",
+    "collected_count": 243,
+    "filtered_count": 183,
     "kept_count": 60,
     "source_count": 16,
     "analysis_provider": "local_rules",
@@ -21,8 +21,8 @@
     {
       "topic": "机器人/具身智能",
       "heat": 94,
-      "article_count": 22,
-      "why_hot": "机器人/具身智能在最近资讯中出现 22 次，代表事件是《SUFLECA: Scaling Up Feature Learning for CAD-to-image Alignment》。",
+      "article_count": 23,
+      "why_hot": "机器人/具身智能在最近资讯中出现 23 次，代表事件是《SUFLECA: Scaling Up Feature Learning for CAD-to-image Alignment》。",
       "student_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。",
       "article_ids": [
         677,
@@ -36,8 +36,8 @@
     {
       "topic": "Agent 应用与 AI 产品",
       "heat": 94,
-      "article_count": 21,
-      "why_hot": "Agent 应用与 AI 产品在最近资讯中出现 21 次，代表事件是《Grok 推出 Automations 功能：定时或邮件触发，自动执行任务并汇报结果》。",
+      "article_count": 20,
+      "why_hot": "Agent 应用与 AI 产品在最近资讯中出现 20 次，代表事件是《Grok 推出 Automations 功能：定时或邮件触发，自动执行任务并汇报结果》。",
       "student_action": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
       "article_ids": [
         648,
@@ -1520,44 +1520,6 @@
       "next_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。"
     },
     {
-      "id": 494,
-      "title": "Airtap iMessage 新功能：发条短信让 AI 替你操作手机",
-      "url": "https://aihot.virxact.com/items/cmrlh600d09kzbi2bnol6i2xu",
-      "source": "AI HOT · X：阿易 AI Notes (@AYi_AInotes)",
-      "published_at": "2026-07-15T02:22:50+00:00",
-      "summary": "Airtap 推出 iMessage 新功能，用户只需给美国号码发一条 iMessage，其云手机上的 AI Agent 就能通过视觉模拟点击，替用户完成 TikTok 刷视频、星巴克点单等操作，无需安装对应 App。其架构分为三层：大脑（理解指令）、AutoPilot（视觉操控屏幕）、云手机（24小时在线）。但支付等敏感操作仍需用户手动完成，信任与授权仍是所有 Agent 厂商的难题。",
-      "category": "AI产品",
-      "tags": [
-        "AI HOT",
-        "中文",
-        "AI新闻",
-        "AI产品"
-      ],
-      "score": 78,
-      "one_sentence_summary": "这条内容关注《Airtap iMessage 新功能：发条短信让 AI 替你操作手机》，适合作为AI产品方向的每日追踪素材。",
-      "importance": "它和AI产品相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "audience": "关注 AI 产品经理、产品分析和商业化案例的学生",
-      "action_suggestion": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
-      "relevance_score": 56,
-      "credibility_score": 72,
-      "novelty_score": 63,
-      "trend_score": 78,
-      "actionability_score": 52,
-      "spam_score": 0,
-      "final_score": 78,
-      "analysis_provider": "local_rules",
-      "is_favorite": false,
-      "created_at": "2026-07-15T06:05:45.309523+00:00",
-      "tldr": "这条内容关注《Airtap iMessage 新功能：发条短信让 AI 替你操作手机》，适合作为AI产品方向的每日追踪素材。",
-      "why_it_matters": "它和AI产品相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "student_value": "关注 AI 产品经理、产品分析和商业化案例的学生",
-      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
-      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
-      "difficulty": "入门",
-      "read_time": "2 min",
-      "next_action": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。"
-    },
-    {
       "id": 685,
       "title": "MM-IssueLoc: A Controlled Benchmark for Evaluating Visual Evidence in Multimodal Repository-Level Issue Localization",
       "url": "https://arxiv.org/abs/2607.15205v1",
@@ -2449,6 +2411,44 @@
       "difficulty": "进阶",
       "read_time": "5 min",
       "next_action": "拆解任务链路、工具调用和评价指标，沉淀为 Agent 产品或项目卡片。"
+    },
+    {
+      "id": 602,
+      "title": "Discriminative Barrier Functions for Safe Adversarial Imitation Learning from Observation",
+      "url": "https://arxiv.org/abs/2607.13938v1",
+      "source": "arXiv cs.RO",
+      "published_at": "2026-07-15T15:20:57+00:00",
+      "summary": "Inverse Reinforcement Learning (IRL) algorithms are powerful tools for learning from and generalizing expert demonstrations, but they often rely on unconstrained exploration, rendering them unsafe for real-world deployment. Meanwhile, Control Barrier Functions (CBFs) can guarantee the safety of control systems, but the analytical design of CBFs can be time-consuming and esoteric. In this work, we address these limitations jointly by constraining reward function candidacy during IRL to the space of CBFs, yielding a formulation that exhibits safe online control with continuous experiential improvement. Crucially, this framework enables the data-driven recovery of barrier functions directly fro",
+      "category": "机器人/具身智能",
+      "tags": [
+        "arXiv",
+        "机器人",
+        "具身智能",
+        "AI安全"
+      ],
+      "score": 75,
+      "one_sentence_summary": "这条内容关注《Discriminative Barrier Functions for Safe Adversarial Imitation Learning from Observation》，适合作为机器人/具身智能方向的每日追踪素材。",
+      "importance": "它和机器人/具身智能相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "audience": "AI/机器人方向本科生、准备申请研究生的同学",
+      "action_suggestion": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。",
+      "relevance_score": 86,
+      "credibility_score": 86,
+      "novelty_score": 64,
+      "trend_score": 60,
+      "actionability_score": 60,
+      "spam_score": 0,
+      "final_score": 75,
+      "analysis_provider": "local_rules",
+      "is_favorite": false,
+      "created_at": "2026-07-16T06:09:15.181742+00:00",
+      "tldr": "这条内容关注《Discriminative Barrier Functions for Safe Adversarial Imitation Learning from Observation》，适合作为机器人/具身智能方向的每日追踪素材。",
+      "why_it_matters": "它和机器人/具身智能相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
+      "research_value": "适合沉淀到机器人方向科研计划，关注 VLA、控制、仿真和真实数据闭环。",
+      "pm_value": "可提炼为趋势观察，判断技术变化如何影响产品机会。",
+      "difficulty": "中高",
+      "read_time": "5 min",
+      "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
     }
   ]
 }
