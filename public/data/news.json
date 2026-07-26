@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated_at": "2026-07-26T06:28:09.019654+00:00",
+    "generated_at": "2026-07-26T11:12:33.746139+00:00",
     "collected_count": 149,
     "filtered_count": 89,
     "kept_count": 60,
@@ -9,8 +9,8 @@
     "schedule_label": "每日北京时间 08:00 / 12:00 / 18:00 自动采集"
   },
   "daily_brief": {
-    "headline": "今日主线：机器人/具身智能、AI Agent、融资动态值得重点追踪",
-    "summary": "最近数据中，机器人/具身智能、AI Agent、融资动态最活跃。最高推荐内容是《Anthropic 发布 Claude Opus 5》，适合转化为学习笔记、科研计划素材或产品分析卡。",
+    "headline": "今日主线：AI Agent、机器人/具身智能、融资动态值得重点追踪",
+    "summary": "最近数据中，AI Agent、机器人/具身智能、融资动态最活跃。最高推荐内容是《Anthropic 发布 Claude Opus 5》，适合转化为学习笔记、科研计划素材或产品分析卡。",
     "student_actions": [
       "收藏并写 3 条要点：它解决什么问题、需要哪些知识、能做什么小项目。",
       "把最高分内容加入收藏，并补充 3 条可复现/可分析要点。",
@@ -21,16 +21,16 @@
     {
       "topic": "机器人/具身智能",
       "heat": 92,
-      "article_count": 12,
-      "why_hot": "机器人/具身智能在最近资讯中出现 12 次，代表事件是《VoLN: Vision-Only Long-Horizon Navigation---Paradigm, Benchmark, and Method》。",
+      "article_count": 11,
+      "why_hot": "机器人/具身智能在最近资讯中出现 11 次，代表事件是《VoLN: Vision-Only Long-Horizon Navigation---Paradigm, Benchmark, and Method》。",
       "student_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。",
       "article_ids": [
         1237,
         1239,
-        1240,
         1242,
         1245,
-        1248
+        1248,
+        1203
       ]
     },
     {
@@ -51,8 +51,8 @@
     {
       "topic": "产业、算力与融资",
       "heat": 90,
-      "article_count": 9,
-      "why_hot": "产业、算力与融资在最近资讯中出现 9 次，代表事件是《英伟达、微软和Meta联合警告：应避免对开放权重模型过度监管》。",
+      "article_count": 10,
+      "why_hot": "产业、算力与融资在最近资讯中出现 10 次，代表事件是《英伟达、微软和Meta联合警告：应避免对开放权重模型过度监管》。",
       "student_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
       "article_ids": [
         1296,
@@ -60,7 +60,7 @@
         1327,
         1323,
         1299,
-        1285
+        1340
       ]
     },
     {
@@ -305,46 +305,6 @@
       "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
       "research_value": "适合沉淀到机器人方向科研计划，关注 VLA、控制、仿真和真实数据闭环。",
       "pm_value": "适合分析开源项目的用户场景、上手门槛、社区活跃度和产品化机会。",
-      "difficulty": "中高",
-      "read_time": "5 min",
-      "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
-    },
-    {
-      "id": 1240,
-      "title": "RL-MACRO: A Cybernetic Closed-Loop Intelligence Framework for Multimodal Adaptive Robotic Craniotomy",
-      "url": "https://arxiv.org/abs/2607.21113v1",
-      "source": "arXiv cs.RO",
-      "published_at": "2026-07-23T09:41:28+00:00",
-      "summary": "Autonomous robotic craniotomy requires continuous regulation of tool-tissue interactions to mitigate mechanical overload and thermal damage while maintaining surgical efficiency. However, this process is inherently partially observable due to unknown, time-varying tissue properties and the inability to directly measure cutting temperatures under physical occlusion. To address these challenges, we propose RL-MACRO, a cybernetic closed-loop intelligence framework that couples multimodal perception, adaptive decision-making, and robotic execution. This framework empowers the surgical robot to autonomously perceive inaccessible states from partial sensory feedback and dynamically optimize its be",
-      "category": "机器人/具身智能",
-      "tags": [
-        "arXiv",
-        "机器人",
-        "具身智能",
-        "多模态",
-        "AI安全",
-        "自动驾驶"
-      ],
-      "score": 81,
-      "one_sentence_summary": "这条内容关注《RL-MACRO: A Cybernetic Closed-Loop Intelligence Framework for Multimodal Adaptive Robotic Craniotomy》，适合作为机器人/具身智能方向的每日追踪素材。",
-      "importance": "它和机器人/具身智能相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "audience": "AI/机器人方向本科生、准备申请研究生的同学",
-      "action_suggestion": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。",
-      "relevance_score": 100,
-      "credibility_score": 86,
-      "novelty_score": 64,
-      "trend_score": 65,
-      "actionability_score": 60,
-      "spam_score": 0,
-      "final_score": 81,
-      "analysis_provider": "local_rules",
-      "is_favorite": false,
-      "created_at": "2026-07-24T06:17:15.576448+00:00",
-      "tldr": "这条内容关注《RL-MACRO: A Cybernetic Closed-Loop Intelligence Framework for Multimodal Adaptive Robotic Craniotomy》，适合作为机器人/具身智能方向的每日追踪素材。",
-      "why_it_matters": "它和机器人/具身智能相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
-      "research_value": "适合沉淀到机器人方向科研计划，关注 VLA、控制、仿真和真实数据闭环。",
-      "pm_value": "可提炼为趋势观察，判断技术变化如何影响产品机会。",
       "difficulty": "中高",
       "read_time": "5 min",
       "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
@@ -1434,6 +1394,44 @@
       "difficulty": "进阶",
       "read_time": "5 min",
       "next_action": "保存到论文雷达，并补充是否适合写进科研计划。"
+    },
+    {
+      "id": 1340,
+      "title": "数百用户向ChatGPT索要毒药与生物武器配方，部分获得高中生水平步骤指南",
+      "url": "https://aihot.virxact.com/items/cms1ka4930059ro05h81rrc3q",
+      "source": "AI HOT · The Decoder：AI News（RSS）",
+      "published_at": "2026-07-26T08:35:49+00:00",
+      "summary": "2025年夏季，OpenAI内部将GPT-5标记为高风险，因其可帮助教育程度有限的用户制造生物危害。据《华尔街日报》报道，自去年夏天以来，数百名用户向ChatGPT询问如何制造生物武器和毒药，部分用户获得了员工称高中生都能遵循的逐步指南。OpenAI暂停了相关账户，但未向当局报告任何事件。",
+      "category": "融资动态",
+      "tags": [
+        "AI HOT",
+        "中文",
+        "AI新闻",
+        "融资动态"
+      ],
+      "score": 73,
+      "one_sentence_summary": "这条内容关注《数百用户向ChatGPT索要毒药与生物武器配方，部分获得高中生水平步骤指南》，适合作为融资动态方向的每日追踪素材。",
+      "importance": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "audience": "关注 AI 产业趋势、创业公司和投研素材的学生",
+      "action_suggestion": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
+      "relevance_score": 48,
+      "credibility_score": 72,
+      "novelty_score": 58,
+      "trend_score": 73,
+      "actionability_score": 46,
+      "spam_score": 0,
+      "final_score": 73,
+      "analysis_provider": "local_rules",
+      "is_favorite": false,
+      "created_at": "2026-07-26T11:12:18.878505+00:00",
+      "tldr": "这条内容关注《数百用户向ChatGPT索要毒药与生物武器配方，部分获得高中生水平步骤指南》，适合作为融资动态方向的每日追踪素材。",
+      "why_it_matters": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "student_value": "关注 AI 产业趋势、创业公司和投研素材的学生",
+      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
+      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
+      "difficulty": "入门",
+      "read_time": "2 min",
+      "next_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。"
     },
     {
       "id": 1302,
