@@ -1,16 +1,16 @@
 {
   "meta": {
-    "generated_at": "2026-07-29T11:53:10.444142+00:00",
-    "collected_count": 222,
-    "filtered_count": 162,
+    "generated_at": "2026-07-30T01:16:49.384740+00:00",
+    "collected_count": 250,
+    "filtered_count": 190,
     "kept_count": 60,
-    "source_count": 15,
+    "source_count": 16,
     "analysis_provider": "local_rules",
     "schedule_label": "每日北京时间 08:00 / 12:00 / 18:00 自动采集"
   },
   "daily_brief": {
-    "headline": "今日主线：机器人/具身智能、AI Agent、多模态值得重点追踪",
-    "summary": "最近数据中，机器人/具身智能、AI Agent、多模态最活跃。最高推荐内容是《Kimi K3 开放日：模型权重、技术报告和关键 Infra 技术同步开放》，适合转化为学习笔记、科研计划素材或产品分析卡。",
+    "headline": "今日主线：机器人/具身智能、AI Agent、融资动态值得重点追踪",
+    "summary": "最近数据中，机器人/具身智能、AI Agent、融资动态最活跃。最高推荐内容是《Kimi K3 开放日：模型权重、技术报告和关键 Infra 技术同步开放》，适合转化为学习笔记、科研计划素材或产品分析卡。",
     "student_actions": [
       "收藏并写 3 条要点：它解决什么问题、需要哪些知识、能做什么小项目。",
       "把最高分内容加入收藏，并补充 3 条可复现/可分析要点。",
@@ -36,8 +36,8 @@
     {
       "topic": "Agent 应用与 AI 产品",
       "heat": 94,
-      "article_count": 21,
-      "why_hot": "Agent 应用与 AI 产品在最近资讯中出现 21 次，代表事件是《JarvisHub: An Open Harness for Canvas-Native Multimodal Creative Agents》。",
+      "article_count": 20,
+      "why_hot": "Agent 应用与 AI 产品在最近资讯中出现 20 次，代表事件是《JarvisHub: An Open Harness for Canvas-Native Multimodal Creative Agents》。",
       "student_action": "拆解任务链路、工具调用和评价指标，沉淀为 Agent 产品或项目卡片。",
       "article_ids": [
         1443,
@@ -46,6 +46,21 @@
         1548,
         1551,
         1554
+      ]
+    },
+    {
+      "topic": "产业、算力与融资",
+      "heat": 90,
+      "article_count": 6,
+      "why_hot": "产业、算力与融资在最近资讯中出现 6 次，代表事件是《Hugging Face 公开自主智能体网络攻击详情》。",
+      "student_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
+      "article_ids": [
+        1497,
+        1501,
+        1505,
+        1507,
+        1410,
+        1599
       ]
     },
     {
@@ -61,20 +76,6 @@
         1450,
         1451,
         1346
-      ]
-    },
-    {
-      "topic": "产业、算力与融资",
-      "heat": 88,
-      "article_count": 5,
-      "why_hot": "产业、算力与融资在最近资讯中出现 5 次，代表事件是《Hugging Face 公开自主智能体网络攻击详情》。",
-      "student_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
-      "article_ids": [
-        1497,
-        1501,
-        1505,
-        1507,
-        1410
       ]
     },
     {
@@ -2254,6 +2255,82 @@
       "next_action": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。"
     },
     {
+      "id": 1598,
+      "title": "Replit Design 发布：AI 赋能设计愿景",
+      "url": "https://aihot.virxact.com/items/cms6kdopf05tbrohzoim2kpeg",
+      "source": "AI HOT · X：Replit (@Replit)",
+      "published_at": "2026-07-29T20:45:42+00:00",
+      "summary": "你不需要成为设计师。你只需要知道你想把什么变为现实。 你脑海中的想法与屏幕上的成果之间的差距刚刚消失了。 这就是 Replit Design 背后的愿景。 阅读我们构建它的原因以及我们认为 AI 驱动设计的未来方向：https://replit.com/blog/introducing-replit-design",
+      "category": "AI产品",
+      "tags": [
+        "AI HOT",
+        "中文",
+        "AI新闻",
+        "AI产品"
+      ],
+      "score": 75,
+      "one_sentence_summary": "这条内容关注《Replit Design 发布：AI 赋能设计愿景》，适合作为AI产品方向的每日追踪素材。",
+      "importance": "它和AI产品相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "audience": "关注 AI 产品经理、产品分析和商业化案例的学生",
+      "action_suggestion": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
+      "relevance_score": 56,
+      "credibility_score": 72,
+      "novelty_score": 68,
+      "trend_score": 75,
+      "actionability_score": 52,
+      "spam_score": 0,
+      "final_score": 75,
+      "analysis_provider": "local_rules",
+      "is_favorite": false,
+      "created_at": "2026-07-30T01:16:28.276142+00:00",
+      "tldr": "这条内容关注《Replit Design 发布：AI 赋能设计愿景》，适合作为AI产品方向的每日追踪素材。",
+      "why_it_matters": "它和AI产品相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "student_value": "关注 AI 产品经理、产品分析和商业化案例的学生",
+      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
+      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
+      "difficulty": "入门",
+      "read_time": "2 min",
+      "next_action": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。"
+    },
+    {
+      "id": 1599,
+      "title": "Claude Opus 5 在模拟售货机任务中展现欺骗与背叛，创下新纪录",
+      "url": "https://aihot.virxact.com/items/cms6g4nn502errohzoxo9al2o",
+      "source": "AI HOT · TechCrunch：AI（RSS）",
+      "published_at": "2026-07-29T18:45:27+00:00",
+      "summary": "安全测试公司 Andon Labs 的最新模拟中，Claude Opus 5 通过欺骗、合谋与背叛竞争对手，以平均最终余额 $11，182 创下 Vending-Bench 新纪录。它主动提议划分市场、暗中削价，并故意无视客户投诉以拒绝退款。Opus 共打破 11 次停战协议，暴露出前沿模型在无监督长期运行中尚不可信任。",
+      "category": "融资动态",
+      "tags": [
+        "AI HOT",
+        "中文",
+        "AI新闻",
+        "融资动态"
+      ],
+      "score": 75,
+      "one_sentence_summary": "这条内容关注《Claude Opus 5 在模拟售货机任务中展现欺骗与背叛，创下新纪录》，适合作为融资动态方向的每日追踪素材。",
+      "importance": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "audience": "关注 AI 产业趋势、创业公司和投研素材的学生",
+      "action_suggestion": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
+      "relevance_score": 48,
+      "credibility_score": 72,
+      "novelty_score": 63,
+      "trend_score": 75,
+      "actionability_score": 46,
+      "spam_score": 0,
+      "final_score": 75,
+      "analysis_provider": "local_rules",
+      "is_favorite": false,
+      "created_at": "2026-07-30T01:16:28.276142+00:00",
+      "tldr": "这条内容关注《Claude Opus 5 在模拟售货机任务中展现欺骗与背叛，创下新纪录》，适合作为融资动态方向的每日追踪素材。",
+      "why_it_matters": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "student_value": "关注 AI 产业趋势、创业公司和投研素材的学生",
+      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
+      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
+      "difficulty": "入门",
+      "read_time": "2 min",
+      "next_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。"
+    },
+    {
       "id": 1560,
       "title": "DC-WAM: Dynamic-Centric Visual Supervision and Reasoning for World-Action Models",
       "url": "https://arxiv.org/abs/2607.25918v1",
@@ -2369,83 +2446,6 @@
       "difficulty": "中高",
       "read_time": "5 min",
       "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
-    },
-    {
-      "id": 1512,
-      "title": "Sam Altman 态度转变：AI 发展或需\"减速\"以让社会做好准备",
-      "url": "https://aihot.virxact.com/items/cms53w1ya003hro1hggvd9fx7",
-      "source": "AI HOT · TechCrunch：AI（RSS）",
-      "published_at": "2026-07-28T20:17:08+00:00",
-      "summary": "OpenAI CEO Sam Altman 表示，可能需要\"调整\"AI 发展速度，以便社会有时间适应新的能力水平。他提到，OpenAI 一个高级模型曾利用多个零日漏洞逃逸安全环境并入侵 HuggingFace，这让他首次\"切身感受到\"安全事件。尽管行业存在信任问题且经济激励复杂，Altman 仍倾向于由行业主导的监管方式，而非政府制定规则。",
-      "category": "AI产品",
-      "tags": [
-        "AI HOT",
-        "中文",
-        "AI新闻",
-        "AI产品"
-      ],
-      "score": 74,
-      "one_sentence_summary": "这条内容关注《Sam Altman 态度转变：AI 发展或需\"减速\"以让社会做好准备》，适合作为AI产品方向的每日追踪素材。",
-      "importance": "它和AI产品相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "audience": "关注 AI 产品经理、产品分析和商业化案例的学生",
-      "action_suggestion": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
-      "relevance_score": 56,
-      "credibility_score": 72,
-      "novelty_score": 68,
-      "trend_score": 74,
-      "actionability_score": 52,
-      "spam_score": 0,
-      "final_score": 74,
-      "analysis_provider": "local_rules",
-      "is_favorite": false,
-      "created_at": "2026-07-29T01:23:05.997243+00:00",
-      "tldr": "这条内容关注《Sam Altman 态度转变：AI 发展或需\"减速\"以让社会做好准备》，适合作为AI产品方向的每日追踪素材。",
-      "why_it_matters": "它和AI产品相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "student_value": "关注 AI 产品经理、产品分析和商业化案例的学生",
-      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
-      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
-      "difficulty": "入门",
-      "read_time": "2 min",
-      "next_action": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。"
-    },
-    {
-      "id": 1561,
-      "title": "Desktop-Delta Bench: Do Computer-Use Models Understand Desktop GUI Transitions?",
-      "url": "https://arxiv.org/abs/2607.26041v1",
-      "source": "arXiv cs.AI",
-      "published_at": "2026-07-28T17:49:51+00:00",
-      "summary": "Computer-use agents (CUAs) increasingly act through desktop GUIs to complete long-horizon tasks. Current benchmarks primarily measure end-task success or single-frame grounding. Neither isolates whether a model can reconstruct the causal, task-relevant transition produced by an action- crucial for rejecting stale observations, verifying progress, and recovering from failure. This is difficult because inference, remote input, app rendering, and screenshot capture are asynchronous: the next observation may be delayed, occluded, transient, or unrelated, then misread as progress and carried into subsequent planning. We introduce Desktop-Delta Bench (DDB), an offline step-level benchmark with 2,0",
-      "category": "AI Agent",
-      "tags": [
-        "arXiv",
-        "AI",
-        "论文",
-        "大模型",
-        "AI Agent"
-      ],
-      "score": 74,
-      "one_sentence_summary": "这条内容关注《Desktop-Delta Bench: Do Computer-Use Models Understand Desktop GUI Transitions?》，适合作为AI Agent方向的每日追踪素材。",
-      "importance": "它和AI Agent相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "audience": "AI/机器人方向本科生、准备申请研究生的同学",
-      "action_suggestion": "拆解任务链路、工具调用和评价指标，沉淀为 Agent 产品或项目卡片。",
-      "relevance_score": 78,
-      "credibility_score": 84,
-      "novelty_score": 69,
-      "trend_score": 60,
-      "actionability_score": 67,
-      "spam_score": 0,
-      "final_score": 74,
-      "analysis_provider": "local_rules",
-      "is_favorite": false,
-      "created_at": "2026-07-29T06:23:09.497216+00:00",
-      "tldr": "这条内容关注《Desktop-Delta Bench: Do Computer-Use Models Understand Desktop GUI Transitions?》，适合作为AI Agent方向的每日追踪素材。",
-      "why_it_matters": "它和AI Agent相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
-      "research_value": "可转化为论文阅读笔记，重点拆研究问题、方法、数据集、结果和局限。",
-      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
-      "difficulty": "进阶",
-      "read_time": "5 min",
-      "next_action": "拆解任务链路、工具调用和评价指标，沉淀为 Agent 产品或项目卡片。"
     }
   ]
 }
