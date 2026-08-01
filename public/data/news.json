@@ -1,8 +1,8 @@
 {
   "meta": {
-    "generated_at": "2026-08-01T01:44:05.516452+00:00",
-    "collected_count": 239,
-    "filtered_count": 179,
+    "generated_at": "2026-08-01T06:19:54.062567+00:00",
+    "collected_count": 240,
+    "filtered_count": 180,
     "kept_count": 60,
     "source_count": 13,
     "analysis_provider": "local_rules",
@@ -21,8 +21,8 @@
     {
       "topic": "Agent 应用与 AI 产品",
       "heat": 94,
-      "article_count": 21,
-      "why_hot": "Agent 应用与 AI 产品在最近资讯中出现 21 次，代表事件是《StealthBench: Measuring Operational Stealth in Autonomous Offensive-Security Agents》。",
+      "article_count": 20,
+      "why_hot": "Agent 应用与 AI 产品在最近资讯中出现 20 次，代表事件是《StealthBench: Measuring Operational Stealth in Autonomous Offensive-Security Agents》。",
       "student_action": "拆解任务链路、工具调用和评价指标，沉淀为 Agent 产品或项目卡片。",
       "article_ids": [
         1634,
@@ -76,6 +76,18 @@
       ]
     },
     {
+      "topic": "产业、算力与融资",
+      "heat": 81,
+      "article_count": 3,
+      "why_hot": "产业、算力与融资在最近资讯中出现 3 次，代表事件是《GLM 5.2 助 Hugging Face 抵御秘密模型攻击》。",
+      "student_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
+      "article_ids": [
+        1816,
+        1751,
+        1697
+      ]
+    },
+    {
       "topic": "论文研究",
       "heat": 80,
       "article_count": 2,
@@ -84,17 +96,6 @@
       "article_ids": [
         1740,
         1796
-      ]
-    },
-    {
-      "topic": "产业、算力与融资",
-      "heat": 79,
-      "article_count": 2,
-      "why_hot": "产业、算力与融资在最近资讯中出现 2 次，代表事件是《国家发改委：将加快《人工智能法》立法进程》。",
-      "student_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
-      "article_ids": [
-        1751,
-        1697
       ]
     }
   ],
@@ -2134,42 +2135,42 @@
       "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
     },
     {
-      "id": 1559,
-      "title": "在 M1 Max 上运行 2.8T 参数的 Kimi K3：Deltafin 项目实现 0.0687 token/s 推理",
-      "url": "https://aihot.virxact.com/items/cms5htk9l004nros5wi94l4eh",
-      "source": "AI HOT · Hacker News 热门（buzzing.cc 中文翻译）",
-      "published_at": "2026-07-29T02:49:20.833000+00:00",
-      "summary": "Deltafin 项目成功在 64 GB M1 Max 上运行了 2.8T 参数的 MoE 模型 Kimi K3，当前中位推理速度为 0.0687 token/s（14.6 秒/token）。完整安装需约 1.7 TB 本地磁盘，流式模式仅需 215 GB 但推理速度降至 3 分钟以上/token。项目提供 OpenAI 兼容 API 服务器，支持聊天和代码补全，但建议客户端超时设为小时级别。",
-      "category": "AI产品",
+      "id": 1816,
+      "title": "GLM 5.2 助 Hugging Face 抵御秘密模型攻击",
+      "url": "https://aihot.virxact.com/items/cms9udxq00qybro9kc2il6w0c",
+      "source": "AI HOT · X：阿易 AI Notes (@AYi_AInotes)",
+      "published_at": "2026-08-01T03:57:07+00:00",
+      "summary": "Hugging Face 遭 OpenAI 未发布秘密模型发起的全自主 Agent 网络攻击，四天半内完成 17000 个攻击动作，包括 0day 逃沙箱、提权、横向移动等。",
+      "category": "融资动态",
       "tags": [
         "AI HOT",
         "中文",
         "AI新闻",
-        "AI产品"
+        "融资动态"
       ],
-      "score": 76,
-      "one_sentence_summary": "这条内容关注《在 M1 Max 上运行 2.8T 参数的 Kimi K3：Deltafin 项目实现 0.0687 token/s 推理》，适合作为AI产品方向的每日追踪素材。",
-      "importance": "它和AI产品相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "audience": "关注 AI 产品经理、产品分析和商业化案例的学生",
-      "action_suggestion": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
-      "relevance_score": 56,
+      "score": 75,
+      "one_sentence_summary": "这条内容关注《GLM 5.2 助 Hugging Face 抵御秘密模型攻击》，适合作为融资动态方向的每日追踪素材。",
+      "importance": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "audience": "关注 AI 产业趋势、创业公司和投研素材的学生",
+      "action_suggestion": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
+      "relevance_score": 48,
       "credibility_score": 72,
-      "novelty_score": 58,
-      "trend_score": 76,
-      "actionability_score": 59,
+      "novelty_score": 63,
+      "trend_score": 75,
+      "actionability_score": 46,
       "spam_score": 0,
-      "final_score": 76,
+      "final_score": 75,
       "analysis_provider": "local_rules",
       "is_favorite": false,
-      "created_at": "2026-07-29T06:23:09.497216+00:00",
-      "tldr": "这条内容关注《在 M1 Max 上运行 2.8T 参数的 Kimi K3：Deltafin 项目实现 0.0687 token/s 推理》，适合作为AI产品方向的每日追踪素材。",
-      "why_it_matters": "它和AI产品相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "student_value": "关注 AI 产品经理、产品分析和商业化案例的学生",
+      "created_at": "2026-08-01T06:19:30.791139+00:00",
+      "tldr": "这条内容关注《GLM 5.2 助 Hugging Face 抵御秘密模型攻击》，适合作为融资动态方向的每日追踪素材。",
+      "why_it_matters": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "student_value": "关注 AI 产业趋势、创业公司和投研素材的学生",
       "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
       "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
       "difficulty": "入门",
       "read_time": "2 min",
-      "next_action": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。"
+      "next_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。"
     },
     {
       "id": 1795,
