@@ -1,16 +1,16 @@
 {
   "meta": {
-    "generated_at": "2026-08-06T06:21:14.487066+00:00",
-    "collected_count": 304,
-    "filtered_count": 244,
+    "generated_at": "2026-08-06T11:56:00.559524+00:00",
+    "collected_count": 292,
+    "filtered_count": 232,
     "kept_count": 60,
-    "source_count": 14,
+    "source_count": 15,
     "analysis_provider": "local_rules",
     "schedule_label": "每日北京时间 08:00 / 12:00 / 18:00 自动采集"
   },
   "daily_brief": {
-    "headline": "今日主线：机器人/具身智能、AI Agent、多模态值得重点追踪",
-    "summary": "最近数据中，机器人/具身智能、AI Agent、多模态最活跃。最高推荐内容是《Track4Action: Distilling World-Centric 3D Tracker into Vision-Language-Action Policies》，适合转化为学习笔记、科研计划素材或产品分析卡。",
+    "headline": "今日主线：AI Agent、机器人/具身智能、AI产品值得重点追踪",
+    "summary": "最近数据中，AI Agent、机器人/具身智能、AI产品最活跃。最高推荐内容是《Track4Action: Distilling World-Centric 3D Tracker into Vision-Language-Action Policies》，适合转化为学习笔记、科研计划素材或产品分析卡。",
     "student_actions": [
       "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。",
       "把最高分内容加入收藏，并补充 3 条可复现/可分析要点。",
@@ -21,23 +21,23 @@
     {
       "topic": "Agent 应用与 AI 产品",
       "heat": 95,
-      "article_count": 25,
-      "why_hot": "Agent 应用与 AI 产品在最近资讯中出现 25 次，代表事件是《OneDayAgent: Towards a Long-Horizon Harness for Autonomous Agents》。",
+      "article_count": 26,
+      "why_hot": "Agent 应用与 AI 产品在最近资讯中出现 26 次，代表事件是《OneDayAgent: Towards a Long-Horizon Harness for Autonomous Agents》。",
       "student_action": "拆解任务链路、工具调用和评价指标，沉淀为 Agent 产品或项目卡片。",
       "article_ids": [
         2164,
         2163,
+        2208,
         1997,
         2168,
-        2069,
-        2013
+        2069
       ]
     },
     {
       "topic": "机器人/具身智能",
       "heat": 95,
-      "article_count": 20,
-      "why_hot": "机器人/具身智能在最近资讯中出现 20 次，代表事件是《Track4Action: Distilling World-Centric 3D Tracker into Vision-Language-Action Policies》。",
+      "article_count": 19,
+      "why_hot": "机器人/具身智能在最近资讯中出现 19 次，代表事件是《Track4Action: Distilling World-Centric 3D Tracker into Vision-Language-Action Policies》。",
       "student_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。",
       "article_ids": [
         2068,
@@ -46,21 +46,6 @@
         2166,
         2167,
         2169
-      ]
-    },
-    {
-      "topic": "多模态",
-      "heat": 91,
-      "article_count": 7,
-      "why_hot": "多模态在最近资讯中出现 7 次，代表事件是《Towards Physics of Multimodal Pretraining: Knowledge Flow, Modality Synergy, Early Unification, and Recipes》。",
-      "student_action": "保存到论文雷达，并补充是否适合写进科研计划。",
-      "article_ids": [
-        2172,
-        2077,
-        1956,
-        1955,
-        1878,
-        2176
       ]
     },
     {
@@ -79,6 +64,21 @@
       ]
     },
     {
+      "topic": "多模态",
+      "heat": 89,
+      "article_count": 6,
+      "why_hot": "多模态在最近资讯中出现 6 次，代表事件是《Towards Physics of Multimodal Pretraining: Knowledge Flow, Modality Synergy, Early Unification, and Recipes》。",
+      "student_action": "保存到论文雷达，并补充是否适合写进科研计划。",
+      "article_ids": [
+        2172,
+        2077,
+        1956,
+        1955,
+        2176,
+        2177
+      ]
+    },
+    {
       "topic": "大模型",
       "heat": 82,
       "article_count": 2,
@@ -87,6 +87,16 @@
       "article_ids": [
         2118,
         2076
+      ]
+    },
+    {
+      "topic": "论文研究",
+      "heat": 79,
+      "article_count": 1,
+      "why_hot": "论文研究在最近资讯中出现 1 次，代表事件是《阿谀奉承的人工智能会削弱利他意图并助长依赖性（2025）》。",
+      "student_action": "按研究问题、方法、数据集、结果、局限和可复现性写一页论文阅读笔记。",
+      "article_ids": [
+        2209
       ]
     }
   ],
@@ -252,6 +262,44 @@
       "difficulty": "进阶",
       "read_time": "2 min",
       "next_action": "拆解任务链路、工具调用和评价指标，沉淀为 Agent 产品或项目卡片。"
+    },
+    {
+      "id": 2208,
+      "title": "Qwen-Image-3.0 发布：高分辨率低至 0.03 美元",
+      "url": "https://aihot.virxact.com/items/cmsh5bwo400rjro280qm4x4is",
+      "source": "AI HOT · X：阿里云 / Alibaba Cloud (@alibaba_cloud)",
+      "published_at": "2026-08-06T06:12:33+00:00",
+      "summary": "Qwen-Image-3.0 已可投入生产。支持 4.5K token 提示词。100%+ 文本准确率（无破损 logo）。原生支持 12 种语言。定价灵活可扩展：高分辨率低至 $0.03。完整详情见图片。👉 探索：• Model Studio：https://click.alibabacloud.com/m/20000001606/ • Qwen Cloud：https://click.qwencloud.com/m/20000001648/ #Qwen #QwenImage3 #AlibabaCloud #GenerativeAI #AICreativity",
+      "category": "AI产品",
+      "tags": [
+        "AI HOT",
+        "中文",
+        "AI新闻",
+        "AI产品"
+      ],
+      "score": 81,
+      "one_sentence_summary": "这条内容关注《Qwen-Image-3.0 发布：高分辨率低至 0.03 美元》，适合作为AI产品方向的每日追踪素材。",
+      "importance": "它和AI产品相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "audience": "关注 AI 产品经理、产品分析和商业化案例的学生",
+      "action_suggestion": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
+      "relevance_score": 56,
+      "credibility_score": 72,
+      "novelty_score": 63,
+      "trend_score": 81,
+      "actionability_score": 52,
+      "spam_score": 0,
+      "final_score": 81,
+      "analysis_provider": "local_rules",
+      "is_favorite": false,
+      "created_at": "2026-08-06T11:55:31.820379+00:00",
+      "tldr": "这条内容关注《Qwen-Image-3.0 发布：高分辨率低至 0.03 美元》，适合作为AI产品方向的每日追踪素材。",
+      "why_it_matters": "它和AI产品相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "student_value": "关注 AI 产品经理、产品分析和商业化案例的学生",
+      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
+      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
+      "difficulty": "入门",
+      "read_time": "3 min",
+      "next_action": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。"
     },
     {
       "id": 2133,
@@ -1982,6 +2030,44 @@
       "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
     },
     {
+      "id": 2209,
+      "title": "阿谀奉承的人工智能会削弱利他意图并助长依赖性（2025）",
+      "url": "https://aihot.virxact.com/items/cmsh6fjal001mronkgffxycgg",
+      "source": "AI HOT · Hacker News 热门（buzzing.cc 中文翻译）",
+      "published_at": "2026-08-06T07:03:41.634000+00:00",
+      "summary": "斯坦福大学和卡内基梅隆大学的研究发现，在11个前沿AI模型中，模型对用户行为的肯定率比人类高出50%，即使涉及操纵或欺骗等有害行为时也不例外。两项预注册实验（N=1604）显示，与阿谀奉承的AI互动显著降低了参与者修复人际冲突的意愿，同时增强了其自认为正确的信念。然而，参与者仍将这类回应评为更高质量、更信任并更愿意再次使用，形成助长依赖的恶性循环。",
+      "category": "论文",
+      "tags": [
+        "AI HOT",
+        "中文",
+        "AI新闻",
+        "论文"
+      ],
+      "score": 77,
+      "one_sentence_summary": "这条内容关注《阿谀奉承的人工智能会削弱利他意图并助长依赖性（2025）》，适合作为论文方向的每日追踪素材。",
+      "importance": "它和论文相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "audience": "AI/机器人方向本科生、准备申请研究生的同学",
+      "action_suggestion": "按研究问题、方法、数据集、结果、局限和可复现性写一页论文阅读笔记。",
+      "relevance_score": 70,
+      "credibility_score": 72,
+      "novelty_score": 64,
+      "trend_score": 77,
+      "actionability_score": 60,
+      "spam_score": 0,
+      "final_score": 77,
+      "analysis_provider": "local_rules",
+      "is_favorite": false,
+      "created_at": "2026-08-06T11:55:31.820379+00:00",
+      "tldr": "这条内容关注《阿谀奉承的人工智能会削弱利他意图并助长依赖性（2025）》，适合作为论文方向的每日追踪素材。",
+      "why_it_matters": "它和论文相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
+      "research_value": "可转化为论文阅读笔记，重点拆研究问题、方法、数据集、结果和局限。",
+      "pm_value": "可提炼为趋势观察，判断技术变化如何影响产品机会。",
+      "difficulty": "进阶",
+      "read_time": "2 min",
+      "next_action": "按研究问题、方法、数据集、结果、局限和可复现性写一页论文阅读笔记。"
+    },
+    {
       "id": 2136,
       "title": "Demis Hassabis 转任 Google DeepMind 主席与 Alphabet 首席科学家",
       "url": "https://aihot.virxact.com/items/cmsga8g7n01dxro3psolcouz4",
@@ -2096,46 +2182,6 @@
       "difficulty": "中高",
       "read_time": "5 min",
       "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
-    },
-    {
-      "id": 1878,
-      "title": "N_0-VTLA: Scaling Vision-Tactile-Language-Action Model with Latent Tactile Tokens",
-      "url": "https://huggingface.co/papers/2607.23782",
-      "source": "Hugging Face Papers",
-      "published_at": "2026-08-03T06:50:08.438162+00:00",
-      "summary": "Hugging Face Papers public page item: N_0-VTLA: Scaling Vision-Tactile-Language-Action Model with Latent Tactile Tokens",
-      "category": "多模态",
-      "tags": [
-        "Hugging Face",
-        "论文",
-        "开源项目",
-        "大模型",
-        "多模态",
-        "CV"
-      ],
-      "score": 77,
-      "one_sentence_summary": "这条内容关注《N_0-VTLA: Scaling Vision-Tactile-Language-Action Model with Latent Tactile Tokens》，适合作为多模态方向的每日追踪素材。",
-      "importance": "它和多模态相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "audience": "AI/机器人方向本科生、准备申请研究生的同学",
-      "action_suggestion": "保存到论文雷达，并补充是否适合写进科研计划。",
-      "relevance_score": 86,
-      "credibility_score": 88,
-      "novelty_score": 64,
-      "trend_score": 55,
-      "actionability_score": 77,
-      "spam_score": 0,
-      "final_score": 77,
-      "analysis_provider": "local_rules",
-      "is_favorite": false,
-      "created_at": "2026-08-03T06:50:18.768940+00:00",
-      "tldr": "这条内容关注《N_0-VTLA: Scaling Vision-Tactile-Language-Action Model with Latent Tactile Tokens》，适合作为多模态方向的每日追踪素材。",
-      "why_it_matters": "它和多模态相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
-      "research_value": "可转化为论文阅读笔记，重点拆研究问题、方法、数据集、结果和局限。",
-      "pm_value": "适合分析开源项目的用户场景、上手门槛、社区活跃度和产品化机会。",
-      "difficulty": "进阶",
-      "read_time": "2 min",
-      "next_action": "保存到论文雷达，并补充是否适合写进科研计划。"
     },
     {
       "id": 2137,
@@ -2409,44 +2455,6 @@
       "is_favorite": false,
       "created_at": "2026-08-06T06:20:44.833401+00:00",
       "tldr": "这条内容关注《Mimir: A Neuro-Symbolic Memory System with Dynamic Grounding for Embodied Agents in Interactive Environments》，适合作为机器人/具身智能方向的每日追踪素材。",
-      "why_it_matters": "它和机器人/具身智能相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
-      "research_value": "适合沉淀到机器人方向科研计划，关注 VLA、控制、仿真和真实数据闭环。",
-      "pm_value": "可提炼为趋势观察，判断技术变化如何影响产品机会。",
-      "difficulty": "中高",
-      "read_time": "5 min",
-      "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
-    },
-    {
-      "id": 2181,
-      "title": "RORA: Realistic Object Reconstruction with Articulation",
-      "url": "https://arxiv.org/abs/2608.04842v1",
-      "source": "arXiv cs.RO",
-      "published_at": "2026-08-05T13:36:58+00:00",
-      "summary": "Replicating real-world environments into simulation by realistic visual representation like NeRF and 3D Gaussian Splatting (3DGS) has emerged as an effective strategy to reduce the sim-to-real gap in robot learning. However, implementing object articulation during the real-to-sim process is still a challenging task. Existing motion tracking or learning based articulation methods shows low success rates on complex kinematic structures having multiple joints. Furthermore, those methods require scan of dynamic motion of objects, which makes reconstruction process much complicated. In this work, we propose the first end-to-end pipeline that reconstructs simulation-ready assets with accurate arti",
-      "category": "机器人/具身智能",
-      "tags": [
-        "arXiv",
-        "机器人",
-        "具身智能",
-        "AI芯片"
-      ],
-      "score": 76,
-      "one_sentence_summary": "这条内容关注《RORA: Realistic Object Reconstruction with Articulation》，适合作为机器人/具身智能方向的每日追踪素材。",
-      "importance": "它和机器人/具身智能相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "audience": "AI/机器人方向本科生、准备申请研究生的同学",
-      "action_suggestion": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。",
-      "relevance_score": 86,
-      "credibility_score": 86,
-      "novelty_score": 69,
-      "trend_score": 60,
-      "actionability_score": 60,
-      "spam_score": 0,
-      "final_score": 76,
-      "analysis_provider": "local_rules",
-      "is_favorite": false,
-      "created_at": "2026-08-06T06:20:44.833401+00:00",
-      "tldr": "这条内容关注《RORA: Realistic Object Reconstruction with Articulation》，适合作为机器人/具身智能方向的每日追踪素材。",
       "why_it_matters": "它和机器人/具身智能相关，可作为学习路线、科研计划或产品案例库的素材。",
       "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
       "research_value": "适合沉淀到机器人方向科研计划，关注 VLA、控制、仿真和真实数据闭环。",
