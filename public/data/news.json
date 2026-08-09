@@ -1,10 +1,10 @@
 {
   "meta": {
-    "generated_at": "2026-08-09T00:47:48.548943+00:00",
+    "generated_at": "2026-08-09T04:54:29.960496+00:00",
     "collected_count": 192,
     "filtered_count": 132,
     "kept_count": 60,
-    "source_count": 22,
+    "source_count": 21,
     "analysis_provider": "local_rules",
     "schedule_label": "每日北京时间 08:00 / 12:00 / 18:00 自动采集"
   },
@@ -19,21 +19,6 @@
   },
   "clusters": [
     {
-      "topic": "Agent 应用与 AI 产品",
-      "heat": 93,
-      "article_count": 27,
-      "why_hot": "Agent 应用与 AI 产品在最近资讯中出现 27 次，代表事件是《Seedance 2.5 API上线，视频生成开启「电影级长叙事」》。",
-      "student_action": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
-      "article_ids": [
-        2326,
-        2164,
-        2163,
-        2208,
-        2168,
-        2339
-      ]
-    },
-    {
       "topic": "机器人/具身智能",
       "heat": 93,
       "article_count": 16,
@@ -46,6 +31,21 @@
         2214,
         2215,
         2289
+      ]
+    },
+    {
+      "topic": "Agent 应用与 AI 产品",
+      "heat": 92,
+      "article_count": 27,
+      "why_hot": "Agent 应用与 AI 产品在最近资讯中出现 27 次，代表事件是《Seedance 2.5 API上线，视频生成开启「电影级长叙事」》。",
+      "student_action": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
+      "article_ids": [
+        2326,
+        2164,
+        2163,
+        2208,
+        2339,
+        2216
       ]
     },
     {
@@ -499,44 +499,6 @@
       "difficulty": "进阶",
       "read_time": "5 min",
       "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
-    },
-    {
-      "id": 2168,
-      "title": "OpenAI 开源 Codex Security：Vibe Coding 产品必备的安全扫描插件",
-      "url": "https://aihot.virxact.com/items/cmsgua3ax0hqgro5qo4wr6g7y",
-      "source": "AI HOT · 公众号：数字生命卡兹克",
-      "published_at": "2026-08-06T01:15:29+00:00",
-      "summary": "OpenAI 将安全插件 Codex Security 开源，外部 Agent 均可调用，并已支持通过 OpenRouter 和 Fireworks 接入第三方模型。",
-      "category": "AI产品",
-      "tags": [
-        "AI HOT",
-        "中文",
-        "AI新闻",
-        "AI产品"
-      ],
-      "score": 80,
-      "one_sentence_summary": "这条内容关注《OpenAI 开源 Codex Security：Vibe Coding 产品必备的安全扫描插件》，适合作为AI产品方向的每日追踪素材。",
-      "importance": "它和AI产品相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "audience": "关注 AI 产品经理、产品分析和商业化案例的学生",
-      "action_suggestion": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
-      "relevance_score": 56,
-      "credibility_score": 72,
-      "novelty_score": 58,
-      "trend_score": 80,
-      "actionability_score": 66,
-      "spam_score": 0,
-      "final_score": 80,
-      "analysis_provider": "local_rules",
-      "is_favorite": false,
-      "created_at": "2026-08-06T06:20:44.833401+00:00",
-      "tldr": "这条内容关注《OpenAI 开源 Codex Security：Vibe Coding 产品必备的安全扫描插件》，适合作为AI产品方向的每日追踪素材。",
-      "why_it_matters": "它和AI产品相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "student_value": "关注 AI 产品经理、产品分析和商业化案例的学生",
-      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
-      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
-      "difficulty": "入门",
-      "read_time": "2 min",
-      "next_action": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。"
     },
     {
       "id": 2339,
@@ -2441,6 +2403,45 @@
       "difficulty": "中高",
       "read_time": "5 min",
       "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
+    },
+    {
+      "id": 2296,
+      "title": "Tracing the Heart: An Evidence-Linked Pipeline for Heart-Failure Feature Engineering",
+      "url": "https://arxiv.org/abs/2608.06366v1",
+      "source": "arXiv cs.AI",
+      "published_at": "2026-08-06T17:57:37+00:00",
+      "summary": "Electronic health record (EHR) feature engineering is a major bottleneck in clinical research and AI, accounting for 39-45% of data scientists' workload. This is especially pronounced in heart failure, which affects an estimated 6.7 million U.S. adults and requires integrating fragmented EHR data with disease-specific, guideline-based clinical reasoning. Existing rule-based and large language model (LLM)-based approaches offer only partial automation with limited maintainability and evidence traceability. We developed the Nimblemind Multi-Agent System (nMAS), an evidence-linked, rubric-grounded pipeline for automated heart-failure feature engineering, and evaluated it on 500 dummy patient re",
+      "category": "AI Agent",
+      "tags": [
+        "arXiv",
+        "AI",
+        "论文",
+        "大模型",
+        "AI Agent"
+      ],
+      "score": 72,
+      "one_sentence_summary": "这条内容关注《Tracing the Heart: An Evidence-Linked Pipeline for Heart-Failure Feature Engineering》，适合作为AI Agent方向的每日追踪素材。",
+      "importance": "它和AI Agent相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "audience": "AI/机器人方向本科生、准备申请研究生的同学",
+      "action_suggestion": "拆解任务链路、工具调用和评价指标，沉淀为 Agent 产品或项目卡片。",
+      "relevance_score": 78,
+      "credibility_score": 84,
+      "novelty_score": 64,
+      "trend_score": 60,
+      "actionability_score": 60,
+      "spam_score": 0,
+      "final_score": 72,
+      "analysis_provider": "local_rules",
+      "is_favorite": false,
+      "created_at": "2026-08-07T05:26:46.771614+00:00",
+      "tldr": "这条内容关注《Tracing the Heart: An Evidence-Linked Pipeline for Heart-Failure Feature Engineering》，适合作为AI Agent方向的每日追踪素材。",
+      "why_it_matters": "它和AI Agent相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
+      "research_value": "可转化为论文阅读笔记，重点拆研究问题、方法、数据集、结果和局限。",
+      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
+      "difficulty": "进阶",
+      "read_time": "5 min",
+      "next_action": "拆解任务链路、工具调用和评价指标，沉淀为 Agent 产品或项目卡片。"
     }
   ]
 }
