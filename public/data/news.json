@@ -1,8 +1,8 @@
 {
   "meta": {
-    "generated_at": "2026-08-12T05:22:49.619945+00:00",
-    "collected_count": 219,
-    "filtered_count": 159,
+    "generated_at": "2026-08-12T10:49:59.107683+00:00",
+    "collected_count": 216,
+    "filtered_count": 156,
     "kept_count": 60,
     "source_count": 14,
     "analysis_provider": "local_rules",
@@ -19,10 +19,25 @@
   },
   "clusters": [
     {
+      "topic": "产业、算力与融资",
+      "heat": 94,
+      "article_count": 8,
+      "why_hot": "产业、算力与融资在最近资讯中出现 8 次，代表事件是《ChatGPT 与 Gemini 双双突破 10 亿用户》。",
+      "student_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
+      "article_ids": [
+        2566,
+        2567,
+        2512,
+        2474,
+        2395,
+        2568
+      ]
+    },
+    {
       "topic": "Agent 应用与 AI 产品",
       "heat": 93,
-      "article_count": 26,
-      "why_hot": "Agent 应用与 AI 产品在最近资讯中出现 26 次，代表事件是《Beyond Simply Environment Scaling: Designing Effective Environment Distributions for Multimodal Agent Learning》。",
+      "article_count": 25,
+      "why_hot": "Agent 应用与 AI 产品在最近资讯中出现 25 次，代表事件是《Beyond Simply Environment Scaling: Designing Effective Environment Distributions for Multimodal Agent Learning》。",
       "student_action": "拆解任务链路、工具调用和评价指标，沉淀为 Agent 产品或项目卡片。",
       "article_ids": [
         2462,
@@ -46,21 +61,6 @@
         2511,
         2513,
         2514
-      ]
-    },
-    {
-      "topic": "产业、算力与融资",
-      "heat": 92,
-      "article_count": 7,
-      "why_hot": "产业、算力与融资在最近资讯中出现 7 次，代表事件是《ChatGPT 与 Gemini 双双突破 10 亿用户》。",
-      "student_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
-      "article_ids": [
-        2566,
-        2567,
-        2512,
-        2474,
-        2395,
-        2568
       ]
     },
     {
@@ -1454,6 +1454,44 @@
       "next_action": "收藏并写 3 条要点：它解决什么问题、需要哪些知识、能做什么小项目。"
     },
     {
+      "id": 2641,
+      "title": "Research Gold 号称\"100%人类撰写、绝不使用AI\"，实则全程由AI驱动",
+      "url": "https://aihot.virxact.com/items/cmspo193n05q2rojeue8j2k5a",
+      "source": "AI HOT · Hacker News 热门（buzzing.cc 中文翻译）",
+      "published_at": "2026-08-12T05:41:30.137000+00:00",
+      "summary": "面向医学研究者的网站 Research Gold 宣称其服务\"100%由人类撰写、绝不使用AI\"，并列出多名博士审稿人。但调查发现，这些审稿人系AI生成、并不存在；部分真实方法学家的身份和照片未经许可被挪用。致电该公司时，自称\"Sarah\"的AI助手坚称自己是真人，邮件与聊天回复也均为AI生成。",
+      "category": "融资动态",
+      "tags": [
+        "AI HOT",
+        "中文",
+        "AI新闻",
+        "融资动态"
+      ],
+      "score": 76,
+      "one_sentence_summary": "这条内容关注《Research Gold 号称\"100%人类撰写、绝不使用AI\"，实则全程由AI驱动》，适合作为融资动态方向的每日追踪素材。",
+      "importance": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "audience": "关注 AI 产业趋势、创业公司和投研素材的学生",
+      "action_suggestion": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
+      "relevance_score": 48,
+      "credibility_score": 72,
+      "novelty_score": 58,
+      "trend_score": 76,
+      "actionability_score": 46,
+      "spam_score": 0,
+      "final_score": 76,
+      "analysis_provider": "local_rules",
+      "is_favorite": false,
+      "created_at": "2026-08-12T10:49:25.842048+00:00",
+      "tldr": "这条内容关注《Research Gold 号称\"100%人类撰写、绝不使用AI\"，实则全程由AI驱动》，适合作为融资动态方向的每日追踪素材。",
+      "why_it_matters": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "student_value": "关注 AI 产业趋势、创业公司和投研素材的学生",
+      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
+      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
+      "difficulty": "入门",
+      "read_time": "2 min",
+      "next_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。"
+    },
+    {
       "id": 2604,
       "title": "MultiModal Code-Switching: Interleaving Visual Objects into Language for Explicit Object-Level Alignment",
       "url": "https://arxiv.org/abs/2608.11167v1",
@@ -2384,45 +2422,6 @@
       "difficulty": "中高",
       "read_time": "5 min",
       "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
-    },
-    {
-      "id": 2615,
-      "title": "Scheduling Mixed RL Rollouts Beyond Prefix Locality",
-      "url": "https://arxiv.org/abs/2608.11152v1",
-      "source": "arXiv cs.LG",
-      "published_at": "2026-08-11T17:10:50+00:00",
-      "summary": "Modern reinforcement learning (RL) post-training pipelines for large language models (LLMs) increasingly combine rollout workloads across multiple domains and feedback paradigms. Prefix-aware routing improves inference efficiency through cache reuse and load balancing, but it does not control how heterogeneous rollout sessions compete for KV-cache capacity. When reinforcement learning with verifiable rewards (RLVR), reinforcement learning from human feedback (RLHF), and agentic rollouts share an asynchronous inference service, their distinct sequence structures, interaction patterns, and KV-residency times create substantially different serving demands. Rollout scheduling must account for th",
-      "category": "AI Agent",
-      "tags": [
-        "arXiv",
-        "机器学习",
-        "论文",
-        "大模型",
-        "AI Agent"
-      ],
-      "score": 72,
-      "one_sentence_summary": "这条内容关注《Scheduling Mixed RL Rollouts Beyond Prefix Locality》，适合作为AI Agent方向的每日追踪素材。",
-      "importance": "它和AI Agent相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "audience": "AI/机器人方向本科生、准备申请研究生的同学",
-      "action_suggestion": "拆解任务链路、工具调用和评价指标，沉淀为 Agent 产品或项目卡片。",
-      "relevance_score": 78,
-      "credibility_score": 84,
-      "novelty_score": 64,
-      "trend_score": 60,
-      "actionability_score": 60,
-      "spam_score": 0,
-      "final_score": 72,
-      "analysis_provider": "local_rules",
-      "is_favorite": false,
-      "created_at": "2026-08-12T05:22:15.999000+00:00",
-      "tldr": "这条内容关注《Scheduling Mixed RL Rollouts Beyond Prefix Locality》，适合作为AI Agent方向的每日追踪素材。",
-      "why_it_matters": "它和AI Agent相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
-      "research_value": "可转化为论文阅读笔记，重点拆研究问题、方法、数据集、结果和局限。",
-      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
-      "difficulty": "进阶",
-      "read_time": "5 min",
-      "next_action": "拆解任务链路、工具调用和评价指标，沉淀为 Agent 产品或项目卡片。"
     }
   ]
 }
