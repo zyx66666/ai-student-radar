@@ -1,16 +1,16 @@
 {
   "meta": {
-    "generated_at": "2026-08-13T05:27:13.237577+00:00",
-    "collected_count": 264,
-    "filtered_count": 204,
+    "generated_at": "2026-08-13T10:51:20.451773+00:00",
+    "collected_count": 261,
+    "filtered_count": 201,
     "kept_count": 60,
     "source_count": 12,
     "analysis_provider": "local_rules",
     "schedule_label": "每日北京时间 08:00 / 12:00 / 18:00 自动采集"
   },
   "daily_brief": {
-    "headline": "今日主线：AI Agent、机器人/具身智能、融资动态值得重点追踪",
-    "summary": "最近数据中，AI Agent、机器人/具身智能、融资动态最活跃。最高推荐内容是《DaViNCi: A Dataset Towards Outdoor Vision-and-Language Navigation with Continuous Actions and Dynamic Elements》，适合转化为学习笔记、科研计划素材或产品分析卡。",
+    "headline": "今日主线：机器人/具身智能、AI Agent、融资动态值得重点追踪",
+    "summary": "最近数据中，机器人/具身智能、AI Agent、融资动态最活跃。最高推荐内容是《DaViNCi: A Dataset Towards Outdoor Vision-and-Language Navigation with Continuous Actions and Dynamic Elements》，适合转化为学习笔记、科研计划素材或产品分析卡。",
     "student_actions": [
       "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。",
       "把最高分内容加入收藏，并补充 3 条可复现/可分析要点。",
@@ -36,23 +36,23 @@
     {
       "topic": "机器人/具身智能",
       "heat": 94,
-      "article_count": 23,
-      "why_hot": "机器人/具身智能在最近资讯中出现 23 次，代表事件是《DaViNCi: A Dataset Towards Outdoor Vision-and-Language Navigation with Continuous Actions and Dynamic Elements》。",
+      "article_count": 24,
+      "why_hot": "机器人/具身智能在最近资讯中出现 24 次，代表事件是《DaViNCi: A Dataset Towards Outdoor Vision-and-Language Navigation with Continuous Actions and Dynamic Elements》。",
       "student_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。",
       "article_ids": [
         2681,
         2684,
+        2729,
         2508,
         2509,
-        2687,
-        2595
+        2687
       ]
     },
     {
       "topic": "产业、算力与融资",
-      "heat": 92,
-      "article_count": 7,
-      "why_hot": "产业、算力与融资在最近资讯中出现 7 次，代表事件是《ChatGPT 与 Gemini 双双突破 10 亿用户》。",
+      "heat": 90,
+      "article_count": 6,
+      "why_hot": "产业、算力与融资在最近资讯中出现 6 次，代表事件是《ChatGPT 与 Gemini 双双突破 10 亿用户》。",
       "student_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
       "article_ids": [
         2566,
@@ -88,12 +88,12 @@
     },
     {
       "topic": "大模型",
-      "heat": 79,
+      "heat": 77,
       "article_count": 1,
-      "why_hot": "大模型在最近资讯中出现 1 次，代表事件是《Scale AI 开源 Muse 系列模型》。",
+      "why_hot": "大模型在最近资讯中出现 1 次，代表事件是《小红书开源连续自回归语音合成模型 dots.tts：打造可持续扩展的 TTS 基座》。",
       "student_action": "收藏并写 3 条要点：它解决什么问题、需要哪些知识、能做什么小项目。",
       "article_ids": [
-        2463
+        2730
       ]
     }
   ],
@@ -258,6 +258,45 @@
       "pm_value": "适合分析开源项目的用户场景、上手门槛、社区活跃度和产品化机会。",
       "difficulty": "中高",
       "read_time": "5 min",
+      "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
+    },
+    {
+      "id": 2729,
+      "title": "Self-Evolving Embodied Agents via Skill-Harness Evolution",
+      "url": "https://huggingface.co/papers/2608.11350",
+      "source": "Hugging Face Papers",
+      "published_at": "2026-08-13T10:50:33.157517+00:00",
+      "summary": "Hugging Face Papers public page item: Self-Evolving Embodied Agents via Skill-Harness Evolution",
+      "category": "机器人/具身智能",
+      "tags": [
+        "Hugging Face",
+        "论文",
+        "开源项目",
+        "具身智能",
+        "AI Agent"
+      ],
+      "score": 81,
+      "one_sentence_summary": "这条内容关注《Self-Evolving Embodied Agents via Skill-Harness Evolution》，适合作为机器人/具身智能方向的每日追踪素材。",
+      "importance": "它和机器人/具身智能相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "audience": "AI/机器人方向本科生、准备申请研究生的同学",
+      "action_suggestion": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。",
+      "relevance_score": 94,
+      "credibility_score": 88,
+      "novelty_score": 64,
+      "trend_score": 60,
+      "actionability_score": 77,
+      "spam_score": 0,
+      "final_score": 81,
+      "analysis_provider": "local_rules",
+      "is_favorite": false,
+      "created_at": "2026-08-13T10:50:42.757896+00:00",
+      "tldr": "这条内容关注《Self-Evolving Embodied Agents via Skill-Harness Evolution》，适合作为机器人/具身智能方向的每日追踪素材。",
+      "why_it_matters": "它和机器人/具身智能相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
+      "research_value": "可转化为论文阅读笔记，重点拆研究问题、方法、数据集、结果和局限。",
+      "pm_value": "适合分析开源项目的用户场景、上手门槛、社区活跃度和产品化机会。",
+      "difficulty": "进阶",
+      "read_time": "2 min",
       "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
     },
     {
@@ -1902,44 +1941,6 @@
       "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
     },
     {
-      "id": 2463,
-      "title": "Scale AI 开源 Muse 系列模型",
-      "url": "https://aihot.virxact.com/items/cmsn3w3ln012wror1xk5nrmcw",
-      "source": "AI HOT · X：Alexandr Wang（Scale AI 创始人/Meta 首席 AI 官） (@alexandr_wang)",
-      "published_at": "2026-08-10T10:06:51+00:00",
-      "summary": "1/ 今天有个重大消息：我们很快将发布 Muse Spark 1.2 的开源权重版本。 同时，我们还将发布 Muse Glimmer--一个 30B 参数的智能体模型，采用 Apache 2.0 协议开源权重。Muse Glimmer 可在 24GB 显存上运行，且不损失智能体可靠性。🧵",
-      "category": "大模型",
-      "tags": [
-        "AI HOT",
-        "中文",
-        "AI新闻",
-        "大模型"
-      ],
-      "score": 77,
-      "one_sentence_summary": "这条内容关注《Scale AI 开源 Muse 系列模型》，适合作为大模型方向的每日追踪素材。",
-      "importance": "它和大模型相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "audience": "AI/机器人方向本科生、准备申请研究生的同学",
-      "action_suggestion": "收藏并写 3 条要点：它解决什么问题、需要哪些知识、能做什么小项目。",
-      "relevance_score": 48,
-      "credibility_score": 72,
-      "novelty_score": 63,
-      "trend_score": 77,
-      "actionability_score": 59,
-      "spam_score": 0,
-      "final_score": 77,
-      "analysis_provider": "local_rules",
-      "is_favorite": false,
-      "created_at": "2026-08-10T10:55:30.234603+00:00",
-      "tldr": "这条内容关注《Scale AI 开源 Muse 系列模型》，适合作为大模型方向的每日追踪素材。",
-      "why_it_matters": "它和大模型相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
-      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
-      "pm_value": "可提炼为趋势观察，判断技术变化如何影响产品机会。",
-      "difficulty": "中等",
-      "read_time": "2 min",
-      "next_action": "收藏并写 3 条要点：它解决什么问题、需要哪些知识、能做什么小项目。"
-    },
-    {
       "id": 2698,
       "title": "Beyond Trial-and-Error: Agentic Optimization for Image-to-Video Adherence",
       "url": "https://arxiv.org/abs/2608.12290v1",
@@ -2219,6 +2220,44 @@
       "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
     },
     {
+      "id": 2730,
+      "title": "小红书开源连续自回归语音合成模型 dots.tts：打造可持续扩展的 TTS 基座",
+      "url": "https://aihot.virxact.com/items/cmsrcljcc0uanroz24r5ebcz9",
+      "source": "AI HOT · 公众号：小红书技术（dots.llm）",
+      "published_at": "2026-08-13T09:59:00+00:00",
+      "summary": "小红书 dots 团队开源 20 亿参数全连续端到端自回归语音合成模型 dots.tts，在 Seed-TTS-Eval 三个子集上取得最佳平均内容准确度和平均说话人相似度。",
+      "category": "大模型",
+      "tags": [
+        "AI HOT",
+        "中文",
+        "AI新闻",
+        "大模型"
+      ],
+      "score": 75,
+      "one_sentence_summary": "这条内容关注《小红书开源连续自回归语音合成模型 dots.tts：打造可持续扩展的 TTS 基座》，适合作为大模型方向的每日追踪素材。",
+      "importance": "它和大模型相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "audience": "AI/机器人方向本科生、准备申请研究生的同学",
+      "action_suggestion": "收藏并写 3 条要点：它解决什么问题、需要哪些知识、能做什么小项目。",
+      "relevance_score": 48,
+      "credibility_score": 72,
+      "novelty_score": 58,
+      "trend_score": 75,
+      "actionability_score": 59,
+      "spam_score": 0,
+      "final_score": 75,
+      "analysis_provider": "local_rules",
+      "is_favorite": false,
+      "created_at": "2026-08-13T10:50:42.757896+00:00",
+      "tldr": "这条内容关注《小红书开源连续自回归语音合成模型 dots.tts：打造可持续扩展的 TTS 基座》，适合作为大模型方向的每日追踪素材。",
+      "why_it_matters": "它和大模型相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
+      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
+      "pm_value": "可提炼为趋势观察，判断技术变化如何影响产品机会。",
+      "difficulty": "中等",
+      "read_time": "2 min",
+      "next_action": "收藏并写 3 条要点：它解决什么问题、需要哪些知识、能做什么小项目。"
+    },
+    {
       "id": 2700,
       "title": "Convergent Detour Hijacking: Task-Preserving Resource Amplification in Skill-Based LLM Agents",
       "url": "https://arxiv.org/abs/2608.12273v1",
@@ -2415,44 +2454,6 @@
       "difficulty": "进阶",
       "read_time": "5 min",
       "next_action": "拆解任务链路、工具调用和评价指标，沉淀为 Agent 产品或项目卡片。"
-    },
-    {
-      "id": 2569,
-      "title": "消息称英伟达开发万亿参数开源 AI 模型 Nemotron 4，目标挑战全球顶级",
-      "url": "https://aihot.virxact.com/items/cmsostkpq05iurohd30b8ubmy",
-      "source": "AI HOT · IT之家（RSS）",
-      "published_at": "2026-08-11T14:54:16+00:00",
-      "summary": "英伟达正在研发新一代开源 AI 模型系列 Nemotron 4，规模最大的模型预计至少拥有 1 万亿个参数，旨在与全球最先进的开源模型竞争。英伟达尚未确定发布日期，最终训练也未完成，员工认为该模型最早可能在今年秋末准备就绪。此举意在通过开放模型生态扩大 AI 应用范围，并推动市场对其 GPU 算力的需求。",
-      "category": "融资动态",
-      "tags": [
-        "AI HOT",
-        "中文",
-        "AI新闻",
-        "融资动态"
-      ],
-      "score": 75,
-      "one_sentence_summary": "这条内容关注《消息称英伟达开发万亿参数开源 AI 模型 Nemotron 4，目标挑战全球顶级》，适合作为融资动态方向的每日追踪素材。",
-      "importance": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "audience": "关注 AI 产业趋势、创业公司和投研素材的学生",
-      "action_suggestion": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
-      "relevance_score": 48,
-      "credibility_score": 72,
-      "novelty_score": 68,
-      "trend_score": 75,
-      "actionability_score": 53,
-      "spam_score": 0,
-      "final_score": 75,
-      "analysis_provider": "local_rules",
-      "is_favorite": false,
-      "created_at": "2026-08-12T00:56:17.402438+00:00",
-      "tldr": "这条内容关注《消息称英伟达开发万亿参数开源 AI 模型 Nemotron 4，目标挑战全球顶级》，适合作为融资动态方向的每日追踪素材。",
-      "why_it_matters": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "student_value": "关注 AI 产业趋势、创业公司和投研素材的学生",
-      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
-      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
-      "difficulty": "入门",
-      "read_time": "2 min",
-      "next_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。"
     }
   ]
 }
