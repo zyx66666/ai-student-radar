@@ -1,8 +1,8 @@
 {
   "meta": {
-    "generated_at": "2026-08-15T00:34:00.042924+00:00",
-    "collected_count": 218,
-    "filtered_count": 158,
+    "generated_at": "2026-08-15T04:18:46.263769+00:00",
+    "collected_count": 217,
+    "filtered_count": 157,
     "kept_count": 60,
     "source_count": 12,
     "analysis_provider": "local_rules",
