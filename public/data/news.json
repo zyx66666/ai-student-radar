@@ -1,16 +1,16 @@
 {
   "meta": {
-    "generated_at": "2026-08-22T00:33:25.753283+00:00",
-    "collected_count": 223,
-    "filtered_count": 163,
+    "generated_at": "2026-08-22T04:21:16.139053+00:00",
+    "collected_count": 221,
+    "filtered_count": 161,
     "kept_count": 60,
-    "source_count": 10,
+    "source_count": 9,
     "analysis_provider": "local_rules",
     "schedule_label": "每日北京时间 08:00 / 12:00 / 18:00 自动采集"
   },
   "daily_brief": {
-    "headline": "今日主线：机器人/具身智能、AI Agent、AI产品值得重点追踪",
-    "summary": "最近数据中，机器人/具身智能、AI Agent、AI产品最活跃。最高推荐内容是《HarnessRisk: A Lifecycle-Oriented Benchmark for Agent Harness Safety》，适合转化为学习笔记、科研计划素材或产品分析卡。",
+    "headline": "今日主线：机器人/具身智能、AI Agent、论文值得重点追踪",
+    "summary": "最近数据中，机器人/具身智能、AI Agent、论文最活跃。最高推荐内容是《HarnessRisk: A Lifecycle-Oriented Benchmark for Agent Harness Safety》，适合转化为学习笔记、科研计划素材或产品分析卡。",
     "student_actions": [
       "拆解任务链路、工具调用和评价指标，沉淀为 Agent 产品或项目卡片。",
       "把最高分内容加入收藏，并补充 3 条可复现/可分析要点。",
@@ -21,8 +21,8 @@
     {
       "topic": "Agent 应用与 AI 产品",
       "heat": 93,
-      "article_count": 26,
-      "why_hot": "Agent 应用与 AI 产品在最近资讯中出现 26 次，代表事件是《HarnessRisk: A Lifecycle-Oriented Benchmark for Agent Harness Safety》。",
+      "article_count": 25,
+      "why_hot": "Agent 应用与 AI 产品在最近资讯中出现 25 次，代表事件是《HarnessRisk: A Lifecycle-Oriented Benchmark for Agent Harness Safety》。",
       "student_action": "拆解任务链路、工具调用和评价指标，沉淀为 Agent 产品或项目卡片。",
       "article_ids": [
         3041,
@@ -30,14 +30,14 @@
         3136,
         3135,
         3047,
-        3046
+        3267
       ]
     },
     {
       "topic": "机器人/具身智能",
       "heat": 92,
-      "article_count": 27,
-      "why_hot": "机器人/具身智能在最近资讯中出现 27 次，代表事件是《Video2DoorTraversal: Push Door Traversal via Simulated Door Twins》。",
+      "article_count": 28,
+      "why_hot": "机器人/具身智能在最近资讯中出现 28 次，代表事件是《Video2DoorTraversal: Push Door Traversal via Simulated Door Twins》。",
       "student_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。",
       "article_ids": [
         3212,
@@ -460,44 +460,6 @@
       "difficulty": "进阶",
       "read_time": "2 min",
       "next_action": "拆解任务链路、工具调用和评价指标，沉淀为 Agent 产品或项目卡片。"
-    },
-    {
-      "id": 3046,
-      "title": "GLM-5.3上线：AA智能指数60分并列开源第一，成本更低",
-      "url": "https://aihot.virxact.com/items/cmszeb2mx0b3srodpef1ub0j0",
-      "source": "AI HOT · 公众号：智谱（GLM）",
-      "published_at": "2026-08-19T01:03:29+00:00",
-      "summary": "GLM-5.3 API即日上线，擅长复杂编码、防御性网络安全与长程任务，在AA综合智能指数中取得60分，与Claude Fable 5、GPT-5.6 Sol等闭源旗舰同级，并与Kimi K3并列开源模型第一。该模型以更小参数规模和更低调用成本降低前沿智能门槛，单任务成本为旗舰模型中最低。API定价与GLM-5.2持平，模型权重将于下周五开源。",
-      "category": "AI产品",
-      "tags": [
-        "AI HOT",
-        "中文",
-        "AI新闻",
-        "AI产品"
-      ],
-      "score": 79,
-      "one_sentence_summary": "这条内容关注《GLM-5.3上线：AA智能指数60分并列开源第一，成本更低》，适合作为AI产品方向的每日追踪素材。",
-      "importance": "它和AI产品相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "audience": "关注 AI 产品经理、产品分析和商业化案例的学生",
-      "action_suggestion": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
-      "relevance_score": 56,
-      "credibility_score": 72,
-      "novelty_score": 58,
-      "trend_score": 79,
-      "actionability_score": 59,
-      "spam_score": 0,
-      "final_score": 79,
-      "analysis_provider": "local_rules",
-      "is_favorite": false,
-      "created_at": "2026-08-19T04:24:53.549700+00:00",
-      "tldr": "这条内容关注《GLM-5.3上线：AA智能指数60分并列开源第一，成本更低》，适合作为AI产品方向的每日追踪素材。",
-      "why_it_matters": "它和AI产品相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "student_value": "关注 AI 产品经理、产品分析和商业化案例的学生",
-      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
-      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
-      "difficulty": "入门",
-      "read_time": "2 min",
-      "next_action": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。"
     },
     {
       "id": 3267,
@@ -2443,6 +2405,44 @@
       "difficulty": "入门",
       "read_time": "2 min",
       "next_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。"
+    },
+    {
+      "id": 3151,
+      "title": "PartialBiGrasp: Inferring Hidden Local Geometry for Bimanual Grasping from Partial Views",
+      "url": "https://arxiv.org/abs/2608.19188v1",
+      "source": "arXiv cs.RO",
+      "published_at": "2026-08-19T17:56:11+00:00",
+      "summary": "Dual-arm robotic grasping is essential for manipulating large, heavy, and geometrically complex objects that cannot be reliably handled using a single manipulator. These large objects often contain only sparse graspable regions determined by local geometric properties such as thickness, edge structure, and gripper clearance. Prior bimanual grasping methods assume access to a full point cloud of the object which inherently contains this geometric information, but may not be accessible in real scenarios. This work proposes PartialBiGrasp, a dual-arm grasp generation framework that operates directly on partial point cloud observations. Our model learns geometric features implicitly through conv",
+      "category": "机器人/具身智能",
+      "tags": [
+        "arXiv",
+        "机器人",
+        "具身智能",
+        "大模型"
+      ],
+      "score": 72,
+      "one_sentence_summary": "这条内容关注《PartialBiGrasp: Inferring Hidden Local Geometry for Bimanual Grasping from Partial Views》，适合作为机器人/具身智能方向的每日追踪素材。",
+      "importance": "它和机器人/具身智能相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "audience": "AI/机器人方向本科生、准备申请研究生的同学",
+      "action_suggestion": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。",
+      "relevance_score": 78,
+      "credibility_score": 86,
+      "novelty_score": 64,
+      "trend_score": 60,
+      "actionability_score": 60,
+      "spam_score": 0,
+      "final_score": 72,
+      "analysis_provider": "local_rules",
+      "is_favorite": false,
+      "created_at": "2026-08-20T04:25:03.415459+00:00",
+      "tldr": "这条内容关注《PartialBiGrasp: Inferring Hidden Local Geometry for Bimanual Grasping from Partial Views》，适合作为机器人/具身智能方向的每日追踪素材。",
+      "why_it_matters": "它和机器人/具身智能相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
+      "research_value": "适合沉淀到机器人方向科研计划，关注 VLA、控制、仿真和真实数据闭环。",
+      "pm_value": "可提炼为趋势观察，判断技术变化如何影响产品机会。",
+      "difficulty": "中高",
+      "read_time": "5 min",
+      "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
     }
   ]
 }
