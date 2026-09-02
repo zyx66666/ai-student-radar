@@ -1,8 +1,8 @@
 {
   "meta": {
-    "generated_at": "2026-09-02T08:12:48.360719+00:00",
-    "collected_count": 239,
-    "filtered_count": 179,
+    "generated_at": "2026-09-02T13:56:40.685047+00:00",
+    "collected_count": 237,
+    "filtered_count": 177,
     "kept_count": 60,
     "source_count": 13,
     "analysis_provider": "local_rules",
@@ -36,8 +36,8 @@
     {
       "topic": "机器人/具身智能",
       "heat": 94,
-      "article_count": 21,
-      "why_hot": "机器人/具身智能在最近资讯中出现 21 次，代表事件是《Provably Safe Decentralized Contingency MPC under State-Only Information and Limited Sensing for Nonlinear Multi-agent Systems》。",
+      "article_count": 22,
+      "why_hot": "机器人/具身智能在最近资讯中出现 22 次，代表事件是《Provably Safe Decentralized Contingency MPC under State-Only Information and Limited Sensing for Nonlinear Multi-agent Systems》。",
       "student_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。",
       "article_ids": [
         3929,
@@ -65,13 +65,12 @@
     },
     {
       "topic": "产业、算力与融资",
-      "heat": 83,
-      "article_count": 2,
-      "why_hot": "产业、算力与融资在最近资讯中出现 2 次，代表事件是《Nvidia 接近以 129 亿美元收购 Hugging Face》。",
+      "heat": 84,
+      "article_count": 1,
+      "why_hot": "产业、算力与融资在最近资讯中出现 1 次，代表事件是《Nvidia 接近以 129 亿美元收购 Hugging Face》。",
       "student_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
       "article_ids": [
-        4040,
-        3780
+        4040
       ]
     },
     {
@@ -1845,44 +1844,6 @@
       "next_action": "收藏并写 3 条要点：它解决什么问题、需要哪些知识、能做什么小项目。"
     },
     {
-      "id": 3780,
-      "title": "索尼与华纳起诉Anthropic，指控其大规模盗用版权音乐训练Claude",
-      "url": "https://aihot.virxact.com/items/cmtfkvjwn0by7rou8vil9ysf1",
-      "source": "AI HOT · The Decoder：AI News（RSS）",
-      "published_at": "2026-08-30T08:50:20+00:00",
-      "summary": "索尼音乐、华纳音乐等唱片公司起诉Anthropic及其CEO Dario Amodei和联合创始人Benjamin Mann，指控其未经许可使用数万首受版权保护的音乐作品（主要是歌词）训练Claude模型。原告称Amodei明确指示并促成侵权行为，每件侵权作品索赔最高15万美元。此前Anthropic已于2025年9月就盗版书籍训练达成15亿美元和解。",
-      "category": "融资动态",
-      "tags": [
-        "AI HOT",
-        "中文",
-        "AI新闻",
-        "融资动态"
-      ],
-      "score": 76,
-      "one_sentence_summary": "这条内容关注《索尼与华纳起诉Anthropic，指控其大规模盗用版权音乐训练Claude》，适合作为融资动态方向的每日追踪素材。",
-      "importance": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "audience": "关注 AI 产业趋势、创业公司和投研素材的学生",
-      "action_suggestion": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
-      "relevance_score": 48,
-      "credibility_score": 72,
-      "novelty_score": 58,
-      "trend_score": 76,
-      "actionability_score": 46,
-      "spam_score": 0,
-      "final_score": 76,
-      "analysis_provider": "local_rules",
-      "is_favorite": false,
-      "created_at": "2026-08-30T09:32:00.094058+00:00",
-      "tldr": "这条内容关注《索尼与华纳起诉Anthropic，指控其大规模盗用版权音乐训练Claude》，适合作为融资动态方向的每日追踪素材。",
-      "why_it_matters": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "student_value": "关注 AI 产业趋势、创业公司和投研素材的学生",
-      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
-      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
-      "difficulty": "入门",
-      "read_time": "2 min",
-      "next_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。"
-    },
-    {
       "id": 4055,
       "title": "A System for Fast, Resilient, and Adaptable Loco-Manipulation Behaviors on Humanoid Robots",
       "url": "https://arxiv.org/abs/2609.01518v1",
@@ -2468,6 +2429,46 @@
       "difficulty": "进阶",
       "read_time": "2 min",
       "next_action": "按研究问题、方法、数据集、结果、局限和可复现性写一页论文阅读笔记。"
+    },
+    {
+      "id": 4096,
+      "title": "World Labs unveils Atlas, a single AI model that generates, reconstructs, and simulates 3D worlds from just a few photos",
+      "url": "https://the-decoder.com/world-labs-unveils-atlas-a-single-ai-model-that-generates-reconstructs-and-simulates-3d-worlds-from-just-a-few-photos/",
+      "source": "The Decoder",
+      "published_at": "2026-09-02T12:28:36+00:00",
+      "summary": "World Labs, co-founded by AI researcher Fei-Fei Li, has announced Atlas, a world model that generates, reconstructs, and simulates 3D scenes from just a few images. The company claims it beats specialized models by anchoring all inputs in 3D space rather than processing them as flat sequences. Atlas can also generate robot training data entirely in simulation. The article World Labs unveils Atlas, a single AI model that generates, reconstructs, and simulates 3D worlds from just a few photos appeared first on The Decoder .",
+      "category": "机器人/具身智能",
+      "tags": [
+        "The Decoder",
+        "AI研究",
+        "趋势",
+        "大模型",
+        "机器人",
+        "具身智能"
+      ],
+      "score": 72,
+      "one_sentence_summary": "这条内容关注《World Labs unveils Atlas, a single AI model that generates, reconstructs, and simulates 3D worlds from just a few photos》，适合作为机器人/具身智能方向的每日追踪素材。",
+      "importance": "它和机器人/具身智能相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "audience": "AI/机器人方向本科生、准备申请研究生的同学",
+      "action_suggestion": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。",
+      "relevance_score": 78,
+      "credibility_score": 82,
+      "novelty_score": 68,
+      "trend_score": 60,
+      "actionability_score": 59,
+      "spam_score": 0,
+      "final_score": 72,
+      "analysis_provider": "local_rules",
+      "is_favorite": false,
+      "created_at": "2026-09-02T13:55:42.790434+00:00",
+      "tldr": "这条内容关注《World Labs unveils Atlas, a single AI model that generates, reconstructs, and simulates 3D worlds from just a few photos》，适合作为机器人/具身智能方向的每日追踪素材。",
+      "why_it_matters": "它和机器人/具身智能相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
+      "research_value": "适合沉淀到机器人方向科研计划，关注 VLA、控制、仿真和真实数据闭环。",
+      "pm_value": "可提炼为趋势观察，判断技术变化如何影响产品机会。",
+      "difficulty": "中高",
+      "read_time": "5 min",
+      "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
     }
   ]
 }
