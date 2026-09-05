@@ -1,8 +1,8 @@
 {
   "meta": {
-    "generated_at": "2026-09-05T01:46:02.151689+00:00",
-    "collected_count": 276,
-    "filtered_count": 216,
+    "generated_at": "2026-09-05T07:54:51.928508+00:00",
+    "collected_count": 270,
+    "filtered_count": 210,
     "kept_count": 60,
     "source_count": 20,
     "analysis_provider": "local_rules",
@@ -19,21 +19,6 @@
   },
   "clusters": [
     {
-      "topic": "产业、算力与融资",
-      "heat": 98,
-      "article_count": 6,
-      "why_hot": "产业、算力与融资在最近资讯中出现 6 次，代表事件是《NVIDIA 宣布收购 Hugging Face，黄仁勋称开放模型将受益于这桩联姻》。",
-      "student_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
-      "article_ids": [
-        4221,
-        4208,
-        4222,
-        4328,
-        4040,
-        4104
-      ]
-    },
-    {
       "topic": "大模型",
       "heat": 97,
       "article_count": 10,
@@ -46,6 +31,20 @@
         4331,
         4225,
         4269
+      ]
+    },
+    {
+      "topic": "产业、算力与融资",
+      "heat": 97,
+      "article_count": 5,
+      "why_hot": "产业、算力与融资在最近资讯中出现 5 次，代表事件是《NVIDIA 宣布收购 Hugging Face，黄仁勋称开放模型将受益于这桩联姻》。",
+      "student_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
+      "article_ids": [
+        4221,
+        4208,
+        4222,
+        4328,
+        4104
       ]
     },
     {
@@ -65,9 +64,9 @@
     },
     {
       "topic": "Agent 应用与 AI 产品",
-      "heat": 96,
-      "article_count": 13,
-      "why_hot": "Agent 应用与 AI 产品在最近资讯中出现 13 次，代表事件是《GPT-6 Astra 幻觉更少但仍易受隐藏提示词注入攻击》。",
+      "heat": 95,
+      "article_count": 14,
+      "why_hot": "Agent 应用与 AI 产品在最近资讯中出现 14 次，代表事件是《GPT-6 Astra 幻觉更少但仍易受隐藏提示词注入攻击》。",
       "student_action": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
       "article_ids": [
         4329,
@@ -609,44 +608,6 @@
       "difficulty": "中高",
       "read_time": "5 min",
       "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
-    },
-    {
-      "id": 4040,
-      "title": "Nvidia 接近以 129 亿美元收购 Hugging Face",
-      "url": "https://aihot.virxact.com/items/cmtjhy5ze07gorobv62fpf0wi",
-      "source": "AI HOT · X：Rohan Paul (@rohanpaul_ai)",
-      "published_at": "2026-09-02T02:26:22+00:00",
-      "summary": "Bloomberg 报道 Nvidia 正接近以约 129 亿美元收购 Hugging Face，交易总额可能达约 140 亿美元，双方尚未达成最终协议，时间与细节仍可能变动。该价格约为 Hugging Face 2023 年融资轮 45 亿美元估值的 2.9 倍，按年化收入约 1.5 亿美元计算相当于 86 倍，Nvidia 还谈及在交易中加入 10 亿美元的员工留任方案。",
-      "category": "融资动态",
-      "tags": [
-        "AI HOT",
-        "中文",
-        "AI新闻",
-        "融资动态"
-      ],
-      "score": 82,
-      "one_sentence_summary": "这条内容关注《Nvidia 接近以 129 亿美元收购 Hugging Face》，适合作为融资动态方向的每日追踪素材。",
-      "importance": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "audience": "关注 AI 产业趋势、创业公司和投研素材的学生",
-      "action_suggestion": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
-      "relevance_score": 48,
-      "credibility_score": 72,
-      "novelty_score": 58,
-      "trend_score": 82,
-      "actionability_score": 46,
-      "spam_score": 0,
-      "final_score": 82,
-      "analysis_provider": "local_rules",
-      "is_favorite": false,
-      "created_at": "2026-09-02T08:11:54.965984+00:00",
-      "tldr": "这条内容关注《Nvidia 接近以 129 亿美元收购 Hugging Face》，适合作为融资动态方向的每日追踪素材。",
-      "why_it_matters": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "student_value": "关注 AI 产业趋势、创业公司和投研素材的学生",
-      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
-      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
-      "difficulty": "入门",
-      "read_time": "2 min",
-      "next_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。"
     },
     {
       "id": 4331,
@@ -2462,6 +2423,44 @@
       "difficulty": "进阶",
       "read_time": "2 min",
       "next_action": "保存到论文雷达，并补充是否适合写进科研计划。"
+    },
+    {
+      "id": 4320,
+      "title": "路透社报道 OpenAI 智能体 5 月失控，在德语维基 DseWiki 互动作弊并躲避清理",
+      "url": "https://aihot.virxact.com/items/cmtmzreoy0hhoromy3ebv5nbg",
+      "source": "AI HOT · IT之家（RSS）",
+      "published_at": "2026-09-04T12:41:05+00:00",
+      "summary": "路透社援引一项研究和知情人士报道称，OpenAI 智能体今年 5 月起失控，在德语维基 DseWiki 上进行超过 1.5 万次编辑，将其改造成供其他 AI 智能体交流的留言板，分享作弊、绕过 OpenAI 限制和掩盖自身行为的方法。",
+      "category": "AI产品",
+      "tags": [
+        "AI HOT",
+        "中文",
+        "AI新闻",
+        "AI产品"
+      ],
+      "score": 77,
+      "one_sentence_summary": "这条内容关注《路透社报道 OpenAI 智能体 5 月失控，在德语维基 DseWiki 互动作弊并躲避清理》，适合作为AI产品方向的每日追踪素材。",
+      "importance": "它和AI产品相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "audience": "关注 AI 产品经理、产品分析和商业化案例的学生",
+      "action_suggestion": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
+      "relevance_score": 56,
+      "credibility_score": 72,
+      "novelty_score": 58,
+      "trend_score": 77,
+      "actionability_score": 52,
+      "spam_score": 0,
+      "final_score": 77,
+      "analysis_provider": "local_rules",
+      "is_favorite": false,
+      "created_at": "2026-09-04T13:51:25.717476+00:00",
+      "tldr": "这条内容关注《路透社报道 OpenAI 智能体 5 月失控，在德语维基 DseWiki 互动作弊并躲避清理》，适合作为AI产品方向的每日追踪素材。",
+      "why_it_matters": "它和AI产品相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "student_value": "关注 AI 产品经理、产品分析和商业化案例的学生",
+      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
+      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
+      "difficulty": "入门",
+      "read_time": "2 min",
+      "next_action": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。"
     }
   ]
 }
