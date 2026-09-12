@@ -1,8 +1,8 @@
 {
   "meta": {
-    "generated_at": "2026-09-12T01:55:54.959301+00:00",
-    "collected_count": 305,
-    "filtered_count": 245,
+    "generated_at": "2026-09-12T08:12:14.148964+00:00",
+    "collected_count": 301,
+    "filtered_count": 241,
     "kept_count": 60,
     "source_count": 19,
     "analysis_provider": "local_rules",
@@ -60,7 +60,7 @@
         4741,
         4602,
         4745,
-        4559
+        4866
       ]
     },
     {
@@ -1818,44 +1818,6 @@
       "next_action": "拆解任务链路、工具调用和评价指标，沉淀为 Agent 产品或项目卡片。"
     },
     {
-      "id": 4559,
-      "title": "曝 DeepSeek 聘请中信证券筹备科创板 IPO，目标年内递交申请",
-      "url": "https://aihot.news/items/cmttqzqw30jwkrofpxrj00ngg",
-      "source": "AI HOT · IT之家（RSS）",
-      "published_at": "2026-09-09T06:41:51+00:00",
-      "summary": "路透社报道称，DeepSeek 已聘请中信证券筹备科创板上市，目标今年递交 IPO 申请、明年挂牌，募资将用于算力基建、模型研发、芯片自研与人才激励。公司正推进新一轮融资，目标估值约 5000 亿元人民币，此前 6 月完成约 74 亿美元首轮外部融资，投后估值超 500 亿美元；2026 年前 7 个月营收约 4.75 亿元。",
-      "category": "融资动态",
-      "tags": [
-        "AI HOT",
-        "中文",
-        "AI新闻",
-        "融资动态"
-      ],
-      "score": 78,
-      "one_sentence_summary": "这条内容关注《曝 DeepSeek 聘请中信证券筹备科创板 IPO，目标年内递交申请》，适合作为融资动态方向的每日追踪素材。",
-      "importance": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "audience": "关注 AI 产业趋势、创业公司和投研素材的学生",
-      "action_suggestion": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
-      "relevance_score": 48,
-      "credibility_score": 72,
-      "novelty_score": 63,
-      "trend_score": 78,
-      "actionability_score": 46,
-      "spam_score": 0,
-      "final_score": 78,
-      "analysis_provider": "local_rules",
-      "is_favorite": false,
-      "created_at": "2026-09-09T08:26:08.296696+00:00",
-      "tldr": "这条内容关注《曝 DeepSeek 聘请中信证券筹备科创板 IPO，目标年内递交申请》，适合作为融资动态方向的每日追踪素材。",
-      "why_it_matters": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "student_value": "关注 AI 产业趋势、创业公司和投研素材的学生",
-      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
-      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
-      "difficulty": "入门",
-      "read_time": "2 min",
-      "next_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。"
-    },
-    {
       "id": 4866,
       "title": "英伟达洽谈以基石投资者身份参与 Anthropic IPO，投资至多 100 亿美元",
       "url": "https://aihot.news/items/cmtxmd06905q5roi3ds616hwo",
@@ -2201,6 +2163,44 @@
       "difficulty": "入门",
       "read_time": "2 min",
       "next_action": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。"
+    },
+    {
+      "id": 4886,
+      "title": "Minitap 指控 Google Artemis 未署名使用其开源项目 mobile-use 代码",
+      "url": "https://aihot.news/items/cmtxvt03h068vrous6ilk8ds7",
+      "source": "AI HOT · Hacker News：AI 热帖",
+      "published_at": "2026-09-12T02:39:39+00:00",
+      "summary": "Minitap 团队发文指认 Google 的移动设备自动化项目 Artemis 大量复用了其开源项目 mobile-use 的代码，包括完全一致的 Hopper agent 提示词和示例，却未在 README 中署名；更早的包文件曾列出三位作者，8 月一次 force push 将其替换为另一作者。",
+      "category": "融资动态",
+      "tags": [
+        "AI HOT",
+        "中文",
+        "AI新闻",
+        "融资动态"
+      ],
+      "score": 76,
+      "one_sentence_summary": "这条内容关注《Minitap 指控 Google Artemis 未署名使用其开源项目 mobile-use 代码》，适合作为融资动态方向的每日追踪素材。",
+      "importance": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "audience": "关注 AI 产业趋势、创业公司和投研素材的学生",
+      "action_suggestion": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
+      "relevance_score": 48,
+      "credibility_score": 72,
+      "novelty_score": 58,
+      "trend_score": 76,
+      "actionability_score": 60,
+      "spam_score": 0,
+      "final_score": 76,
+      "analysis_provider": "local_rules",
+      "is_favorite": false,
+      "created_at": "2026-09-12T08:11:03.644659+00:00",
+      "tldr": "这条内容关注《Minitap 指控 Google Artemis 未署名使用其开源项目 mobile-use 代码》，适合作为融资动态方向的每日追踪素材。",
+      "why_it_matters": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "student_value": "关注 AI 产业趋势、创业公司和投研素材的学生",
+      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
+      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
+      "difficulty": "入门",
+      "read_time": "2 min",
+      "next_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。"
     },
     {
       "id": 4853,
