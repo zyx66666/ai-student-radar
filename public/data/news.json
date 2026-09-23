@@ -1,10 +1,10 @@
 {
   "meta": {
-    "generated_at": "2026-09-23T08:54:35.475525+00:00",
-    "collected_count": 234,
-    "filtered_count": 174,
+    "generated_at": "2026-09-23T14:31:27.377261+00:00",
+    "collected_count": 254,
+    "filtered_count": 194,
     "kept_count": 60,
-    "source_count": 15,
+    "source_count": 14,
     "analysis_provider": "local_rules",
     "schedule_label": "每日北京时间 08:00 / 12:00 / 18:00 自动采集"
   },
@@ -19,25 +19,10 @@
   },
   "clusters": [
     {
-      "topic": "Agent 应用与 AI 产品",
-      "heat": 94,
-      "article_count": 27,
-      "why_hot": "Agent 应用与 AI 产品在最近资讯中出现 27 次，代表事件是《五角大楼调查：过度依赖 Maven AI 是美军误击伊朗米纳布学校的原因之一》。",
-      "student_action": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
-      "article_ids": [
-        5662,
-        5667,
-        5668,
-        5601,
-        5603,
-        5479
-      ]
-    },
-    {
       "topic": "机器人/具身智能",
-      "heat": 94,
-      "article_count": 21,
-      "why_hot": "机器人/具身智能在最近资讯中出现 21 次，代表事件是《MATE: Multi-Agent Virtual Teleoperation Platform for Humanoid Collaboration Data Collection》。",
+      "heat": 95,
+      "article_count": 20,
+      "why_hot": "机器人/具身智能在最近资讯中出现 20 次，代表事件是《MATE: Multi-Agent Virtual Teleoperation Platform for Humanoid Collaboration Data Collection》。",
       "student_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。",
       "article_ids": [
         5665,
@@ -46,6 +31,21 @@
         5666,
         5602,
         5600
+      ]
+    },
+    {
+      "topic": "Agent 应用与 AI 产品",
+      "heat": 94,
+      "article_count": 28,
+      "why_hot": "Agent 应用与 AI 产品在最近资讯中出现 28 次，代表事件是《五角大楼调查：过度依赖 Maven AI 是美军误击伊朗米纳布学校的原因之一》。",
+      "student_action": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
+      "article_ids": [
+        5662,
+        5667,
+        5668,
+        5601,
+        5603,
+        5479
       ]
     },
     {
@@ -922,6 +922,44 @@
       "is_favorite": false,
       "created_at": "2026-09-21T09:22:17.923237+00:00",
       "tldr": "这条内容关注《Grounded Skill Synthesis from Code at Scale for Agentic Intelligence》，适合作为AI Agent方向的每日追踪素材。",
+      "why_it_matters": "它和AI Agent相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
+      "research_value": "可转化为论文阅读笔记，重点拆研究问题、方法、数据集、结果和局限。",
+      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
+      "difficulty": "进阶",
+      "read_time": "2 min",
+      "next_action": "拆解任务链路、工具调用和评价指标，沉淀为 Agent 产品或项目卡片。"
+    },
+    {
+      "id": 5755,
+      "title": "Recursive self-improvement of AI research agents",
+      "url": "https://huggingface.co/papers/2609.26457",
+      "source": "Hugging Face Papers",
+      "published_at": "2026-09-23T14:29:59.978006+00:00",
+      "summary": "Hugging Face Papers public page item: Recursive self-improvement of AI research agents",
+      "category": "AI Agent",
+      "tags": [
+        "Hugging Face",
+        "论文",
+        "开源项目",
+        "AI Agent"
+      ],
+      "score": 78,
+      "one_sentence_summary": "这条内容关注《Recursive self-improvement of AI research agents》，适合作为AI Agent方向的每日追踪素材。",
+      "importance": "它和AI Agent相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "audience": "AI/机器人方向本科生、准备申请研究生的同学",
+      "action_suggestion": "拆解任务链路、工具调用和评价指标，沉淀为 Agent 产品或项目卡片。",
+      "relevance_score": 86,
+      "credibility_score": 88,
+      "novelty_score": 64,
+      "trend_score": 60,
+      "actionability_score": 77,
+      "spam_score": 0,
+      "final_score": 78,
+      "analysis_provider": "local_rules",
+      "is_favorite": false,
+      "created_at": "2026-09-23T14:30:07.186197+00:00",
+      "tldr": "这条内容关注《Recursive self-improvement of AI research agents》，适合作为AI Agent方向的每日追踪素材。",
       "why_it_matters": "它和AI Agent相关，可作为学习路线、科研计划或产品案例库的素材。",
       "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
       "research_value": "可转化为论文阅读笔记，重点拆研究问题、方法、数据集、结果和局限。",
@@ -2279,47 +2317,6 @@
       "difficulty": "进阶",
       "read_time": "5 min",
       "next_action": "拆解任务链路、工具调用和评价指标，沉淀为 Agent 产品或项目卡片。"
-    },
-    {
-      "id": 5430,
-      "title": "Runway wants to turn AI video generation into a live stream you control in real time",
-      "url": "https://the-decoder.com/runway-wants-to-turn-ai-video-generation-into-a-live-stream-you-control-in-real-time/",
-      "source": "The Decoder",
-      "published_at": "2026-09-20T11:56:59+00:00",
-      "summary": "Runway wants to stream AI video as users prompt it, rather than make them wait for finished clips. The approach builds on GWM-1, its world model that generates video frame by frame. Beyond creative tools, Runway sees uses in robotics and autonomous driving. The article Runway wants to turn AI video generation into a live stream you control in real time appeared first on The Decoder .",
-      "category": "机器人/具身智能",
-      "tags": [
-        "The Decoder",
-        "AI研究",
-        "趋势",
-        "大模型",
-        "机器人",
-        "具身智能",
-        "自动驾驶"
-      ],
-      "score": 74,
-      "one_sentence_summary": "这条内容关注《Runway wants to turn AI video generation into a live stream you control in real time》，适合作为机器人/具身智能方向的每日追踪素材。",
-      "importance": "它和机器人/具身智能相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "audience": "AI/机器人方向本科生、准备申请研究生的同学",
-      "action_suggestion": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。",
-      "relevance_score": 86,
-      "credibility_score": 82,
-      "novelty_score": 63,
-      "trend_score": 60,
-      "actionability_score": 59,
-      "spam_score": 0,
-      "final_score": 74,
-      "analysis_provider": "local_rules",
-      "is_favorite": false,
-      "created_at": "2026-09-20T13:46:53.287922+00:00",
-      "tldr": "这条内容关注《Runway wants to turn AI video generation into a live stream you control in real time》，适合作为机器人/具身智能方向的每日追踪素材。",
-      "why_it_matters": "它和机器人/具身智能相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
-      "research_value": "适合沉淀到机器人方向科研计划，关注 VLA、控制、仿真和真实数据闭环。",
-      "pm_value": "可提炼为趋势观察，判断技术变化如何影响产品机会。",
-      "difficulty": "中高",
-      "read_time": "3 min",
-      "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
     },
     {
       "id": 5726,
