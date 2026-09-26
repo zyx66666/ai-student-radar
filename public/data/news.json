@@ -1,10 +1,10 @@
 {
   "meta": {
-    "generated_at": "2026-09-26T02:20:48.273553+00:00",
-    "collected_count": 273,
-    "filtered_count": 213,
+    "generated_at": "2026-09-26T08:54:26.297143+00:00",
+    "collected_count": 255,
+    "filtered_count": 195,
     "kept_count": 60,
-    "source_count": 18,
+    "source_count": 19,
     "analysis_provider": "local_rules",
     "schedule_label": "每日北京时间 08:00 / 12:00 / 18:00 自动采集"
   },
@@ -36,15 +36,16 @@
     {
       "topic": "产业、算力与融资",
       "heat": 94,
-      "article_count": 5,
-      "why_hot": "产业、算力与融资在最近资讯中出现 5 次，代表事件是《澳大利亚将调查OpenAI模型入侵政府医疗网站是否违法》。",
+      "article_count": 6,
+      "why_hot": "产业、算力与融资在最近资讯中出现 6 次，代表事件是《澳大利亚将调查OpenAI模型入侵政府医疗网站是否违法》。",
       "student_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
       "article_ids": [
         5886,
         5887,
         5783,
         5951,
-        5785
+        5785,
+        5995
       ]
     },
     {
@@ -59,18 +60,7 @@
         5991,
         5993,
         5847,
-        5954
-      ]
-    },
-    {
-      "topic": "大模型",
-      "heat": 84,
-      "article_count": 2,
-      "why_hot": "大模型在最近资讯中出现 2 次，代表事件是《OpenAI 发布 GPT-6 Sol 与 Luna，API 定价降至五折并公布基准成绩》。",
-      "student_action": "收藏并写 3 条要点：它解决什么问题、需要哪些知识、能做什么小项目。",
-      "article_ids": [
-        5721,
-        5846
+        6019
       ]
     },
     {
@@ -93,6 +83,16 @@
         5892,
         5790,
         5896
+      ]
+    },
+    {
+      "topic": "大模型",
+      "heat": 81,
+      "article_count": 1,
+      "why_hot": "大模型在最近资讯中出现 1 次，代表事件是《Claude Opus 5.5 登顶 Arena Code Arena： WebDev 榜首，得 1818 分》。",
+      "student_action": "收藏并写 3 条要点：它解决什么问题、需要哪些知识、能做什么小项目。",
+      "article_ids": [
+        5846
       ]
     }
   ],
@@ -601,44 +601,6 @@
       "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
     },
     {
-      "id": 5721,
-      "title": "OpenAI 发布 GPT-6 Sol 与 Luna，API 定价降至五折并公布基准成绩",
-      "url": "https://aihot.news/items/cmudnpv0k0hrrrogg9gcyun5n",
-      "source": "AI HOT · MarkTechPost（RSS）",
-      "published_at": "2026-09-23T05:18:36+00:00",
-      "summary": "OpenAI 发布 GPT-6 系列两款新模型 GPT-6 Sol 与 Luna，API 定价相比 GPT-5.6 促销价下调约 50%，Sol 为每 1M tokens 输入 $2、输出 $10，Luna 为 $0.10、$0.50，两者已上线 API。",
-      "category": "大模型",
-      "tags": [
-        "AI HOT",
-        "中文",
-        "AI新闻",
-        "大模型"
-      ],
-      "score": 81,
-      "one_sentence_summary": "这条内容关注《OpenAI 发布 GPT-6 Sol 与 Luna，API 定价降至五折并公布基准成绩》，适合作为大模型方向的每日追踪素材。",
-      "importance": "它和大模型相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "audience": "AI/机器人方向本科生、准备申请研究生的同学",
-      "action_suggestion": "收藏并写 3 条要点：它解决什么问题、需要哪些知识、能做什么小项目。",
-      "relevance_score": 48,
-      "credibility_score": 72,
-      "novelty_score": 68,
-      "trend_score": 81,
-      "actionability_score": 52,
-      "spam_score": 0,
-      "final_score": 81,
-      "analysis_provider": "local_rules",
-      "is_favorite": false,
-      "created_at": "2026-09-23T08:53:34.264519+00:00",
-      "tldr": "这条内容关注《OpenAI 发布 GPT-6 Sol 与 Luna，API 定价降至五折并公布基准成绩》，适合作为大模型方向的每日追踪素材。",
-      "why_it_matters": "它和大模型相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
-      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
-      "pm_value": "可提炼为趋势观察，判断技术变化如何影响产品机会。",
-      "difficulty": "中等",
-      "read_time": "2 min",
-      "next_action": "收藏并写 3 条要点：它解决什么问题、需要哪些知识、能做什么小项目。"
-    },
-    {
       "id": 5949,
       "title": "RAPID: Robot Agentic Programming from Demonstrations",
       "url": "https://arxiv.org/abs/2609.30249v1",
@@ -953,6 +915,44 @@
       "difficulty": "进阶",
       "read_time": "5 min",
       "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
+    },
+    {
+      "id": 6019,
+      "title": "Ethan Mollick 评 OpenAI 披露多起新的对齐事件",
+      "url": "https://aihot.news/items/cmuhx6xhk0311ronaycb42uyy",
+      "source": "AI HOT · X：Ethan Mollick (@emollick)",
+      "published_at": "2026-09-26T04:54:05+00:00",
+      "summary": "Ethan Mollick 转发 OpenAI 新发布的对齐事件披露：上周日一个模型在 RL 训练中获得未授权互联网访问，最强模型的推理在系统加固前基本全部暂停；5 月 HPIM 一个版本将员工 GitHub token 上传到网络，模型被隔离两周；另有研究展示可构造自我复制的提示词注入。",
+      "category": "AI产品",
+      "tags": [
+        "AI HOT",
+        "中文",
+        "AI新闻",
+        "AI产品"
+      ],
+      "score": 78,
+      "one_sentence_summary": "这条内容关注《Ethan Mollick 评 OpenAI 披露多起新的对齐事件》，适合作为AI产品方向的每日追踪素材。",
+      "importance": "它和AI产品相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "audience": "关注 AI 产品经理、产品分析和商业化案例的学生",
+      "action_suggestion": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
+      "relevance_score": 56,
+      "credibility_score": 72,
+      "novelty_score": 68,
+      "trend_score": 78,
+      "actionability_score": 59,
+      "spam_score": 0,
+      "final_score": 78,
+      "analysis_provider": "local_rules",
+      "is_favorite": false,
+      "created_at": "2026-09-26T08:53:09.997646+00:00",
+      "tldr": "这条内容关注《Ethan Mollick 评 OpenAI 披露多起新的对齐事件》，适合作为AI产品方向的每日追踪素材。",
+      "why_it_matters": "它和AI产品相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "student_value": "关注 AI 产品经理、产品分析和商业化案例的学生",
+      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
+      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
+      "difficulty": "入门",
+      "read_time": "2 min",
+      "next_action": "写一张产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。"
     },
     {
       "id": 5954,
@@ -1293,44 +1293,6 @@
       "is_favorite": false,
       "created_at": "2026-09-23T14:30:07.186197+00:00",
       "tldr": "这条内容关注《Recursive self-improvement of AI research agents》，适合作为AI Agent方向的每日追踪素材。",
-      "why_it_matters": "它和AI Agent相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
-      "research_value": "可转化为论文阅读笔记，重点拆研究问题、方法、数据集、结果和局限。",
-      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
-      "difficulty": "进阶",
-      "read_time": "2 min",
-      "next_action": "拆解任务链路、工具调用和评价指标，沉淀为 Agent 产品或项目卡片。"
-    },
-    {
-      "id": 5722,
-      "title": "The Tasteful Agent: Measuring and Improving Taste in Long-Horizon Tasks",
-      "url": "https://huggingface.co/papers/2609.25804",
-      "source": "Hugging Face Papers",
-      "published_at": "2026-09-23T08:53:29.103343+00:00",
-      "summary": "Hugging Face Papers public page item: The Tasteful Agent: Measuring and Improving Taste in Long-Horizon Tasks",
-      "category": "AI Agent",
-      "tags": [
-        "Hugging Face",
-        "论文",
-        "开源项目",
-        "AI Agent"
-      ],
-      "score": 78,
-      "one_sentence_summary": "这条内容关注《The Tasteful Agent: Measuring and Improving Taste in Long-Horizon Tasks》，适合作为AI Agent方向的每日追踪素材。",
-      "importance": "它和AI Agent相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "audience": "AI/机器人方向本科生、准备申请研究生的同学",
-      "action_suggestion": "拆解任务链路、工具调用和评价指标，沉淀为 Agent 产品或项目卡片。",
-      "relevance_score": 86,
-      "credibility_score": 88,
-      "novelty_score": 64,
-      "trend_score": 60,
-      "actionability_score": 77,
-      "spam_score": 0,
-      "final_score": 78,
-      "analysis_provider": "local_rules",
-      "is_favorite": false,
-      "created_at": "2026-09-23T08:53:34.264519+00:00",
-      "tldr": "这条内容关注《The Tasteful Agent: Measuring and Improving Taste in Long-Horizon Tasks》，适合作为AI Agent方向的每日追踪素材。",
       "why_it_matters": "它和AI Agent相关，可作为学习路线、科研计划或产品案例库的素材。",
       "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
       "research_value": "可转化为论文阅读笔记，重点拆研究问题、方法、数据集、结果和局限。",
@@ -2438,6 +2400,44 @@
       "difficulty": "中高",
       "read_time": "3 min",
       "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
+    },
+    {
+      "id": 5995,
+      "title": "Cognition 宣布年化收入运行率突破 10 亿美元",
+      "url": "https://aihot.news/items/cmuh4q0ef044fro55mt9bfnxy",
+      "source": "AI HOT · Cognition 模型 / Devin 博客（网页）",
+      "published_at": "2026-09-25T15:42:15.643000+00:00",
+      "summary": "Cognition 宣布年化收入运行率突破 10 亿美元。公司 2024 年 1 月创立，Devin 正式开放使用不到两年，已服务 GE Aerospace、Rivian、Rohlik、Exa 等客户的工程团队。",
+      "category": "融资动态",
+      "tags": [
+        "AI HOT",
+        "中文",
+        "AI新闻",
+        "融资动态"
+      ],
+      "score": 72,
+      "one_sentence_summary": "这条内容关注《Cognition 宣布年化收入运行率突破 10 亿美元》，适合作为融资动态方向的每日追踪素材。",
+      "importance": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "audience": "关注 AI 产业趋势、创业公司和投研素材的学生",
+      "action_suggestion": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
+      "relevance_score": 48,
+      "credibility_score": 72,
+      "novelty_score": 58,
+      "trend_score": 72,
+      "actionability_score": 46,
+      "spam_score": 0,
+      "final_score": 72,
+      "analysis_provider": "local_rules",
+      "is_favorite": false,
+      "created_at": "2026-09-26T02:19:31.482324+00:00",
+      "tldr": "这条内容关注《Cognition 宣布年化收入运行率突破 10 亿美元》，适合作为融资动态方向的每日追踪素材。",
+      "why_it_matters": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "student_value": "关注 AI 产业趋势、创业公司和投研素材的学生",
+      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
+      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
+      "difficulty": "入门",
+      "read_time": "2 min",
+      "next_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。"
     }
   ]
 }
