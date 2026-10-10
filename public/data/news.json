@@ -1,10 +1,10 @@
 {
   "meta": {
-    "generated_at": "2026-10-10T03:06:17.496153+00:00",
-    "collected_count": 223,
-    "filtered_count": 163,
+    "generated_at": "2026-10-10T10:12:53.409520+00:00",
+    "collected_count": 221,
+    "filtered_count": 161,
     "kept_count": 60,
-    "source_count": 16,
+    "source_count": 17,
     "analysis_provider": "local_rules",
     "schedule_label": "每日北京时间 08:00 / 12:00 / 18:00 自动采集"
   },
@@ -21,23 +21,23 @@
     {
       "topic": "产业、算力与融资",
       "heat": 97,
-      "article_count": 10,
-      "why_hot": "产业、算力与融资在最近资讯中出现 10 次，代表事件是《【AIHOT 通知】旧版接口 2026 年 10 月 31 日停用，推送机器人和脚本请尽快迁移》。",
+      "article_count": 11,
+      "why_hot": "产业、算力与融资在最近资讯中出现 11 次，代表事件是《【AIHOT 通知】旧版接口 2026 年 10 月 31 日停用，推送机器人和脚本请尽快迁移》。",
       "student_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
       "article_ids": [
         6817,
         7006,
         6895,
+        7030,
         6910,
-        7007,
-        7008
+        7007
       ]
     },
     {
       "topic": "机器人/具身智能",
-      "heat": 94,
-      "article_count": 22,
-      "why_hot": "机器人/具身智能在最近资讯中出现 22 次，代表事件是《Control-Ready Uncertainty for Trajectory Diffusion》。",
+      "heat": 95,
+      "article_count": 21,
+      "why_hot": "机器人/具身智能在最近资讯中出现 21 次，代表事件是《Control-Ready Uncertainty for Trajectory Diffusion》。",
       "student_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。",
       "article_ids": [
         6907,
@@ -455,6 +455,44 @@
       "difficulty": "进阶",
       "read_time": "5 min",
       "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
+    },
+    {
+      "id": 7030,
+      "title": "State of AI Report 2026 速读：AI 加速 AI、千亿收入、电力瓶颈与安全",
+      "url": "https://aihot.news/items/lnphc0ojxpdl4tpb2zvpz8352",
+      "source": "AI HOT · X：indigo (@indigox)",
+      "published_at": "2026-10-10T05:26:34+00:00",
+      "summary": "Nathan Benaich（Air Street Capital）发布第九份年度 State of AI Report 2026，分研究、产业、政治、安全、预测五部分，PDF 见 https://www.stateof.ai/State-of-AI-Report-2026.pdf。",
+      "category": "融资动态",
+      "tags": [
+        "AI HOT",
+        "中文",
+        "AI新闻",
+        "融资动态"
+      ],
+      "score": 81,
+      "one_sentence_summary": "这条内容关注《State of AI Report 2026 速读：AI 加速 AI、千亿收入、电力瓶颈与安全》，适合作为融资动态方向的每日追踪素材。",
+      "importance": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "audience": "关注 AI 产业趋势、创业公司和投研素材的学生",
+      "action_suggestion": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
+      "relevance_score": 48,
+      "credibility_score": 72,
+      "novelty_score": 63,
+      "trend_score": 81,
+      "actionability_score": 53,
+      "spam_score": 0,
+      "final_score": 81,
+      "analysis_provider": "local_rules",
+      "is_favorite": false,
+      "created_at": "2026-10-10T10:11:23.079109+00:00",
+      "tldr": "这条内容关注《State of AI Report 2026 速读：AI 加速 AI、千亿收入、电力瓶颈与安全》，适合作为融资动态方向的每日追踪素材。",
+      "why_it_matters": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "student_value": "关注 AI 产业趋势、创业公司和投研素材的学生",
+      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
+      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
+      "difficulty": "入门",
+      "read_time": "2 min",
+      "next_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。"
     },
     {
       "id": 6987,
@@ -2410,44 +2448,6 @@
       "difficulty": "进阶",
       "read_time": "5 min",
       "next_action": "拆解任务链路、工具调用和评价指标，沉淀为 Agent 产品或项目卡片。"
-    },
-    {
-      "id": 6836,
-      "title": "Factorized Tactile Representation and Control for Sim-to-Real Manipulation",
-      "url": "https://arxiv.org/abs/2610.10510v1",
-      "source": "arXiv cs.RO",
-      "published_at": "2026-10-07T17:51:52+00:00",
-      "summary": "Tactile sim-to-real learning must bridge simulated contact and device-specific sensor responses while preserving information needed for control. We propose a factorized tactile representation and control framework that maps normal force and contact patch to an effective contact response recoverable from sensor readings. The response is separated into contact geometry, force distribution, and temporal contact change, with representation-specific encoding and randomization. A Tactile Gated Policy preserves these representations separately through control and operates over all mask configurations without retraining. We evaluate the approach through response reconstruction, spatial alignment, fo",
-      "category": "机器人/具身智能",
-      "tags": [
-        "arXiv",
-        "机器人",
-        "具身智能",
-        "AI安全"
-      ],
-      "score": 74,
-      "one_sentence_summary": "这条内容关注《Factorized Tactile Representation and Control for Sim-to-Real Manipulation》，适合作为机器人/具身智能方向的每日追踪素材。",
-      "importance": "它和机器人/具身智能相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "audience": "AI/机器人方向本科生、准备申请研究生的同学",
-      "action_suggestion": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。",
-      "relevance_score": 86,
-      "credibility_score": 86,
-      "novelty_score": 64,
-      "trend_score": 55,
-      "actionability_score": 60,
-      "spam_score": 0,
-      "final_score": 74,
-      "analysis_provider": "local_rules",
-      "is_favorite": false,
-      "created_at": "2026-10-08T03:19:29.199479+00:00",
-      "tldr": "这条内容关注《Factorized Tactile Representation and Control for Sim-to-Real Manipulation》，适合作为机器人/具身智能方向的每日追踪素材。",
-      "why_it_matters": "它和机器人/具身智能相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "student_value": "AI/机器人方向本科生、准备申请研究生的同学",
-      "research_value": "适合沉淀到机器人方向科研计划，关注 VLA、控制、仿真和真实数据闭环。",
-      "pm_value": "可提炼为趋势观察，判断技术变化如何影响产品机会。",
-      "difficulty": "中高",
-      "read_time": "5 min",
-      "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
     }
   ]
 }
