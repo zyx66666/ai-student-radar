@@ -1,16 +1,16 @@
 {
   "meta": {
-    "generated_at": "2026-10-21T08:58:24.909414+00:00",
-    "collected_count": 250,
-    "filtered_count": 190,
+    "generated_at": "2026-10-21T14:46:08.050043+00:00",
+    "collected_count": 267,
+    "filtered_count": 207,
     "kept_count": 60,
-    "source_count": 10,
+    "source_count": 12,
     "analysis_provider": "local_rules",
     "schedule_label": "每日北京时间 08:00 / 12:00 / 18:00 自动采集"
   },
   "daily_brief": {
     "headline": "今日主线：机器人/具身智能、AI Agent、融资动态值得重点追踪",
-    "summary": "最近数据中，机器人/具身智能、AI Agent、融资动态最活跃。最高推荐内容是《SpaceX Q3 2026 财报电话会要点：AI 算力业务成最大收入来源》，适合转化为学习笔记、科研计划素材或产品分析卡。",
+    "summary": "最近数据中，机器人/具身智能、AI Agent、融资动态最活跃。最高推荐内容是《ChinaTalk 解读商务部 48 号公告对 AI 技术出口管制草案的影响》，适合转化为学习笔记、科研计划素材或产品分析卡。",
     "student_actions": [
       "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
       "把最高分内容加入收藏，并补充 3 条可复现/可分析要点。",
@@ -18,6 +18,21 @@
     ]
   },
   "clusters": [
+    {
+      "topic": "产业、算力与融资",
+      "heat": 96,
+      "article_count": 14,
+      "why_hot": "产业、算力与融资在最近资讯中出现 14 次，代表事件是《ChinaTalk 解读商务部 48 号公告对 AI 技术出口管制草案的影响》。",
+      "student_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
+      "article_ids": [
+        7944,
+        7894,
+        7895,
+        7715,
+        7716,
+        7771
+      ]
+    },
     {
       "topic": "机器人/具身智能",
       "heat": 95,
@@ -31,21 +46,6 @@
         7769,
         7825,
         7800
-      ]
-    },
-    {
-      "topic": "产业、算力与融资",
-      "heat": 95,
-      "article_count": 14,
-      "why_hot": "产业、算力与融资在最近资讯中出现 14 次，代表事件是《SpaceX Q3 2026 财报电话会要点：AI 算力业务成最大收入来源》。",
-      "student_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
-      "article_ids": [
-        7894,
-        7895,
-        7715,
-        7716,
-        7771,
-        7801
       ]
     },
     {
@@ -75,6 +75,44 @@
     }
   ],
   "articles": [
+    {
+      "id": 7944,
+      "title": "ChinaTalk 解读商务部 48 号公告对 AI 技术出口管制草案的影响",
+      "url": "https://aihot.news/items/btdpdvumudpoab4rls1j5ni8m",
+      "source": "AI HOT · ChinaTalk（RSS）",
+      "published_at": "2026-10-21T13:43:39+00:00",
+      "summary": "ChinaTalk 作者用三天精读商务部和科技部 2026 年 48 号公告草案，其中 40 项新增技术中 23 项涉及 AI，14 项禁止出口、26 项需许可。",
+      "category": "融资动态",
+      "tags": [
+        "AI HOT",
+        "中文",
+        "AI新闻",
+        "融资动态"
+      ],
+      "score": 87,
+      "one_sentence_summary": "这条内容关注《ChinaTalk 解读商务部 48 号公告对 AI 技术出口管制草案的影响》，适合作为融资动态方向的每日追踪素材。",
+      "importance": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "audience": "关注 AI 产业趋势、创业公司和投研素材的学生",
+      "action_suggestion": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
+      "relevance_score": 48,
+      "credibility_score": 72,
+      "novelty_score": 63,
+      "trend_score": 87,
+      "actionability_score": 46,
+      "spam_score": 0,
+      "final_score": 87,
+      "analysis_provider": "local_rules",
+      "is_favorite": false,
+      "created_at": "2026-10-21T14:44:26.518636+00:00",
+      "tldr": "这条内容关注《ChinaTalk 解读商务部 48 号公告对 AI 技术出口管制草案的影响》，适合作为融资动态方向的每日追踪素材。",
+      "why_it_matters": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
+      "student_value": "关注 AI 产业趋势、创业公司和投研素材的学生",
+      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
+      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
+      "difficulty": "入门",
+      "read_time": "2 min",
+      "next_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。"
+    },
     {
       "id": 7894,
       "title": "SpaceX Q3 2026 财报电话会要点：AI 算力业务成最大收入来源",
@@ -1958,44 +1996,6 @@
       "next_action": "拆解任务链路、工具调用和评价指标，沉淀为 Agent 产品或项目卡片。"
     },
     {
-      "id": 7633,
-      "title": "Anthropic 内部研究显示初级技术岗位占比下降，AI Agent 工时达员工六倍",
-      "url": "https://aihot.news/items/c7pt5mbzh5h0atlbprfzbs8o0",
-      "source": "AI HOT · The Decoder：AI News（RSS）",
-      "published_at": "2026-10-18T13:22:26+00:00",
-      "summary": "Anthropic 发布内部研究称，技术部门初级岗位占比从 2025 年初的 21% 降至 14%，新招初级占比从 27% 降至 9%，空缺初级职位降至 6%，非技术部门基本稳定。",
-      "category": "融资动态",
-      "tags": [
-        "AI HOT",
-        "中文",
-        "AI新闻",
-        "融资动态"
-      ],
-      "score": 78,
-      "one_sentence_summary": "这条内容关注《Anthropic 内部研究显示初级技术岗位占比下降，AI Agent 工时达员工六倍》，适合作为融资动态方向的每日追踪素材。",
-      "importance": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "audience": "关注 AI 产业趋势、创业公司和投研素材的学生",
-      "action_suggestion": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
-      "relevance_score": 48,
-      "credibility_score": 72,
-      "novelty_score": 68,
-      "trend_score": 78,
-      "actionability_score": 46,
-      "spam_score": 0,
-      "final_score": 78,
-      "analysis_provider": "local_rules",
-      "is_favorite": false,
-      "created_at": "2026-10-19T02:09:22.003971+00:00",
-      "tldr": "这条内容关注《Anthropic 内部研究显示初级技术岗位占比下降，AI Agent 工时达员工六倍》，适合作为融资动态方向的每日追踪素材。",
-      "why_it_matters": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
-      "student_value": "关注 AI 产业趋势、创业公司和投研素材的学生",
-      "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
-      "pm_value": "适合写产品分析卡：用户痛点、核心功能、商业模式、竞品和 PM 启发。",
-      "difficulty": "入门",
-      "read_time": "2 min",
-      "next_action": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。"
-    },
-    {
       "id": 7838,
       "title": "SpaceX 财报显示 AI 业务超预期，占收入 52%",
       "url": "https://aihot.news/items/ov4nfafvbhe7d8mj1uirkgsxb",
@@ -2348,12 +2348,12 @@
       "next_action": "整理技术关键词，并设计一个 ROS、仿真或 VLA 相关的小复现实验。"
     },
     {
-      "id": 7623,
-      "title": "德国两家法院先后裁定 Google 须为其 AI Overview 内容负责",
-      "url": "https://aihot.news/items/bbr25r9mbi8zbbtmu2uiati7f",
-      "source": "AI HOT · The Decoder：AI News（RSS）",
-      "published_at": "2026-10-18T10:52:39+00:00",
-      "summary": "慕尼黑地区法院 I 五月底裁定 Google 的 AI 搜索摘要属于公司自己的陈述而非中立转述，Google 须为错误内容担责；Google 公开宣布上诉后实际以和解结案，未获上级法院裁决。",
+      "id": 7945,
+      "title": "OpenAI 称其模型协助研究人员在披露前发现 PHP 关键漏洞",
+      "url": "https://aihot.news/items/bavicabx07y6kwr5x5r3se8g4",
+      "source": "AI HOT · X：OpenAI (@OpenAI)",
+      "published_at": "2026-10-21T14:04:23+00:00",
+      "summary": "OpenAI 宣布其模型协助 Patch the Planet 计划下的研究人员发现影响约 70% 网站的开源语言 PHP 的关键安全漏洞。过去两个月 OpenAI 牵头维护者、研究人员和安全厂商联盟在披露前完成修复，修复涉及 PHP 引擎的大改动，使用 PHP 的网站现可升级版本并应用厂商缓解措施。",
       "category": "融资动态",
       "tags": [
         "AI HOT",
@@ -2361,22 +2361,22 @@
         "AI新闻",
         "融资动态"
       ],
-      "score": 77,
-      "one_sentence_summary": "这条内容关注《德国两家法院先后裁定 Google 须为其 AI Overview 内容负责》，适合作为融资动态方向的每日追踪素材。",
+      "score": 76,
+      "one_sentence_summary": "这条内容关注《OpenAI 称其模型协助研究人员在披露前发现 PHP 关键漏洞》，适合作为融资动态方向的每日追踪素材。",
       "importance": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
       "audience": "关注 AI 产业趋势、创业公司和投研素材的学生",
       "action_suggestion": "记录公司定位、目标用户、融资阶段和它反映的 AI 产业趋势。",
       "relevance_score": 48,
       "credibility_score": 72,
       "novelty_score": 58,
-      "trend_score": 77,
-      "actionability_score": 46,
+      "trend_score": 76,
+      "actionability_score": 53,
       "spam_score": 0,
-      "final_score": 77,
+      "final_score": 76,
       "analysis_provider": "local_rules",
       "is_favorite": false,
-      "created_at": "2026-10-18T13:38:58.216949+00:00",
-      "tldr": "这条内容关注《德国两家法院先后裁定 Google 须为其 AI Overview 内容负责》，适合作为融资动态方向的每日追踪素材。",
+      "created_at": "2026-10-21T14:44:26.518636+00:00",
+      "tldr": "这条内容关注《OpenAI 称其模型协助研究人员在披露前发现 PHP 关键漏洞》，适合作为融资动态方向的每日追踪素材。",
       "why_it_matters": "它和融资动态相关，可作为学习路线、科研计划或产品案例库的素材。",
       "student_value": "关注 AI 产业趋势、创业公司和投研素材的学生",
       "research_value": "适合作为领域背景素材，帮助判断该方向是否值得持续追踪。",
